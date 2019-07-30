@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+
+# The built plugin goes here.
+/plugin/iframe_root/
+
+# created by npm if install with --no-cache option
+false
+
+_site
