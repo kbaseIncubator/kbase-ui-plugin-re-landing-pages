@@ -1,0 +1,81 @@
+import { StoreState, ViewStatus, ViewType, RelationEngineID } from '../../../../redux/store';
+// import { TaxonID } from './redux/store';
+import { Dispatch } from 'react';
+import { Action } from 'redux';
+import { navigate } from '../../../../redux/actions';
+import { connect } from 'react-redux';
+// import ReduxInterfaceComponent from './reduxInterface';
+import { TaxonID, LoadingStatus } from '../redux/store';
+import { selectTaxon } from '../redux/actions';
+import { Taxon } from '../redux/store';
+import Main from './Main';
+
+export interface OwnProps {
+    taxonID: TaxonID;
+}
+
+export interface StateProps {
+    selectedTaxon: Taxon | null;
+    targetTaxon: Taxon;
+}
+
+export interface DispatchProps {
+    selectTaxonID: (selectedTaxonID: TaxonID) => void;
+    // navigateToTaxonID: (taxonID: TaxonID) => void;
+    navigate: (id: RelationEngineID) => void;
+}
+
+function mapStateToProps(state: StoreState, ownProps: OwnProps): StateProps {
+    const { view } = state;
+    if (view.status !== ViewStatus.LOADED) {
+        throw new Error('invalid state');
+    }
+    if (view.viewType !== ViewType.TAXONOMY) {
+        throw new Error('invalid view');
+    }
+    const { currentView } = view;
+    // if (currentView.status !== ViewStatus.LOADED) {
+    //     throw new Error('invalid view status');
+    // }
+
+    // if (currentView.status === ViewStatus.LOADED) {
+    // }
+    const {
+        state: {
+            taxonomy: { main }
+        }
+    } = currentView;
+
+    if (main.status !== LoadingStatus.LOADED) {
+        throw Error('invalid status, again');
+    }
+
+    const { targetTaxon, selectedTaxon, selectedTaxonID } = main;
+
+    return {
+        targetTaxon,
+        selectedTaxon
+    };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<Action>, ownProps: OwnProps): DispatchProps {
+    return {
+        navigate: (relationEngineId: RelationEngineID) => {
+            dispatch(navigate(relationEngineId) as any);
+        },
+        selectTaxonID: (taxonID: TaxonID) => {
+            dispatch(selectTaxon(taxonID) as any);
+        }
+        // navigateToTaxonID(taxonID: TaxonID) => {
+        //     dispatch(navigate
+        // }
+        // load: (taxonID: TaxonID) => {
+        //     dispatch(load(taxonID) as any);
+        // }
+    };
+}
+
+export default connect<StateProps, DispatchProps, OwnProps, StoreState>(
+    mapStateToProps,
+    mapDispatchToProps
+)(Main);

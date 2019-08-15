@@ -7,10 +7,11 @@ package:
     type: iframe
 install:
     routes:
-        - path: ['review']
+        - path: ['review', { type: param, name: relationEngineID }]
           view: main
           widget: kb_iframe_loader
           authorization: true
           # TODO: get rid of this!!
           params:
-              plugin: example-hello
+              view: main
+              plugin: re-landing-pages

@@ -1,0 +1,194 @@
+import React from 'react';
+import Taxonomy from './main/Taxonomy';
+import { RelationEngineID } from '../../../redux/store';
+import { Taxon, TaxonID } from './redux/store';
+import { TaxonomyModel } from './lib/model';
+import { Alert } from 'antd';
+import { AppConfig } from '@kbase/ui-lib/lib/redux/integration/store';
+import Loading from '../../Loading';
+import DB from './lib/DB';
+
+export interface Props {
+    taxonID: TaxonID;
+    token: string;
+    config: AppConfig;
+    navigate: (relationEngineID: RelationEngineID) => void;
+}
+
+enum StateType {
+    NONE,
+    LOADING,
+    LOADED,
+    ERROR
+}
+
+interface NoneState {
+    state: StateType.NONE;
+}
+
+interface LoadedState {
+    state: StateType.LOADED;
+    lineage: Array<Taxon>;
+    selectedTaxonID: TaxonID;
+    selectedTaxon: Taxon | null;
+    targetTaxon: Taxon;
+}
+
+interface LoadingState {
+    state: StateType.LOADING;
+}
+
+interface ErrorState {
+    state: StateType.ERROR;
+    error: string;
+}
+
+type State = NoneState | LoadedState | LoadingState | ErrorState;
+
+export default class Main extends React.Component<Props, State> {
+    db: DB<State>;
+    constructor(props: Props) {
+        super(props);
+
+        this.db = new DB({
+            onUpdate: () => {
+                this.forceUpdate();
+            },
+            initialData: {
+                state: StateType.NONE
+            }
+        });
+    }
+
+    componentDidMount() {
+        this.fetchTaxon(this.props.taxonID);
+    }
+
+    async fetchTaxon(taxonID: TaxonID) {
+        try {
+            this.db.set((state: State) => {
+                return {
+                    ...state,
+                    state: StateType.LOADING
+                };
+            });
+
+            const client = new TaxonomyModel({
+                token: this.props.token,
+                url: this.props.config.services.ServiceWizard.url
+            });
+            const lineage = await client.getLineage(taxonID);
+
+            // const [offspring, totalCount] = await client.getChildren(taxonID, {
+            //     offset: 0,
+            //     limit: 10
+            // });
+            const taxon = await client.getTaxon(taxonID);
+            this.db.set((state: State) => {
+                return {
+                    ...state,
+                    state: StateType.LOADED,
+                    lineage,
+                    selectedTaxonID: taxonID,
+                    targetTaxon: taxon,
+                    selectedTaxon: taxon
+                };
+            });
+        } catch (ex) {
+            console.error('ERROR', ex);
+            this.db.set((state: State) => {
+                return {
+                    ...state,
+                    state: StateType.ERROR,
+                    error: ex.message
+                };
+            });
+        }
+    }
+
+    async selectTaxonID(taxonID: TaxonID) {
+        if (this.db.get().state !== StateType.LOADED) {
+            return;
+        }
+        const client = new TaxonomyModel({
+            token: this.props.token,
+            url: this.props.config.services.ServiceWizard.url
+        });
+
+        try {
+            const taxon = await client.getTaxon(taxonID);
+            this.db.set((state: State) => {
+                return {
+                    ...state,
+                    selectedTaxon: taxon,
+                    selectedTaxonID: taxonID
+                };
+            });
+        } catch (ex) {
+            this.db.set((state: State) => {
+                return {
+                    state: StateType.ERROR,
+                    error: ex.message
+                };
+            });
+        }
+    }
+
+    renderNone() {
+        if (this.db.get().state !== StateType.NONE) {
+            return;
+        }
+        return <div>NONE</div>;
+    }
+
+    renderLoading() {
+        if (this.db.get().state !== StateType.LOADING) {
+            return;
+        }
+        return <Loading message="Loading Taxonomy Landing Page..." />;
+    }
+
+    renderError() {
+        const state = this.db.get();
+        if (state.state !== StateType.ERROR) {
+            return;
+        }
+        return <Alert type="error" message={state.error} />;
+    }
+
+    renderNormal(state: LoadedState) {
+        return (
+            <Taxonomy
+                lineage={state.lineage}
+                selectedTaxon={state.selectedTaxon}
+                targetTaxon={state.targetTaxon}
+                selectTaxonID={(selectedTaxonID: TaxonID) => {
+                    this.selectTaxonID(selectedTaxonID);
+                }}
+                navigateToTaxonID={(taxonID: TaxonID) => {
+                    this.fetchTaxon(taxonID);
+                }}
+            >
+                {this.props.children}
+            </Taxonomy>
+        );
+    }
+
+    renderSwitch() {
+        const state = this.db.get();
+        switch (state.state) {
+            case StateType.NONE:
+                return this.renderNone();
+            case StateType.LOADING:
+                return this.renderLoading();
+            case StateType.LOADED:
+                return this.renderNormal(state);
+            case StateType.ERROR:
+                return this.renderError();
+        }
+    }
+
+    render() {
+        return this.renderSwitch();
+    }
+}

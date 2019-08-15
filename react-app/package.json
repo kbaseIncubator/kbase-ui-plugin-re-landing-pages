@@ -3,12 +3,20 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@kbase/ui-lib": "0.1.0-alpha.50",
+        "@craco/craco": "5.2.4",
+        "@kbase/ui-lib": "0.1.0-alpha.55",
         "@types/jest": "24.0.15",
+        "@types/marked": "0.6.5",
         "@types/node": "12.6.8",
         "@types/react": "16.8.23",
         "@types/react-dom": "16.8.5",
         "@types/react-redux": "7.1.1",
+        "antd": "3.20.7",
+        "craco-antd": "1.11.0",
+        "http-proxy-middleware": "0.19.1",
+        "marked": "0.7.0",
+        "morgan": "^1.9.1",
+        "nodemon": "1.19.1",
         "react": "16.8.6",
         "react-dom": "16.8.6",
         "react-redux": "7.1.0",
@@ -18,10 +26,9 @@
         "typescript": "3.5.3"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
+        "start": "nodemon -w ./craco.config.js -w ./src/custom/style/antd/theme.less --exec 'craco start'",
+        "build": "craco build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject",
         "install-plugin": "bash scripts/install-plugin.bash"
     },
     "eslintConfig": {
