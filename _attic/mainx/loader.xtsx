@@ -1,0 +1,136 @@
+import * as React from 'react';
+import {
+    LoadingStatus,
+    TaxonomyStoreState,
+    MainState,
+    ErrorState,
+    TaxonID,
+    LoadedState,
+    MainLoadedState
+} from '../redux/store';
+//BrowseOrgsView
+import Container from './container';
+
+// THe redux connection
+
+import { Dispatch, Action } from 'redux';
+import { connect } from 'react-redux';
+
+import * as actions from '../redux/actions';
+import { Spin, Alert } from 'antd';
+import { StoreState, ViewStatus, ViewType, RelationEngineNodeType, LandingPageView } from '../../../../redux/store';
+
+// First the loader component, which takes care of a loading view, error view, and the
+// container.
+
+export interface LoaderProps {
+    view: MainState;
+    taxonID: TaxonID;
+    onLoad: (taxonID: TaxonID) => void;
+    onUnload: () => void;
+}
+
+interface LoaderState {}
+
+class Loader extends React.Component<LoaderProps, LoaderState> {
+    constructor(props: LoaderProps) {
+        super(props);
+    }
+
+    renderLoading() {
+        const message = (
+            <div>
+                Loading Taxon ... <Spin />
+            </div>
+        );
+        return (
+            <Alert
+                type="info"
+                message={message}
+                style={{
+                    width: '20em',
+                    padding: '20px',
+                    margin: '20px auto'
+                }}
+            />
+        );
+    }
+
+    renderError(view: ErrorState) {
+        return <Alert type="error" message={view.message} />;
+    }
+
+    renderLoaded(view: MainLoadedState) {
+        return <Container taxonID={view.targetTaxon.id} />;
+    }
+
+    render() {
+        const view = this.props.view;
+        switch (view.status) {
+            case LoadingStatus.NONE:
+                return this.renderLoading();
+            case LoadingStatus.LOADING:
+                return this.renderLoading();
+            case LoadingStatus.ERROR:
+                return this.renderError(view);
+            case LoadingStatus.LOADED:
+                return this.renderLoaded(view);
+        }
+    }
+
+    componentDidMount() {
+        switch (this.props.view.status) {
+            case LoadingStatus.NONE:
+                // should only appear briefly as the LOAD event is processed.
+                this.props.onLoad(this.props.taxonID);
+        }
+    }
+
+    componentWillUnmount() {
+        this.props.onUnload();
+    }
+}
+
+export interface OwnProps {}
+
+interface StateProps {
+    view: MainState;
+}
+
+interface DispatchProps {
+    onLoad: (taxonID: TaxonID) => void;
+    onUnload: () => void;
+}
+
+function mapStateToProps(state: StoreState, props: OwnProps): StateProps {
+    if (
+        !(
+            state.view.status === ViewStatus.LOADED &&
+            state.view.relationEngineNodeType === RelationEngineNodeType.TAXON &&
+            state.view.viewType === ViewType.TAXONOMY
+        )
+    ) {
+        console.log(state.view);
+        throw new Error('invalid state');
+    }
+
+    return {
+        view: state.view.currentView.state.taxonomy.main
+    };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
+    return {
+        onLoad: (taxonID: TaxonID) => {
+            dispatch(actions.load(taxonID) as any);
+        },
+        onUnload: () => {
+            dispatch(actions.unload() as any);
+        }
+    };
+}
+
+export default connect<StateProps, DispatchProps, OwnProps, StoreState>(
+    mapStateToProps,
+    mapDispatchToProps
+)(Loader);

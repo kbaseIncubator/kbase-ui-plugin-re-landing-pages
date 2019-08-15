@@ -1,0 +1,18 @@
+.TaxonItem {
+    /* border: 1px solid red; */
+    padding: 8px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    user-select: none;
+}
+
+.TaxonItem:hover {
+    background-color: rgba(199, 237, 255, 0.5);
+    cursor: pointer;
+}
+
+.TaxonItem-active,
+.TaxonItem:active {
+    background-color: rgba(199, 237, 255, 1);
+}
