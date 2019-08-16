@@ -18,7 +18,11 @@ export class SourceInfo extends React.Component<SourceInfoProps, SourceInfoState
                             <div className="InfoTable-labelCol" style={{ width: '5em' }}>
                                 Source
                             </div>
-                            <div className="InfoTable-dataCol">NCBI</div>
+                            <div className="InfoTable-dataCol">
+                                <a href="https://www.ncbi.nlm.nih.gov/guide/taxonomy/" target="_blank">
+                                    NCBI
+                                </a>
+                            </div>
                         </div>
                         <div className="InfoTable-row">
                             <div className="InfoTable-labelCol" style={{ width: '5em' }}>
