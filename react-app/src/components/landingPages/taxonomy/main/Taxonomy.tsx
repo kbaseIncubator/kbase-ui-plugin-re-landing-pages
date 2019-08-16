@@ -6,6 +6,7 @@ import TaxonSummary from '../TaxonSummary';
 import { Taxon, TaxonID } from '../redux/store';
 import { Row, Col } from 'antd';
 import TaxonInfo from '../taxonInfo/TaxonInfo';
+import './Taxonomy.css';
 
 export interface TaxonomyProps {
     // lineage: Array<Taxon>;
@@ -33,8 +34,8 @@ export default class Taxonomy extends React.Component<TaxonomyProps, TaxonomySta
 
     render() {
         return (
-            <div className="Col scrollable">
-                <div className="Col-auto" style={{ backgroundColor: 'rgba(200, 200, 200, 0.3' }}>
+            <div className="Col scrollable Taxonomy">
+                <div className="Col-auto Taxonomy-summary-section">
                     <Row>
                         <Col span={12}>
                             <TaxonSummary taxon={this.props.targetTaxon} />
