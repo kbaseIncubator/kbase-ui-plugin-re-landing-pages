@@ -1,4 +1,12 @@
-import DB, { DBProps, DBStatus, DBStateNone, DBStateLoading, DBStateLoaded, DBStateError } from '../lib/DB';
+import DB, {
+    DBProps,
+    DBStatus,
+    DBStateNone,
+    DBStateLoading,
+    DBStateLoaded,
+    DBStateError,
+    DBStateReLoading
+} from '../lib/DB';
 import { AppConfig } from '@kbase/ui-lib/lib/redux/integration/store';
 import { Taxon } from '../redux/store';
 import { TaxonomyModel } from '../lib/model';
@@ -14,7 +22,19 @@ export interface TaxonDBStateLoaded extends DBStateLoaded {
     pageSize: number;
 }
 
-export type TaxonDBState = TaxonDBStateNone | TaxonDBStateLoading | TaxonDBStateLoaded | TaxonDBStateError;
+export interface TaxonDBStateReLoading extends DBStateReLoading {
+    taxa: Array<Taxon>;
+    total: number;
+    page: number;
+    pageSize: number;
+}
+
+export type TaxonDBState =
+    | TaxonDBStateNone
+    | TaxonDBStateLoading
+    | TaxonDBStateLoaded
+    | TaxonDBStateReLoading
+    | TaxonDBStateError;
 
 export interface TaxonDBProps extends DBProps<TaxonDBState> {
     token: string;
@@ -85,10 +105,17 @@ export default class TaxonDB extends DB<TaxonDBState> {
     }) {
         try {
             this.set((state: TaxonDBState) => {
-                return {
-                    ...state,
-                    status: DBStatus.LOADING
-                };
+                if (state.status === DBStatus.LOADED) {
+                    return {
+                        ...state,
+                        status: DBStatus.RELOADING
+                    };
+                } else {
+                    return {
+                        ...state,
+                        status: DBStatus.LOADING
+                    };
+                }
             });
 
             const client = new TaxonomyModel({

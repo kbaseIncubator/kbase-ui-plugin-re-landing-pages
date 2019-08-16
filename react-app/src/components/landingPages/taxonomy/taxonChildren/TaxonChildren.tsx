@@ -1,8 +1,8 @@
 import React from 'react';
-import { Pagination, Icon, Alert, Input } from 'antd';
+import { Pagination, Icon, Alert, Input, Spin } from 'antd';
 import TaxonList from '../TaxonList';
 import { TaxonID } from '../redux/store';
-import { TaxonDBState, TaxonDBStateError, TaxonDBStateLoaded } from './TaxonChildrenDB';
+import TaxonDB, { TaxonDBState, TaxonDBStateError, TaxonDBStateLoaded, TaxonDBStateReLoading } from './TaxonChildrenDB';
 import { DBStatus } from '../lib/DB';
 import './index.css';
 
@@ -40,6 +40,29 @@ export default class TaxonChildren extends React.Component<Props, State> {
     renderTaxaLoading() {
         return <Icon type="loading" />;
     }
+
+    renderTitleLoaded(db: TaxonDBStateLoaded | TaxonDBStateReLoading) {
+        if (db.total === 0) {
+            return <div className="Col-auto TaxonChildren-box-title">No Children</div>;
+        }
+
+        const totalCount = Intl.NumberFormat('en-US', {
+            useGrouping: true
+        }).format(db.total);
+        const currentItem = (db.page - 1) * db.pageSize + 1;
+        const lastItem = currentItem + db.taxa.length - 1;
+
+        return (
+            <div className="Col-auto TaxonChildren-box-title">
+                Children ({currentItem}-{lastItem} of {totalCount})
+            </div>
+        );
+    }
+
+    renderTitleReLoading(db: TaxonDBStateReLoading) {
+        return <Spin size="small">{this.renderTitleLoaded(db)}</Spin>;
+    }
+
     renderTitle() {
         const db = this.props.db;
         switch (db.status) {
@@ -49,27 +72,15 @@ export default class TaxonChildren extends React.Component<Props, State> {
             case DBStatus.ERROR:
                 return <div>ERROR: {db.message}</div>;
             case DBStatus.LOADED:
-                if (db.total === 0) {
-                    return <div className="Col-auto TaxonChildren-box-title">No Children</div>;
-                }
-
-                const totalCount = Intl.NumberFormat('en-US', {
-                    useGrouping: true
-                }).format(db.total);
-                const currentItem = (db.page - 1) * db.pageSize + 1;
-                const lastItem = currentItem + db.taxa.length - 1;
-
-                return (
-                    <div className="Col-auto TaxonChildren-box-title">
-                        Children ({currentItem}-{lastItem} of {totalCount})
-                    </div>
-                );
+                return this.renderTitleLoaded(db);
+            case DBStatus.RELOADING:
+                return this.renderTitleReLoading(db);
         }
     }
     doSearch(term: string) {
         // console.log('searching: ' + term);
         this.searchTerm = term;
-        this.props.fetchChildren(this.props.taxonID, this.page, this.pageSize || DEFAULT_PAGE_SIZE, term);
+        this.props.fetchChildren(this.props.taxonID, 1, this.pageSize || DEFAULT_PAGE_SIZE, term);
     }
     renderSearch() {
         const disabled =
@@ -81,7 +92,7 @@ export default class TaxonChildren extends React.Component<Props, State> {
             </div>
         );
     }
-    renderTaxaLoaded(db: TaxonDBStateLoaded) {
+    renderTaxaLoaded(db: TaxonDBStateLoaded | TaxonDBStateReLoading) {
         return (
             <React.Fragment>
                 <TaxonList
@@ -95,6 +106,9 @@ export default class TaxonChildren extends React.Component<Props, State> {
             </React.Fragment>
         );
     }
+    renderTaxaReLoading(db: TaxonDBStateReLoading) {
+        return <Spin tip="Loading">{this.renderTaxaLoaded(db)}</Spin>;
+    }
     renderTaxaError(db: TaxonDBStateError) {
         return <Alert type="error" message={db.message} />;
     }
@@ -106,6 +120,8 @@ export default class TaxonChildren extends React.Component<Props, State> {
                 return this.renderTaxaLoading();
             case DBStatus.LOADED:
                 return this.renderTaxaLoaded(this.props.db);
+            case DBStatus.RELOADING:
+                return this.renderTaxaReLoading(this.props.db);
             case DBStatus.ERROR:
                 return this.renderTaxaError(this.props.db);
         }
@@ -115,22 +131,16 @@ export default class TaxonChildren extends React.Component<Props, State> {
         this.pageSize = pageSize || DEFAULT_PAGE_SIZE;
         this.props.fetchChildren(this.props.taxonID, this.page, this.pageSize, this.searchTerm);
     }
-    renderPagination() {
-        const db = this.props.db;
-        if (db.status !== DBStatus.LOADED) {
-            return (
-                <Pagination
-                    size="small"
-                    // defaultPageSize={0}
-                    // defaultCurrent={1}
-                    showLessItems={true}
-                    // current={db.page}
-                    hideOnSinglePage={false}
-                    // total={db.total}
-                    // onChange={this.changePage.bind(this)}
-                />
-            );
-        }
+    renderPaginationNone() {
+        return <Pagination size="small" showLessItems={true} hideOnSinglePage={false} />;
+    }
+    renderPaginationLoading() {
+        return <Pagination size="small" showLessItems={true} hideOnSinglePage={false} />;
+    }
+    renderPaginationError() {
+        return <Pagination size="small" showLessItems={true} hideOnSinglePage={false} />;
+    }
+    renderPaginationLoaded(db: TaxonDBStateLoaded) {
         return (
             <Pagination
                 size="small"
@@ -143,6 +153,35 @@ export default class TaxonChildren extends React.Component<Props, State> {
                 onChange={this.changePage.bind(this)}
             />
         );
+    }
+    renderPaginationReLoading(db: TaxonDBStateReLoading) {
+        return (
+            <Pagination
+                size="small"
+                defaultPageSize={db.pageSize}
+                // defaultCurrent={1}
+                showLessItems={true}
+                current={db.page}
+                hideOnSinglePage={false}
+                total={db.total}
+                disabled={true}
+            />
+        );
+    }
+    renderPagination() {
+        const db = this.props.db;
+        switch (db.status) {
+            case DBStatus.NONE:
+                return this.renderPaginationNone();
+            case DBStatus.LOADING:
+                return this.renderPaginationLoading();
+            case DBStatus.ERROR:
+                return this.renderPaginationError();
+            case DBStatus.LOADED:
+                return this.renderPaginationLoaded(db);
+            case DBStatus.RELOADING:
+                return this.renderPaginationReLoading(db);
+        }
     }
     renderChildren() {
         return (

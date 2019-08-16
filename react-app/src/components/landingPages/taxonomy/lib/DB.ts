@@ -11,6 +11,7 @@ export enum DBStatus {
     NONE,
     LOADING,
     LOADED,
+    RELOADING,
     ERROR
 }
 
@@ -20,6 +21,10 @@ export interface DBStateNone {
 
 export interface DBStateLoading {
     status: DBStatus.LOADING;
+}
+
+export interface DBStateReLoading {
+    status: DBStatus.RELOADING;
 }
 
 export interface DBStateLoaded {
