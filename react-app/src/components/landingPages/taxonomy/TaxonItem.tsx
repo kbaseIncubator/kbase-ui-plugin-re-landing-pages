@@ -1,7 +1,9 @@
 import React from 'react';
 import { Taxon } from './redux/store';
-import { Tooltip } from 'antd';
+import { Tooltip, Icon } from 'antd';
 import './TaxonItem.css';
+import { Button } from 'antd/lib/radio';
+import ButtonGroup from 'antd/lib/button/button-group';
 
 export interface Props {
     taxon: Taxon;
@@ -10,9 +12,17 @@ export interface Props {
     navigateToTaxonID: (taxonID: string) => void;
 }
 
-interface State {}
+interface State {
+    hovering: boolean;
+}
 
 export default class TaxonItem extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            hovering: false
+        };
+    }
     clickTaxon() {
         this.props.selectTaxonID(this.props.taxon.id);
     }
@@ -28,6 +38,60 @@ export default class TaxonItem extends React.Component<Props, State> {
         // window.history.pushState({}, 'my title', `/#review/${this.props.taxon.id}`);
         // this.props.navigateToTaxonID(this.props.taxon.id);
     }
+
+    onMouseEnter(ev: React.MouseEvent<HTMLDivElement>) {
+        this.setState({ hovering: true });
+    }
+
+    onMouseLeave(ev: React.MouseEvent<HTMLDivElement>) {
+        this.setState({ hovering: false });
+    }
+
+    renderOver() {
+        return (
+            <React.Fragment>
+                <div className="TaxonItem-name" onClick={this.clickNavigateToTaxon.bind(this)}>
+                    {this.props.taxon.name}
+                </div>
+                <div className="TaxonItem-inspector" onClick={this.clickTaxon.bind(this)}>
+                    <Icon type="arrow-right" />
+                </div>
+            </React.Fragment>
+        );
+    }
+
+    renderActive() {
+        return (
+            <React.Fragment>
+                <div className="TaxonItem-name" onClick={this.clickNavigateToTaxon.bind(this)}>
+                    {this.props.taxon.name}
+                </div>
+                <div className="TaxonItem-inspector">
+                    <Icon type="arrow-right" />
+                </div>
+            </React.Fragment>
+        );
+    }
+
+    renderNormal() {
+        return (
+            <React.Fragment>
+                <div className="TaxonItem-name">{this.props.taxon.name}</div>
+            </React.Fragment>
+        );
+    }
+
+    renderItem() {
+        if (this.props.isActive) {
+            return this.renderActive();
+        }
+        if (this.state.hovering) {
+            return this.renderOver();
+        } else {
+            return this.renderNormal();
+        }
+    }
+
     render() {
         const taxon = this.props.taxon;
         const classNames = ['TaxonItem'];
@@ -47,10 +111,10 @@ export default class TaxonItem extends React.Component<Props, State> {
                 <div
                     className={classNames.join(' ')}
                     key={this.props.taxon.id}
-                    onClick={this.clickTaxon.bind(this)}
-                    onDoubleClick={this.clickNavigateToTaxon.bind(this)}
+                    onMouseEnter={this.onMouseEnter.bind(this)}
+                    onMouseLeave={this.onMouseLeave.bind(this)}
                 >
-                    {this.props.taxon.name}
+                    {this.renderItem()}
                 </div>
             </Tooltip>
         );
