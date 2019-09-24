@@ -1,6 +1,6 @@
 # KBase UI Plugin: Relation Engine Landing Pages
 
-> SINGLE SENTENCE
+> A landing page system for viewing Relation Engine nodes.
 
 BRIEF DESCRIPTION
 

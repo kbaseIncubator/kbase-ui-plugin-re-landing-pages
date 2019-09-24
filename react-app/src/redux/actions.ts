@@ -1,6 +1,10 @@
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StoreState, RelationEngineID, NavigationSome, ViewType } from './store';
+import RelationEngineAPIClient from '../lib/RelationEngineAPIClient';
+import { RelationEngineCollection } from '../types';
+import { stringToTaxonomyNamespace } from '../types/taxonomy';
+import { stringToOntologyNamespace } from '../types/ontology';
 // import * as uiLib from '@kbase/ui-lib';
 
 export enum AppActions {
@@ -39,6 +43,13 @@ export function navigateStart(): NavigateStart {
     };
 }
 
+export function navigateError(message: string): NavigateError {
+    return {
+        type: AppActions.NAVIGATE_ERROR,
+        message
+    }
+}
+
 export function navigateSuccess(
     navigation: NavigationSome
     // viewType: ViewType,
@@ -61,21 +72,69 @@ export function navigate(relationEngineID: RelationEngineID) {
     return async (dispatch: ThunkDispatch<StoreState, void, Action>, getState: () => StoreState) => {
         dispatch(navigateStart());
 
-        // TODO: when there is an api call "get_node_info" we can replace the
-        // node type determination code below.
+        const {
+            auth: { userAuthorization },
+            app: {
+                config: {
+                    services: {
+                        ServiceWizard: { url }
+                    }
+                }
+            }
+        } = getState();
 
-        // window.location.hash;
-
-        // We know, for now, that the node id is <collection/id>
-        const [collection, id] = relationEngineID.split(':');
-        // console.log('in navigate...', relationEngineID);
-        switch (collection) {
-            case 'ncbi_taxon':
-                // const view: TaxonomyView = {
-                //     status: ViewStatus.NONE
-                // };
-                dispatch(navigateSuccess({ type: ViewType.TAXONOMY, relationEngineID: [collection, id].join('/') }));
-            // dispatch(uiLib.navigate({ view: 'taxonomy', params: { relationEngineID } }));
+        if (!userAuthorization) {
+            return;
         }
+
+        const reClient = new RelationEngineAPIClient({
+            url,
+            token: userAuthorization.token
+        });
+
+        try {
+            const [nodeInfo] = await reClient.getNodeInfo(relationEngineID);
+            switch (nodeInfo.collection) {
+                case 'taxonomy':
+                    // TODO: add source info here, or let the taxonomy landing page do
+                    // it by itself? I think it is better to do it after the first dispatch
+                    // here, because then the landing page can fold it into its type system,
+                    // rather than requiring the top level to do that. E.g. source->enum.
+                    dispatch(navigateSuccess({
+                        type: ViewType.TAXONOMY,
+                        ref: {
+                            collection: RelationEngineCollection.TAXONOMY,
+                            namespace: stringToTaxonomyNamespace(nodeInfo.namespace),
+                            id: nodeInfo.id,
+                            timestamp: nodeInfo.timestamp
+                        }
+                    }));
+                    // const x = {
+                    //     type: ViewType.TAXONOMY,
+                    //     ref: {
+                    //         collection: RelationEngineCollection.TAXONOMY,
+                    //         namespace: stringToTaxonomyNamespace(nodeInfo.namespace),
+                    //         id: nodeInfo.id,
+                    //         timestamp: nodeInfo.timestamp
+                    //     }
+                    // };
+                    break;
+                case 'ontology':
+                    dispatch(navigateSuccess({
+                        type: ViewType.ONTOLOGY,
+                        ref: {
+                            collection: RelationEngineCollection.ONTOLOGY,
+                            namespace: stringToOntologyNamespace(nodeInfo.namespace),
+                            id: nodeInfo.id,
+                            timestamp: nodeInfo.timestamp
+                        }
+                    }));
+                    break;
+            }
+        } catch (ex) {
+            console.error('ERROR', ex);
+            dispatch(navigateError(ex.message));
+        }
+
     };
 }

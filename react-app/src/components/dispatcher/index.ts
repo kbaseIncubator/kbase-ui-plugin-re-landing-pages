@@ -3,10 +3,10 @@ import { Dispatch } from 'react';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { Dispatcher } from './Dispatcher';
-import { RootState } from '@kbase/ui-lib/lib/redux/root/store';
+import { RootState } from '@kbase/ui-components';
 import { navigate } from '../../redux/actions';
 
-interface OwnProps {}
+interface OwnProps { }
 
 interface StateProps {
     token: string | null;

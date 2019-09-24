@@ -1,0 +1,50 @@
+/* --- */
+
+// TODO: yuck, fix this!
+export interface NodeInfo {
+    type: RelationEngineNodeType;
+    objectClass: ObjectClass;
+    namespace: TaxonomyNamespace;
+    created: number;
+    version: string;
+}
+
+export class RelationEngineModel {
+    relationEngineClient: RelationEngineAPIClient;
+    constructor({ token, url }: { token: string; url: string }) {
+        this.relationEngineClient = new RelationEngineAPIClient({ token, url });
+    }
+
+    async getNodeInfo(relationEngineID: RelationEngineID): Promise<NodeInfo> {
+        const [result] = await this.relationEngineClient.getNodeInfo(relationEngineID);
+
+        switch (result.type) {
+            case 'taxon':
+                return {
+                    type: RelationEngineNodeType.TAXON,
+                    created: result.created,
+                    version: result.version,
+                    source: (() => {
+                        switch (result.source) {
+                            case 'ncbi':
+                                return TaxonomySource.NCBI;
+                            case 'gtdb':
+                                return TaxonomySource.GTDB;
+                        }
+                    })()
+                };
+            case 'ontology':
+                return {
+                    type: RelationEngineNodeType.ONTOLOGY_TERM,
+                    created: result.created,
+                    version: result.version,
+                    source: (() => {
+                        switch (result.source) {
+                            case 'go':
+                                return OntologySource.GO;
+                        }
+                    })()
+                };
+        }
+    }
+}

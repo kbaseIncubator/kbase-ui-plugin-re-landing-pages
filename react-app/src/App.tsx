@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createReduxStore } from './redux/store';
-import { AppBase } from '@kbase/ui-lib';
+import { AppBase, AuthGate } from '@kbase/ui-components';
 import './App.css';
 import Dispatcher from './components/dispatcher';
 import { Unsubscribe } from 'redux';
@@ -9,15 +9,15 @@ import { navigate } from './redux/actions';
 
 const store = createReduxStore();
 
-interface AppProps {}
+interface AppProps { }
 
-interface AppState {}
+interface AppState { }
 
 export default class App<AppProps, AppState> extends React.Component {
-    storeSubscription: Unsubscribe | null;
+    storeUnsubscribe: Unsubscribe | null;
     constructor(props: AppProps) {
         super(props);
-        this.storeSubscription = null;
+        this.storeUnsubscribe = null;
     }
     componentDidMount() {
         let last: {
@@ -27,7 +27,7 @@ export default class App<AppProps, AppState> extends React.Component {
             view: null,
             params: {}
         };
-        this.storeSubscription = store.subscribe(() => {
+        this.storeUnsubscribe = store.subscribe(() => {
             const state = store.getState();
             if (!state) {
                 return;
@@ -35,13 +35,17 @@ export default class App<AppProps, AppState> extends React.Component {
             const {
                 app: {
                     runtime: { navigation }
-                }
+                },
+                auth: { userAuthorization }
             } = state;
+
+            // This is a bit of a cheat.
+            if (!userAuthorization) {
+                return;
+            }
 
             const view = navigation.view;
             const params = navigation.params as { [key: string]: string };
-
-            // console.log('store changed', navigation);
 
             if (
                 view !== last.view ||
@@ -52,7 +56,6 @@ export default class App<AppProps, AppState> extends React.Component {
             ) {
                 last.params = params;
                 last.view = view;
-                // console.log('yahoo', view, params);
                 // TODO: store may change but there is not navigation yet.
                 if (params['relationEngineID']) {
                     store.dispatch(navigate(params['relationEngineID']) as any);
@@ -60,13 +63,20 @@ export default class App<AppProps, AppState> extends React.Component {
             }
         });
     }
+    componentWillUnmount() {
+        if (this.storeUnsubscribe) {
+            this.storeUnsubscribe();
+        }
+    }
     render() {
         return (
             <Provider store={store}>
                 <AppBase>
-                    <div className="App Col scrollable">
-                        <Dispatcher />
-                    </div>
+                    <AuthGate required={true}>
+                        <div className="App Col scrollable">
+                            <Dispatcher />
+                        </div>
+                    </AuthGate>
                 </AppBase>
             </Provider>
         );

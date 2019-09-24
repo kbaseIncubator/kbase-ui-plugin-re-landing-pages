@@ -4,5 +4,17 @@
     "prettier.printWidth": 120,
     "prettier.singleQuote": true,
     "prettier.tabWidth": 4,
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        {
+            "language": "typescript",
+            "autoFix": true
+        },
+        {
+            "language": "typescriptreact",
+            "autoFix": true
+        }
+    ]
 }
