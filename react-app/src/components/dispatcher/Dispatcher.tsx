@@ -1,18 +1,13 @@
 import React from 'react';
-import { RootState } from '@kbase/ui-lib/lib/redux/root/store';
+import { RootState } from '@kbase/ui-components';
 import {
-    RelationEngineViewLoading,
-    RelationEngineViewLoaded,
-    RelationEngineViewError,
     RelationEngineID,
-    RelationEngineNodeType,
     Navigation,
     ViewType,
     NavigationSome
 } from '../../redux/store';
-import Loading from '../Loading';
-import { Alert } from 'antd';
-import Taxonomy from '../landingPages/taxonomy';
+import Taxonomy from '../../landingPages/taxonomy';
+import OntologyView from '../../landingPages/ontology';
 
 export interface DispatcherProps {
     token: string | null;
@@ -23,7 +18,7 @@ export interface DispatcherProps {
     navigate: (relationEngineID: RelationEngineID) => void;
 }
 
-interface DispatcherState {}
+interface DispatcherState { }
 
 export class Dispatcher extends React.Component<DispatcherProps, DispatcherState> {
     renderUnauthorized() {
@@ -37,7 +32,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
             case RootState.HOSTED:
                 return '';
             case RootState.DEVELOP:
-                return 'develop';
+                return '';
             case RootState.ERROR:
                 return 'error';
         }
@@ -47,29 +42,31 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         return <div>none</div>;
     }
 
-    renderNavigationLoading(view: RelationEngineViewLoading) {
-        return <Loading message="Loading view..." />;
-    }
+    // renderNavigationLoading(view: RelationEngineViewLoading) {
+    //     return <Loading message="Loading view..." />;
+    // }
 
-    renderNavigationLoaded(view: RelationEngineViewLoaded) {
-        // This is currently how we dispatch to the type-specific
-        // landing page.
-        switch (view.relationEngineNodeType) {
-            case RelationEngineNodeType.TAXON:
-                return <Taxonomy taxonID={view.relationEngineID} />;
-        }
-    }
+    // renderNavigationLoaded(view: RelationEngineViewLoaded) {
+    //     // This is currently how we dispatch to the type-specific
+    //     // landing page.
+    //     switch (view.relationEngineNodeType) {
+    //         case RelationEngineNodeType.TAXON:
+    //             return <Taxonomy taxonID={view.relationEngineID} />;
+    //     }
+    // }
 
-    renderNavigationError(view: RelationEngineViewError) {
-        return <Alert type="error" message={`View Error: ${view.message}`} />;
-    }
+    // renderNavigationError(view: RelationEngineViewError) {
+    //     return <Alert type="error" message={`View Error: ${view.message}`} />;
+    // }
 
     renderNavigationSome(navigation: NavigationSome) {
         // This is currently how we dispatch to the type-specific
         // landing page.
         switch (navigation.type) {
             case ViewType.TAXONOMY:
-                return <Taxonomy taxonID={navigation.relationEngineID} />;
+                return <Taxonomy taxonRef={navigation.ref} />;
+            case ViewType.ONTOLOGY:
+                return <OntologyView termRef={navigation.ref} />;
         }
     }
 
@@ -109,6 +106,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
 
     componentDidMount() {
         if (this.props.rootState === RootState.DEVELOP) {
+            // Navigate on change of the hash
             window.addEventListener('hashchange', (ev: HashChangeEvent) => {
                 const url = new URL(ev.newURL);
                 const hash = url.hash;
@@ -119,19 +117,20 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
                     params: { relationEngineID }
                 } = this.parseHash(hash);
                 this.props.navigate(relationEngineID);
-                // console.log('hash?', hash);
             });
+
+            // First time here, we also want to navigate based on the
+            // hash, or if empty (the default when a dev session starts)
+            // use some default interesting taxon id.
             const hash = window.location.hash;
-            // console.log('hash?', hash);
             if (hash) {
                 const {
                     params: { relationEngineID }
                 } = this.parseHash(hash);
-                // console.log('nav to ', relationEngineID);
                 this.props.navigate(relationEngineID);
             } else {
                 // TODO: remove?
-                this.props.navigate('ncbi_taxon:562');
+                this.props.navigate('taxonomy/ncbi_taxonomy/562');
             }
         }
     }

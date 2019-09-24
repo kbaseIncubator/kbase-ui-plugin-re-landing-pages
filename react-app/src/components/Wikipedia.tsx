@@ -1,6 +1,6 @@
 import React from 'react';
 
-import WikipediaClient, { WikipediaInfo } from './landingPages/taxonomy/lib/Wikipedia';
+import WikipediaClient, { WikipediaInfo } from '../landingPages/taxonomy/lib/Wikipedia';
 import marked from 'marked';
 import { Icon, Alert, Tooltip } from 'antd';
 import Loading from './Loading';

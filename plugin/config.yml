@@ -1,17 +1,17 @@
 ## Plugin Configuration
 ---
 package:
-    author: KBase Developer
-    name: re-landing-pages
-    description: A plugin providing landing page support for re "types".
-    type: iframe
+  author: KBase Developer
+  name: re-landing-pages
+  description: A plugin providing landing page support for re "types".
+  type: iframe
 install:
-    routes:
-        - path: ['review', { type: param, name: relationEngineID }]
-          view: main
-          widget: kb_iframe_loader
-          authorization: true
-          # TODO: get rid of this!!
-          params:
-              view: main
-              plugin: re-landing-pages
+  routes:
+    - path: ["review", { type: rest, joinWith: "/", name: relationEngineID }]
+      view: main
+      widget: kb_iframe_loader
+      authorization: true
+      # TODO: get rid of this!!
+      params:
+        view: main
+        plugin: re-landing-pages

@@ -1,9 +1,11 @@
-import { BaseStoreState, makeBaseStoreState } from '@kbase/ui-lib';
+import { BaseStoreState, makeBaseStoreState } from '@kbase/ui-components';
 import { createStore, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import reducer from './reducers';
 
-import { TaxonomyStoreState } from '../components/landingPages/taxonomy/redux/store';
+import { TaxonomyStoreState } from '../landingPages/taxonomy/redux/store';
+import { TaxonReference } from '../types/taxonomy';
+import { OntologyReference } from '../types/ontology';
 
 export enum ViewType {
     NONE,
@@ -55,7 +57,7 @@ export type RelationEngineView =
     | RelationEngineViewLoaded
     | RelationEngineViewError;
 
-export interface LandingPageStoreState {}
+export interface LandingPageStoreState { }
 
 // VIEW STATE
 
@@ -94,10 +96,23 @@ export interface NavigationNone {
 
 export interface NavigationTaxonomy {
     type: ViewType.TAXONOMY;
-    relationEngineID: RelationEngineID;
+    ref: TaxonReference
+    // namespace: string;
+    // id: string;
+    // timestamp?: number
+    // relationEngineID: RelationEngineID;
 }
 
-export type NavigationSome = NavigationTaxonomy;
+export interface NavigationOntology {
+    type: ViewType.ONTOLOGY;
+    ref: OntologyReference
+    // namespace: string;
+    // id: string;
+    // timestamp?: number
+    // relationEngineID: RelationEngineID;
+}
+
+export type NavigationSome = NavigationTaxonomy | NavigationOntology;
 export type Navigation = NavigationNone | NavigationSome;
 
 // export interface ViewState<T, S> {

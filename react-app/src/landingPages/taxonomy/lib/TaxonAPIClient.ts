@@ -1,0 +1,228 @@
+import { DynamicServiceClient, DynamicServiceClientParams } from '@kbase/ui-lib';
+
+interface TaxonomyAPIParams extends DynamicServiceClientParams { }
+
+type TaxonID = string;
+
+interface GetAncestorsParams {
+    id: TaxonID;
+}
+
+interface GetDescendentsParams {
+    id: TaxonID;
+}
+
+// interface GetTaxonResultSuccess {
+//     count: true;
+//     taxon: Taxon;
+// }
+
+// interface GetTaxonResultNotFound {
+//     found: false;
+// }
+
+// type GetTaxonResult = GetTaxonResultSuccess | GetTaxonResultNotFound;
+
+interface TaxonAlias {
+    canonical: Array<string>;
+    category: string;
+    name: string;
+}
+
+interface TaxonResult {
+    NCBI_taxon_id: number;
+    _id: string;
+    _key: string;
+    _rev: string;
+    id: string;
+    ns: string;
+    ts: number;
+    aliases: Array<TaxonAlias>;
+    canonical_scientific_name: Array<string>;
+    gencode: string;
+    rank: string;
+    scientific_name: string;
+}
+
+export interface GetTaxonParams {
+    ns: string;
+    id: TaxonID;
+    ts: number
+}
+
+interface GetTaxonResult {
+    count: number;
+    cursor_id: number | null;
+    has_more: false;
+    stats: {
+        executionTime: number;
+        filtered: number;
+        httpRequests: number;
+        scannedFull: number;
+        scannedIndex: number;
+        writesExecuted: number;
+        writesIgnored: number;
+    };
+    results: Array<TaxonResult>;
+    ts: number;
+}
+
+interface GetLineageResult {
+    stats: {
+        executionTime: number;
+        filtered: number;
+        httpRequests: number;
+        scannedFull: number;
+        scannedIndex: number;
+        writesExecuted: number;
+        writesIgnored: number;
+    };
+    results: Array<TaxonResult>;
+    ts: number;
+}
+
+interface GetChildrenResult {
+    stats: {
+        executionTime: number;
+        filtered: number;
+        httpRequests: number;
+        scannedFull: number;
+        scannedIndex: number;
+        writesExecuted: number;
+        writesIgnored: number;
+    };
+    results: Array<TaxonResult>;
+    total_count: number;
+    ts: number;
+}
+export interface Stats {
+    executionTime: number;
+    filtered: number;
+    httpRequests: number;
+    scannedFull: number;
+    scannedIndex: number;
+    writesExecuted: number;
+    writesIgnored: number;
+}
+export interface GetAssociatedWorkspaceObjectsResultResult {
+    edge: {
+        _id: string;
+        assigned_by: string;
+        updated_at: number;
+    };
+    ws_obj: {
+        _id: string;
+        deleted: boolean;
+        epoch: number;
+        hash: string;
+        is_public: boolean;
+        name: string;
+        object_id: number;
+        size: number;
+        updated_at: number;
+        version: number;
+        workspace_id: number;
+    };
+}
+
+export interface GetAssociatedWorkspaceObjectsResult {
+    results: Array<GetAssociatedWorkspaceObjectsResultResult>;
+    total_results: number;
+    stats: Stats;
+    ts: number;
+}
+
+export interface GetLineageParams {
+    ns: string;
+    id: TaxonID;
+    ts: number;
+}
+
+export interface GetChildrenParams {
+    ns: string;
+    id: TaxonID;
+    ts: number;
+    offset: number;
+    limit: number;
+    search_text: string;
+}
+
+export interface GetAssociatedWorkspaceObjectsParams {
+    taxon_ns: string;
+    taxon_id: TaxonID;
+    ts: number;
+    limit: number;
+    offset: number;
+}
+
+export default class TaxonomyAPIClient extends DynamicServiceClient {
+    static module: string = 'taxonomy_re_api';
+
+    async getLineage({ ns, id, ts }: { ns: string, id: TaxonID, ts: number }): Promise<GetLineageResult> {
+        const params: GetLineageParams = {
+            ns, id, ts
+        };
+        const [result] = await this.callFunc<[GetLineageParams], [GetLineageResult]>('get_lineage', [
+            params
+        ]);
+        return result;
+    }
+
+    async getChildren({
+        ns,
+        id,
+        ts,
+        offset,
+        limit,
+        searchTerm
+    }: {
+        ns: string,
+        id: TaxonID,
+        ts: number,
+        offset: number,
+        limit: number,
+        searchTerm: string
+    }): Promise<GetChildrenResult> {
+        const [result] = await this.callFunc<[GetChildrenParams], [GetChildrenResult]>('get_children', [
+            {
+                ns, id, ts,
+                offset,
+                limit,
+                search_text: searchTerm
+            }
+        ]);
+        return result;
+    }
+
+    async getTaxon({ ns, id, ts }: { ns: string, id: TaxonID, ts: number }): Promise<GetTaxonResult> {
+        const params: GetTaxonParams = {
+            ns, id, ts
+        }
+        const [result] = await this.callFunc<[GetTaxonParams], [GetTaxonResult]>('get_taxon', [
+            params
+        ]);
+        return result;
+    }
+
+    async getAssociatedWorkspaceObjects({
+        taxon_ns,
+        taxon_id,
+        ts,
+        offset,
+        limit
+    }: {
+        taxon_ns: string,
+        taxon_id: TaxonID,
+        ts: number,
+        offset: number,
+        limit: number
+    }): Promise<GetAssociatedWorkspaceObjectsResult> {
+        const params: GetAssociatedWorkspaceObjectsParams = {
+            taxon_ns, taxon_id, ts, limit, offset
+        }
+        const [result] = await this.callFunc<[GetAssociatedWorkspaceObjectsParams], [GetAssociatedWorkspaceObjectsResult]>('get_associated_ws_objects', [
+            params
+        ]);
+        return result;
+    }
+}

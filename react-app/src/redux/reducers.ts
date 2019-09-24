@@ -1,11 +1,9 @@
 import { Action, Reducer } from 'redux';
-import { baseReducer } from '@kbase/ui-lib';
-import { BaseStoreState } from '@kbase/ui-lib';
+import { baseReducer, BaseStoreState } from '@kbase/ui-components';
 import { StoreState } from './store';
 import { AppActions, NavigateSuccess } from './actions';
 
 function navigateSuccess(state: StoreState, action: NavigateSuccess): StoreState {
-    // console.log('sick of the success?', action);
     return {
         ...state,
         // view: {
