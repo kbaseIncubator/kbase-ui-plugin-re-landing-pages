@@ -10,19 +10,30 @@ const DEFAULT_PAGE_SIZE = 12;
 
 export interface Props {
     linkedObjectsCollection: LinkedObjectsCollection
-    // linkedObjects: Array<LinkedObject>;
-    fetchLinkedObjects: (page: number, pageSize: number) => void
+    setPage: (page: number, pageSize: number) => void
 }
 
 interface State { }
 
 export default class LinkedData extends React.Component<Props, State> {
-    onFetchPage(page: number, pageSize?: number) {
-        this.props.fetchLinkedObjects(page, pageSize || DEFAULT_PAGE_SIZE);
+    onChangePage(page: number, pageSize?: number) {
+        this.props.setPage(page, pageSize || DEFAULT_PAGE_SIZE);
     }
+
     componentDidMount() {
-        this.props.fetchLinkedObjects(1, DEFAULT_PAGE_SIZE)
+        this.props.setPage(1, DEFAULT_PAGE_SIZE);
     }
+
+    componentDidUpdate(previousProps: Props) {
+        switch (previousProps.linkedObjectsCollection.status) {
+            case DBCollectionStatus.NONE:
+            case DBCollectionStatus.LOADING:
+            case DBCollectionStatus.LOADED:
+            case DBCollectionStatus.ERROR:
+            case DBCollectionStatus.RELOADING:
+        }
+    }
+
     renderLinkedObjects(data: LinkedObjectsData, isLoading: boolean) {
         return <Table
             dataSource={data.linkedObjects}
@@ -36,7 +47,7 @@ export default class LinkedData extends React.Component<Props, State> {
             }}
             pagination={{
                 position: 'top',
-                onChange: this.onFetchPage.bind(this),
+                onChange: this.onChangePage.bind(this),
                 defaultPageSize: DEFAULT_PAGE_SIZE,
                 total: data.totalCount
             }}
@@ -119,7 +130,6 @@ export default class LinkedData extends React.Component<Props, State> {
             />
             <Column
                 title="Narrative"
-                // dataIndex="workspaceID"
                 width="35%"
                 render={(workspaceID: number) => {
                     return <a href={`https://ci.kbase.us/narrative/${workspaceID}`} target="_blank" rel="noopener noreferrer">

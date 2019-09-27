@@ -116,7 +116,7 @@ export default class LineageNavigator extends React.Component<LineageProps, Line
 
     render() {
         return (
-            <div className="Col scrollable">
+            <div className="Col scrollable" style={{ overflowY: 'auto' }}>
                 <div className="Col-auto Nav-box">
                     <div className="Nav-box-title">Lineage</div>
                     {this.renderLineage()}

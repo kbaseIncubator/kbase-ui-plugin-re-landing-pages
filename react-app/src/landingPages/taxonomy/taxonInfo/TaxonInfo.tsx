@@ -16,13 +16,17 @@ export default class TaxonInfo extends React.Component<TaxonInfoProps, TaxonInfo
         return (
             <Tabs defaultActiveKey="detail" animated={false} className="FullHeight-tabs">
                 <Tabs.TabPane tab="Detail" key="detail" forceRender={false}>
-                    <TaxonDetail taxon={this.props.taxon} />
+                    <div className="Col" style={{ overflowY: 'auto' }}>
+                        <TaxonDetail taxon={this.props.taxon} />
+                    </div>
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Description" key="description" forceRender={false}>
                     <TaxonDescription taxon={this.props.taxon} />
                 </Tabs.TabPane>
                 <Tabs.TabPane tab="Linked Data" key="linkedData" forceRender={false}>
-                    <LinkedData taxonRef={this.props.taxon.ref} />
+                    <div className="Col" style={{ overflowY: 'auto' }}>
+                        <LinkedData taxonRef={this.props.taxon.ref} />
+                    </div>
                 </Tabs.TabPane>
             </Tabs>
         );
