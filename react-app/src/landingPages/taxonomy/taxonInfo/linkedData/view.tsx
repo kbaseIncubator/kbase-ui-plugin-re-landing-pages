@@ -121,7 +121,7 @@ export default class LinkedData extends React.Component<Props, State> {
                     )
                     return (
                         <Tooltip title={tooltip}>
-                            <a href={url}>
+                            <a href={url} target="_blank" rel="noopener noreferrer">
                                 {objectName}
                             </a>
                         </Tooltip>
@@ -133,7 +133,7 @@ export default class LinkedData extends React.Component<Props, State> {
                 width="35%"
                 dataIndex="workspaceID"
                 render={(workspaceID: number) => {
-                    return <a href={`https://ci.kbase.us/narrative/${workspaceID}`} target="_blank" rel="noopener noreferrer">
+                    return <a href={`/narrative/${workspaceID}`} target="_blank" rel="noopener noreferrer">
                         Narrative or refdata ws title
                     </a>
                 }}
