@@ -122,12 +122,18 @@ export interface GetAssociatedWorkspaceObjectsResultResult {
         updated_at: number;
         version: number;
         workspace_id: number;
+        type: {
+            module_name: string;
+            type_name: string;
+            maj_ver: number;
+            min_ver: number;
+        }
     };
 }
 
 export interface GetAssociatedWorkspaceObjectsResult {
     results: Array<GetAssociatedWorkspaceObjectsResultResult>;
-    total_results: number;
+    total_count: number;
     stats: Stats;
     ts: number;
 }

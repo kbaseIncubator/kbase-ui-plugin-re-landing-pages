@@ -1,47 +1,106 @@
-import DB, { DBProps, DBStatus, DBStateNone, DBStateLoading, DBStateLoaded, DBStateError } from '../../../../lib/DB';
+import DB, { DBProps, DBCollectionNone, DBCollectionLoading, DBCollectionLoaded, DBCollectionReloading, DBCollectionError, DBCollectionStatus } from '../../../../lib/DB2';
 import { AppConfig } from '@kbase/ui-components';
-import { TaxonomyModel, LinkedObject } from '../../lib/model';
+import { TaxonomyModel, LinkedObject, GetLinkedObjectsResult } from '../../lib/model';
 import { TaxonReference } from '../../../../types/taxonomy';
+import { UIError } from '../../../../types';
 
-export type LinkedDataDBStateNone = DBStateNone;
-export type LinkedDataDBStateLoading = DBStateLoading;
-export type LinkedDataDBStateError = DBStateError;
-
-export interface LinkedDataDBStateLoaded extends DBStateLoaded {
+export interface LinkedObjectsData {
     linkedObjects: Array<LinkedObject>;
+    totalCount: number;
     page: number;
     pageSize: number;
 }
 
-export type LinkedDataDBState =
-    | LinkedDataDBStateNone
-    | LinkedDataDBStateLoading
-    | LinkedDataDBStateLoaded
-    | LinkedDataDBStateError;
+export type LinkedObjectsStateNone = DBCollectionNone;
+export type LinkedObjectsStateLoading = DBCollectionLoading<LinkedObjectsData>;
+export type LinkedObjectsStateLoaded = DBCollectionLoaded<LinkedObjectsData>;
+export type LinkedObjectsStateReloading = DBCollectionReloading<LinkedObjectsData>;
+export type LinkedObjectsStateError = DBCollectionError<UIError>;
 
-export interface LinkedDataDBProps extends DBProps<LinkedDataDBState> {
+export type LinkedObjectsCollection =
+    LinkedObjectsStateNone |
+    LinkedObjectsStateLoading |
+    LinkedObjectsStateLoaded |
+    LinkedObjectsStateReloading |
+    LinkedObjectsStateError;
+
+// export type LinkedDataDBStateNone = DBStateNone;
+// export type LinkedDataDBStateLoading = DBStateLoading;
+// export type LinkedDataDBStateError = DBStateError;
+
+// export interface LinkedDataDBStateLoaded extends DBStateLoaded {
+//     linkedObjects: Array<LinkedObject>;
+
+// }
+
+// export type LinkedDataDBState =
+//     | LinkedDataDBStateNone
+//     | LinkedDataDBStateLoading
+//     | LinkedDataDBStateLoaded
+//     | LinkedDataDBStateError;
+
+export interface LinkedObjectsDBState {
+    linkedObjectsCollection: LinkedObjectsCollection
+}
+
+export interface LinkedDataDBProps extends DBProps<LinkedObjectsDBState> {
     token: string;
     config: AppConfig;
 }
 
-export default class LinkedDataDB extends DB<LinkedDataDBState> {
+export class AsyncTask<T> {
+    taskFun: () => Promise<T>;
+    hasResult: boolean;
+    result: T | null;
+    canceled: boolean;
+    constructor(taskFun: () => Promise<T>) {
+        this.taskFun = taskFun;
+        this.result = null;
+        this.hasResult = false;
+        this.canceled = false;
+    }
+
+    async run() {
+        try {
+            this.result = await this.taskFun();
+            return this.result;
+        } catch (ex) {
+            throw (ex);
+        }
+    }
+
+    cancel() {
+        this.canceled = true;
+    }
+
+    get(): T {
+        if (this.result === null) {
+            throw new Error('Attempt to fetch value when not set');
+        }
+        return this.result;
+    }
+
+    isCanceled() {
+        return this.canceled;
+    }
+}
+
+export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
     token: string;
     serviceWizardURL: string;
+    currentTask: AsyncTask<GetLinkedObjectsResult> | null;
     constructor(props: LinkedDataDBProps) {
         super(props);
         this.token = props.token;
         this.serviceWizardURL = props.config.services.ServiceWizard.url;
+        this.currentTask = null;
     }
 
     async fetchLinkedObjects({ taxonRef, page, pageSize }: { taxonRef: TaxonReference; page: number; pageSize: number }) {
-        try {
-            this.set((state: LinkedDataDBState) => {
-                return {
-                    ...state,
-                    status: DBStatus.LOADING
-                };
-            });
-
+        if (this.currentTask) {
+            this.currentTask.cancel();
+        }
+        const task = async (): Promise<GetLinkedObjectsResult> => {
             const client = new TaxonomyModel({
                 token: this.token,
                 url: this.serviceWizardURL
@@ -50,28 +109,78 @@ export default class LinkedDataDB extends DB<LinkedDataDBState> {
             const offset = (page - 1) * pageSize;
             const limit = pageSize;
 
-            const linkedObjects = await client.getLinkedObjects(taxonRef, {
+            const result = await client.getLinkedObjects(taxonRef, {
                 offset,
                 limit
             });
-            this.set((state: LinkedDataDBState) => {
+
+            return result;
+        };
+
+        // Set up loading based on the current state.
+
+        this.set((state: LinkedObjectsDBState) => {
+            switch (state.linkedObjectsCollection.status) {
+                case DBCollectionStatus.LOADING:
+                case DBCollectionStatus.LOADED:
+                case DBCollectionStatus.RELOADING:
+                    return {
+                        ...state,
+                        linkedObjectsCollection: {
+                            ...state.linkedObjectsCollection,
+                            status: DBCollectionStatus.LOADING
+                        }
+                    };
+                case DBCollectionStatus.NONE:
+                case DBCollectionStatus.ERROR:
+                default:
+                    return {
+                        ...state,
+                        linkedObjectsCollection: {
+                            status: DBCollectionStatus.LOADING,
+                            data: {
+                                linkedObjects: [],
+                                page, pageSize,
+                                totalCount: 0
+                            }
+                        }
+                    };
+            }
+        });
+
+        this.currentTask = new AsyncTask<GetLinkedObjectsResult>(task);
+
+        try {
+            const result = await this.currentTask.run();
+            if (this.currentTask.isCanceled()) {
+                return;
+            }
+            this.set((state: LinkedObjectsDBState) => {
                 return {
                     ...state,
-                    status: DBStatus.LOADED,
-                    linkedObjects,
-                    page,
-                    pageSize
+                    linkedObjectsCollection: {
+                        status: DBCollectionStatus.LOADED,
+                        data: {
+                            ...result,
+                            page,
+                            pageSize
+                        }
+                    }
                 };
             });
+            this.currentTask = null;
         } catch (ex) {
             console.error('ERROR', ex);
-            this.set((state: LinkedDataDBState) => {
+            this.set((state: LinkedObjectsDBState) => {
                 return {
-                    status: DBStatus.ERROR,
-                    error: {
-                        code: 'not-found',
-                        source: 'LinkedDataDB.fetchLinkedObjects',
-                        message: ex.message,
+                    ...state,
+                    linkedObjectsCollection: {
+                        status: DBCollectionStatus.ERROR,
+                        error: {
+                            code: 'not-found',
+                            message: ex.message,
+                            source: 'LinkedDataDB.fetchLinkedObjects'
+                        }
                     }
                 };
             });

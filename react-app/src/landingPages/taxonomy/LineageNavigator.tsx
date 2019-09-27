@@ -117,12 +117,12 @@ export default class LineageNavigator extends React.Component<LineageProps, Line
     render() {
         return (
             <div className="Col scrollable">
-                <div className="Col-auto Lineage-box">
-                    <div className="Lineage-box-title">Lineage</div>
+                <div className="Col-auto Nav-box">
+                    <div className="Nav-box-title">Lineage</div>
                     {this.renderLineage()}
                 </div>
-                <div className="Col-auto Lineage-box Lineage-target-taxon">{this.renderTargetTaxon()}</div>
-                <div className="Col-auto scrollable Lineage-box">{this.renderChildren()}</div>
+                <div className="Col-auto Nav-box Lineage-target-taxon">{this.renderTargetTaxon()}</div>
+                <div className="Col-auto scrollable Nav-box">{this.renderChildren()}</div>
             </div>
         );
     }

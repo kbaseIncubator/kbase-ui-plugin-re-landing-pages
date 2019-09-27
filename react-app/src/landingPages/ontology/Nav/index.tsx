@@ -1,6 +1,6 @@
 import React from 'react';
 import './style.css';
-import OntologyItem from '../OntologyItem';
+import OntologyItem from '../OntologyTerm';
 import { OntologyTermBrief, OntologyRelation, OntologyReference, OntologyTermRelatedBrief, OntologyNamespace } from '../../../types/ontology';
 import Children from '../Children';
 import Parents from '../Parents';
@@ -76,41 +76,46 @@ export default class Nav extends React.Component<NavProps, NavState> {
             }
         ]
         return <div className="Col scrollable OntologyNav">
-            <div className="Col OntologyNav-title">
-                parents
+            <div className="Nav-box Nav-box-auto">
+                <div className="Col Nav-box-title">
+                    parents
+                </div>
+                <div className="Col Nav-box-content">
+                    <Parents
+                        terms={parents}
+                        totalItems={parents.length}
+                        selectedTermRef={null}
+                        selectTermRef={this.selectTermRef.bind(this)}
+                        navigateToTermRef={this.navigateToTermRef.bind(this)}
+                    />
+                </div>
             </div>
-            <div className="Col OntologyNav-ancestorsArea">
-                <Parents
-                    terms={parents}
-                    totalItems={parents.length}
-                    selectedTermRef={null}
-                    selectTermRef={this.selectTermRef.bind(this)}
-                    navigateToTermRef={this.navigateToTermRef.bind(this)}
-                />
+            <div className="Nav-box Nav-box-auto">
+                <div className="Col Nav-box-title">
+                    selected
+                </div>
+                <div className="Col Nav-box-content">
+                    <OntologyItem
+                        term={term}
+                        isActive={false}
+                        selectTermRef={this.selectTermRef.bind(this)}
+                        navigateToTermRef={this.navigateToTermRef.bind(this)} />
+                </div>
             </div>
-            <div className="Col OntologyNav-title">
-                selected
+            <div className="Nav-box Nav-box-fill">
+                <div className="Col Nav-box-title">
+                    children
+                </div>
+                <div className="Col Nav-box-content">
+                    <Children
+                        terms={children}
+                        totalItems={children.length}
+                        selectedTermRef={null}
+                        selectTermRef={this.selectTermRef.bind(this)}
+                        navigateToTermRef={this.navigateToTermRef.bind(this)}
+                    />
+                </div>
             </div>
-            <div className="Col OntologyNav-termArea">
-                <OntologyItem
-                    term={term}
-                    isActive={false}
-                    selectTermRef={this.selectTermRef.bind(this)}
-                    navigateToTermRef={this.navigateToTermRef.bind(this)} />
-            </div>
-            <div className="Col OntologyNav-title">
-                children
-            </div>
-            <div className="Col OntologyNav-childrenArea scrollable">
-                <Children
-                    terms={children}
-                    totalItems={children.length}
-                    selectedTermRef={null}
-                    selectTermRef={this.selectTermRef.bind(this)}
-                    navigateToTermRef={this.navigateToTermRef.bind(this)}
-                />
-
-            </div>
-        </div>
+        </div >
     }
 }

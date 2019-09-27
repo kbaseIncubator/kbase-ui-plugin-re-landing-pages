@@ -237,3 +237,23 @@ code {
 .ScrollingFlexTable.ant-table-wrapper>.ant-spin-nested-loading>.ant-spin-container>.ant-table>.ant-table-content>.ant-table-scroll>.ant-table-header {
     flex: 0 0 auto;
 }
+
+/* */
+
+.Nav-box {
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    margin: 10px 0;
+}
+
+.Nav-box-title {
+    font-weight: bold;
+    text-align: center;
+}
+
+.Nav-box-auto {
+    flex: 0 0 auto;
+}
+
+.Nav-box-fill {
+    flex: 1 1 0px;
+}

@@ -125,6 +125,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
             </div>
         )
     }
+
     render() {
         const tabs = [
             {

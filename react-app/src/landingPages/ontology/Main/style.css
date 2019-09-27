@@ -6,3 +6,8 @@
 .OntologyLandingPage-detailCol {
     /* background-color: aqua; */
 }
+
+.Ontology-summary-section {
+    background-color: rgba(200, 200, 200, 0.3);
+    border-radius: 4px;
+}

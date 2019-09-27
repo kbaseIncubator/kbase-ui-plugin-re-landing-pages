@@ -1,6 +1,7 @@
 import { TaxonReference, Taxon, TaxonomyNamespace, NCBITaxon, taxonomyNamespaceToString } from '../../../types/taxonomy';
 import TaxonAPIClient from './TaxonAPIClient';
 import { RelationEngineCollection } from '../../../types';
+import { WorkspaceType } from '../../../types/ontology';
 
 // const INITIAL_BATCH_SIZE = 100;
 // const BATCH_SIZE = 1000;
@@ -13,6 +14,13 @@ export interface GetChildrenOptions {
     searchTerm: string;
 }
 
+export interface WorkspaceType {
+    module: string;
+    name: string;
+    majorVersion: number;
+    minorVersion: number;
+}
+
 export interface LinkedObject {
     linkedAt: number;
     workspaceID: number;
@@ -21,11 +29,17 @@ export interface LinkedObject {
     objectName: string;
     workspaceUpdatedAt: number;
     createdAt: number;
+    type: WorkspaceType;
 }
 
 export interface GetLinkedObjectsOptions {
     offset: number;
     limit: number;
+}
+
+export interface GetLinkedObjectsResult {
+    linkedObjects: Array<LinkedObject>;
+    totalCount: number;
 }
 
 export class TaxonomyModel {
@@ -254,7 +268,7 @@ export class TaxonomyModel {
         return taxon;
     }
 
-    async getLinkedObjects(taxonRef: TaxonReference, options: GetLinkedObjectsOptions): Promise<Array<LinkedObject>> {
+    async getLinkedObjects(taxonRef: TaxonReference, options: GetLinkedObjectsOptions): Promise<GetLinkedObjectsResult> {
         const params = {
             taxon_ns: taxonomyNamespaceToString(taxonRef.namespace),
             taxon_id: taxonRef.id,
@@ -264,7 +278,7 @@ export class TaxonomyModel {
         };
         const result = await this.taxonomyClient.getAssociatedWorkspaceObjects(params);
 
-        return result.results.map((result) => {
+        const linkedObjects = result.results.map((result) => {
             return {
                 linkedAt: result.edge.updated_at,
                 objectID: result.ws_obj.object_id,
@@ -272,9 +286,18 @@ export class TaxonomyModel {
                 version: result.ws_obj.version,
                 objectName: result.ws_obj.name,
                 createdAt: result.ws_obj.epoch,
-                workspaceUpdatedAt: result.ws_obj.updated_at
-            }
-        })
+                workspaceUpdatedAt: result.ws_obj.updated_at,
+                type: {
+                    module: result.ws_obj.type.module_name,
+                    name: result.ws_obj.type.type_name,
+                    majorVersion: result.ws_obj.type.maj_ver,
+                    minorVersion: result.ws_obj.type.min_ver
+                }
+            };
+        });
+        return {
+            linkedObjects,
+            totalCount: result.total_count
+        };
     }
 }
-

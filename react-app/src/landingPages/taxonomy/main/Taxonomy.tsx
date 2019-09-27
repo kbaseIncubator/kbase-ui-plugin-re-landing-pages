@@ -63,24 +63,4 @@ export default class Taxonomy extends React.Component<TaxonomyProps, TaxonomySta
             </div>
         );
     }
-
-    renderx() {
-        return (
-            <div className="Col scrollable Taxonomy">
-                <div className="Col-auto Taxonomy-summary-section">
-                    <Row>
-                        <Col span={12}>
-                            summary
-                        </Col>
-                        <Col span={12}>
-                            source info
-                        </Col>
-                    </Row>
-                </div>
-                <div className="Row scrollable">
-                    omitted
-                </div>
-            </div>
-        );
-    }
 }
