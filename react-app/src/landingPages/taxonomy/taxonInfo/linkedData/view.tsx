@@ -56,7 +56,7 @@ export default class LinkedData extends React.Component<Props, State> {
             <Column
                 title="Type"
                 dataIndex="type"
-                width="15%"
+                width="10%"
                 render={(type: WorkspaceType) => {
                     const typeID = [[type.module, type.name].join('.'), [type.majorVersion, type.minorVersion].join('.')].join('-');
                     return <a href={`/#spec/type/${typeID}`} target="_blank" rel="noopener noreferrer">
@@ -131,6 +131,7 @@ export default class LinkedData extends React.Component<Props, State> {
             <Column
                 title="Narrative"
                 width="35%"
+                dataIndex="workspaceID"
                 render={(workspaceID: number) => {
                     return <a href={`https://ci.kbase.us/narrative/${workspaceID}`} target="_blank" rel="noopener noreferrer">
                         Narrative or refdata ws title
@@ -140,12 +141,24 @@ export default class LinkedData extends React.Component<Props, State> {
             <Column
                 title="Object Created"
                 dataIndex="createdAt"
-                width="15%"
+                width="10%"
                 sorter={(a: LinkedObject, b: LinkedObject) => {
                     return a.createdAt - b.createdAt;
                 }}
                 render={(createdAt: number) => {
                     return Intl.DateTimeFormat('en-US').format(createdAt);
+                }}
+            />
+            <Column
+                title="Linked At"
+                dataIndex="linkedAt"
+                width="10%"
+                sorter={(a: LinkedObject, b: LinkedObject) => {
+                    return a.linkedAt - b.linkedAt;
+                }}
+                defaultSortOrder='descend'
+                render={(linkedAt: number) => {
+                    return Intl.DateTimeFormat('en-US').format(linkedAt);
                 }}
             />
         </Table>
