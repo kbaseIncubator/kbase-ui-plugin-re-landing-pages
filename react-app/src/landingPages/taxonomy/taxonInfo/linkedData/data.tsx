@@ -16,6 +16,7 @@ interface State { }
 
 export default class Data extends React.Component<Props, State> {
     db: LinkedDataDB;
+    lastTaxonRef: TaxonReference;
     constructor(props: Props) {
         super(props);
         this.db = new LinkedDataDB({
@@ -30,6 +31,14 @@ export default class Data extends React.Component<Props, State> {
             token: props.token,
             config: props.config
         });
+        this.lastTaxonRef = props.taxonRef;
+    }
+
+    componentDidUpdate() {
+        if (this.lastTaxonRef !== this.props.taxonRef) {
+            this.lastTaxonRef = this.props.taxonRef;
+            this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page: 1, pageSize: 12 })
+        }
     }
 
     fetchLinkedObjects(page: number, pageSize: number) {
@@ -75,7 +84,7 @@ export default class Data extends React.Component<Props, State> {
         const db = this.db.get();
         return <LinkedData
             linkedObjectsCollection={db.linkedObjectsCollection}
-            fetchLinkedObjects={this.fetchLinkedObjects.bind(this)} />;
+            setPage={this.fetchLinkedObjects.bind(this)} />;
         // this.renderLoaded(db);
         // switch (db.status) {
         //     case DBStatus.NONE:

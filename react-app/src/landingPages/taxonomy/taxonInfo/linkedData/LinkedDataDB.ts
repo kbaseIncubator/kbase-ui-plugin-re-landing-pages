@@ -80,7 +80,7 @@ export class AsyncTask<T> {
         return this.result;
     }
 
-    isCanceled() {
+    isCanceled(): boolean {
         return this.canceled;
     }
 }
@@ -148,11 +148,12 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
             }
         });
 
-        this.currentTask = new AsyncTask<GetLinkedObjectsResult>(task);
+        const newTask = new AsyncTask<GetLinkedObjectsResult>(task);
+        this.currentTask = newTask;
 
         try {
-            const result = await this.currentTask.run();
-            if (this.currentTask.isCanceled()) {
+            const result = await newTask.run();
+            if (newTask.isCanceled()) {
                 return;
             }
             this.set((state: LinkedObjectsDBState) => {
