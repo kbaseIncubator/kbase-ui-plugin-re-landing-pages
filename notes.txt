@@ -1,1 +1,1 @@
-http://localhost:3000/#review/taxonomy/ncbi_taxonomy/136841
+http://ci.kbase.us/#review/taxonomy/ncbi_taxonomy/136841

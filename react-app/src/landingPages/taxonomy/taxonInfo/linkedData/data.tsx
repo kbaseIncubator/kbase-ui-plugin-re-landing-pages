@@ -1,12 +1,10 @@
 import React from 'react';
-import LinkedDataDB, { LinkedDataDBStateError, LinkedDataDBStateLoaded } from './LinkedDataDB';
-import { DBStatus } from '../../../../lib/DB';
+import { DBCollectionStatus } from '../../../../lib/DB2';
 
 import { AppConfig } from '@kbase/ui-components';
-import LinkedData from './LinkedData';
+import LinkedData from './view';
 import { TaxonReference } from '../../../../types/taxonomy';
-import { Icon } from 'antd';
-import ErrorView from '../../../../components/ErrorView';
+import LinkedDataDB from './LinkedDataDB';
 
 export interface Props {
     token: string;
@@ -25,64 +23,70 @@ export default class Data extends React.Component<Props, State> {
                 this.forceUpdate();
             },
             initialData: {
-                status: DBStatus.NONE
+                linkedObjectsCollection: {
+                    status: DBCollectionStatus.NONE
+                }
             },
             token: props.token,
             config: props.config
         });
     }
 
-    fetchLinkedData(taxonRef: TaxonReference, page: number, pageSize: number) {
-        return this.db.fetchLinkedObjects({ taxonRef, page, pageSize });
+    fetchLinkedObjects(page: number, pageSize: number) {
+        return this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page, pageSize });
     }
 
-    renderNone() {
-        return <Icon type="loading" />;
-    }
+    // renderNone() {
+    //     return <Icon type="loading" />;
+    // }
 
-    renderLoading() {
-        return <Icon type="loading" />;
-    }
+    // renderLoading() {
+    //     return <Icon type="loading" />;
+    // }
 
-    renderError(db: LinkedDataDBStateError) {
-        return (
-            <ErrorView error={db.error} />
-        )
-    }
+    // renderError(db: LinkedDataDBStateError) {
+    //     return (
+    //         <ErrorView error={db.error} />
+    //     )
+    // }
 
-    renderLoaded(db: LinkedDataDBStateLoaded) {
-        return <LinkedData linkedObjects={db.linkedObjects} />;
-    }
+    // renderLoaded(db: LinkedDataDBStateLoaded) {
+    //     return <LinkedData linkedObjects={db.linkedObjects} fetchLinkedObjects={this.fetchLinkedObjects.bind(this)} />;
+    // }
 
-    componentDidMount() {
-        const db = this.db.get();
-        switch (db.status) {
-            case DBStatus.NONE:
-                this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page: 1, pageSize: 1000 });
-        }
-    }
+    // componentDidMount() {
+    //     const db = this.db.get();
+    //     switch (db.status) {
+    //         case DBStatus.NONE:
+    //             this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page: 1, pageSize: 1000 });
+    //     }
+    // }
 
-    componentDidUpdate(prevProps: Props) {
-        if (prevProps.taxonRef.id !== this.props.taxonRef.id ||
-            prevProps.taxonRef.namespace !== this.props.taxonRef.namespace ||
-            prevProps.taxonRef.timestamp !== this.props.taxonRef.timestamp) {
+    // componentDidUpdate(prevProps: Props) {
+    //     if (prevProps.taxonRef.id !== this.props.taxonRef.id ||
+    //         prevProps.taxonRef.namespace !== this.props.taxonRef.namespace ||
+    //         prevProps.taxonRef.timestamp !== this.props.taxonRef.timestamp) {
 
-            this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page: 1, pageSize: 1000 });
-        }
-    }
+    //         this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page: 1, pageSize: 1000 });
+    //     }
+    // }
 
     render() {
         const db = this.db.get();
-        switch (db.status) {
-            case DBStatus.NONE:
-                // this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page: 1, pageSize: 1000 });
-                return this.renderNone();
-            case DBStatus.LOADING:
-                return this.renderLoading();
-            case DBStatus.ERROR:
-                return this.renderError(db);
-            case DBStatus.LOADED:
-                return this.renderLoaded(db);
-        }
+        return <LinkedData
+            linkedObjectsCollection={db.linkedObjectsCollection}
+            fetchLinkedObjects={this.fetchLinkedObjects.bind(this)} />;
+        // this.renderLoaded(db);
+        // switch (db.status) {
+        //     case DBStatus.NONE:
+        //         // this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page: 1, pageSize: 1000 });
+        //         return this.renderNone();
+        //     case DBStatus.LOADING:
+        //         return this.renderLoading();
+        //     case DBStatus.ERROR:
+        //         return this.renderError(db);
+        //     case DBStatus.LOADED:
+        //         return this.renderLoaded(db);
+        // }
     }
 }

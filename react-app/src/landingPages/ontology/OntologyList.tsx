@@ -1,7 +1,7 @@
 import React from 'react';
 import { OntologyReference, OntologyTermBrief, OntologyRelation, OntologySource, OntologyTermRelatedBrief } from '../../types/ontology';
 import './OntologyList.css';
-import OntologyItem from './OntologyItem';
+import OntologyItem from './OntologyTerm';
 import { Empty } from 'antd';
 
 export interface Props {

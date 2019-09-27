@@ -79,9 +79,8 @@ export interface OntologyTermBase {
     // type: OntologySource;
     // id: OntologyID;
     name: string;
-    relation: OntologyRelation;
-    namespace: string;
-    comment: string | null;
+    // relation: OntologyRelation;
+    comment: Array<string>
     definition: string;
     isObsolete: boolean;
 }
@@ -111,6 +110,7 @@ export interface GOOntologyTerm extends OntologyTermBase {
     type: OntologySource.GO;
     synonyms: GOSynonyms;
     goID: string;
+    namespace: string;
 }
 
 export type OntologyTerm = GOOntologyTerm;
@@ -122,6 +122,11 @@ export interface OntologyTermRelated extends OntologyTerm {
 export interface OntologyRelatedTerm {
     relation: OntologyRelation,
     term: OntologyTerm
+}
+
+export interface OntologyRelatedTerms {
+    term: OntologyTerm,
+    terms: Array<OntologyRelatedTerm>
 }
 
 /* Linked Objects */
