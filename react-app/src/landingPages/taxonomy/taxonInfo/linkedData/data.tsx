@@ -4,7 +4,7 @@ import { DBCollectionStatus } from '../../../../lib/DB2';
 import { AppConfig } from '@kbase/ui-components';
 import LinkedData from './view';
 import { TaxonReference } from '../../../../types/taxonomy';
-import LinkedDataDB from './LinkedDataDB';
+import LinkedDataDB, { SortSpec } from './LinkedDataDB';
 
 export interface Props {
     token: string;
@@ -43,6 +43,10 @@ export default class Data extends React.Component<Props, State> {
 
     fetchLinkedObjects(page: number, pageSize: number) {
         return this.db.fetchLinkedObjects({ taxonRef: this.props.taxonRef, page, pageSize });
+    }
+
+    queryLinkedObjects(page: number, pageSize: number, sort: SortSpec | null) {
+        return this.db.queryLinkedObjects({ taxonRef: this.props.taxonRef, page, pageSize, sort });
     }
 
     // renderNone() {
@@ -84,6 +88,7 @@ export default class Data extends React.Component<Props, State> {
         const db = this.db.get();
         return <LinkedData
             linkedObjectsCollection={db.linkedObjectsCollection}
+            updateView={this.queryLinkedObjects.bind(this)}
             setPage={this.fetchLinkedObjects.bind(this)} />;
         // this.renderLoaded(db);
         // switch (db.status) {

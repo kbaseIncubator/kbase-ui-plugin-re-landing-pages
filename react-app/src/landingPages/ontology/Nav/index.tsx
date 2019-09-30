@@ -1,117 +1,68 @@
 import React from 'react';
 import './style.css';
 import OntologyItem from '../OntologyTerm';
-import { OntologyTermBrief, OntologyRelation, OntologyReference, OntologyTermRelatedBrief, OntologyNamespace } from '../../../types/ontology';
+import { OntologyTerm, OntologyReference } from '../../../types/ontology';
 import Children from '../Children';
 import Parents from '../Parents';
-import { RelationEngineCollection } from '../../../types';
 
 export interface NavProps {
+    targetTerm: OntologyTerm;
+    selectedTerm: OntologyTerm;
+    selectTerm: (termRef: OntologyReference) => void;
 }
 
 interface NavState {
 }
 
 export default class Nav extends React.Component<NavProps, NavState> {
-    selectTermRef(termRef: OntologyReference) {
-        console.log('selecting', termRef);
-    }
+    // selectTermRef(termRef: OntologyReference) {
+    //     console.log('selecting', termRef);
+    // }
     navigateToTermRef(termRef: OntologyReference) {
         console.log('navigating to ', termRef);
     }
 
     render() {
-        const timestamp = Date.now();
-        const term: OntologyTermBrief = {
-            ref: {
-                collection: RelationEngineCollection.ONTOLOGY,
-                namespace: OntologyNamespace.GO,
-                id: 'GO:0046294',
-                timestamp
-            },
-            // type: OntologySource.GO,
-            name: 'aldehyde catabolic process',
-            goID: 'GO:0046294'
-        }
-        const children: Array<OntologyTermRelatedBrief> = [
-            {
-                ref: {
-                    collection: RelationEngineCollection.ONTOLOGY,
-                    namespace: OntologyNamespace.GO,
-                    id: 'GO:0043276',
-                    timestamp
-                },
-                relation: OntologyRelation.IS_A,
-                // id: 'go_ontology/GO:0043276',
-                name: 'anoikis',
-                goID: 'GO:0043276'
-            },
-            {
-                ref: {
-                    collection: RelationEngineCollection.ONTOLOGY,
-                    namespace: OntologyNamespace.GO,
-                    id: 'GO:0008637',
-                    timestamp
-                },
-                relation: OntologyRelation.PART_OF,
-                // id: 'go_ontology/GO:0008637',
-                name: 'apoptotic',
-                // type: OntologySource.GO,
-                goID: 'GO:0008637'
-            }
-        ]
-        const parents: Array<OntologyTermRelatedBrief> = [
-            {
-                ref: {
-                    collection: RelationEngineCollection.ONTOLOGY,
-                    namespace: OntologyNamespace.GO,
-                    id: 'GO:0012501',
-                    timestamp
-                },
-                relation: OntologyRelation.IS_A,
-                // id: 'go_ontology/GO:0012501',
-                name: 'programmed cell death',
-                // type: OntologySource.GO,
-                goID: 'GO:0012501'
-            }
-        ]
+        const isActive = this.props.selectedTerm !== null &&
+            this.props.selectedTerm.ref.collection === this.props.targetTerm.ref.collection &&
+            this.props.selectedTerm.ref.namespace === this.props.targetTerm.ref.namespace &&
+            this.props.selectedTerm.ref.id === this.props.targetTerm.ref.id;
+
         return <div className="Col scrollable OntologyNav">
-            <div className="Nav-box Nav-box-auto">
+            <div className="Nav-box Col-auto">
                 <div className="Col Nav-box-title">
-                    parents
+                    Parents
                 </div>
                 <div className="Col Nav-box-content">
                     <Parents
-                        terms={parents}
-                        totalItems={parents.length}
-                        selectedTermRef={null}
-                        selectTermRef={this.selectTermRef.bind(this)}
+                        termRef={this.props.selectedTerm.ref}
+                        selectedTermRef={this.props.selectedTerm.ref}
+                        selectTerm={this.props.selectTerm.bind(this)}
                         navigateToTermRef={this.navigateToTermRef.bind(this)}
                     />
                 </div>
             </div>
-            <div className="Nav-box Nav-box-auto">
-                <div className="Col Nav-box-title">
-                    selected
+            <div className="Nav-box Col-auto">
+                <div className="Col-auto Nav-box-title">
+                    Selected Term
                 </div>
                 <div className="Col Nav-box-content">
                     <OntologyItem
-                        term={term}
-                        isActive={false}
-                        selectTermRef={this.selectTermRef.bind(this)}
+                        term={this.props.targetTerm}
+                        isActive={isActive}
+                        selectTerm={this.props.selectTerm.bind(this)}
                         navigateToTermRef={this.navigateToTermRef.bind(this)} />
                 </div>
             </div>
-            <div className="Nav-box Nav-box-fill">
-                <div className="Col Nav-box-title">
-                    children
+            <div className="Nav-box Col scrollable">
+                <div className="Col-auto Nav-box-title">
+                    Children
                 </div>
-                <div className="Col Nav-box-content">
+                <div className="Col Nav-box-content" style={{ overflowY: 'auto' }}>
                     <Children
-                        terms={children}
-                        totalItems={children.length}
-                        selectedTermRef={null}
-                        selectTermRef={this.selectTermRef.bind(this)}
+                        termRef={this.props.selectedTerm.ref}
+                        selectedTermRef={this.props.selectedTerm.ref}
+                        selectTerm={this.props.selectTerm.bind(this)}
                         navigateToTermRef={this.navigateToTermRef.bind(this)}
                     />
                 </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { OntologyReference, OntologyTermBrief, OntologyRelation, OntologySource, OntologyTermRelatedBrief } from '../../types/ontology';
 import './OntologyList.css';
-import OntologyItem from './OntologyTerm';
+import Term from './OntologyTerm';
 import { Empty } from 'antd';
 
 export interface Props {
@@ -32,10 +32,10 @@ export default class OntologyList extends React.Component<Props, State> {
             //     goID: 'hi'
             // }
             return (
-                <OntologyItem
+                <Term
                     term={term}
                     isActive={isActive}
-                    selectTermRef={this.selectTerm.bind(this)}
+                    selectTerm={this.selectTerm.bind(this)}
                     key={term.ref.id}
                     navigateToTermRef={this.navigateToTerm.bind(this)}
                 />

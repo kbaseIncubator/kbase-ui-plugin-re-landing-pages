@@ -66,7 +66,11 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
             case ViewType.TAXONOMY:
                 return <Taxonomy taxonRef={navigation.ref} />;
             case ViewType.ONTOLOGY:
+                console.log('navigation ref', navigation);
                 return <OntologyView termRef={navigation.ref} />;
+            default:
+                // TODO: make real error display.
+                console.error('Unhandled navigation', navigation);
         }
     }
 

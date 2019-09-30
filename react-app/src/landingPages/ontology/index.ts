@@ -7,11 +7,9 @@ import Main from './Main';
 import { sendTitle } from '@kbase/ui-components';
 
 export interface OwnProps {
-
 }
 
 export interface StateProps {
-
 }
 
 export interface DispatchProps {

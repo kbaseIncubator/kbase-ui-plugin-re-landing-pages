@@ -1,28 +1,28 @@
 import { DynamicServiceClient } from "@kbase/ui-lib";
 
 export interface GetParentsParams {
-    ns: string;
+    ns: Namespace;
     id: string;
     ts: number;
 }
 
+export type Namespace = 'go';
+
 export interface GetParentsResult {
-    terms: Array<TermBrief>
+    results: Array<RelatedTerm>;
+    ns: Namespace;
+    ts: number;
 }
 
 export interface GetChildrenParams {
-    ns: string;
+    ns: Namespace;
     id: string;
     ts: number;
 }
 
 export interface GetChildrenResult {
-    terms: Array<TermBrief>
-}
-
-export interface GetTermParams {
-    ns: string;
-    id: string;
+    results: Array<RelatedTerm>;
+    ns: Namespace;
     ts: number;
 }
 
@@ -52,7 +52,7 @@ export interface XRef {
 // doesn't include the underscore fields
 // TODO: the api should not return any underscore
 // fields.
-export interface Term {
+export interface TermNode {
     namespace: string;
     id: string;
     alt_ids: Array<string>;
@@ -75,23 +75,50 @@ export interface Term {
     release_expired: number;
 }
 
-export interface TermBrief {
-    ns: string;
+export interface TermEdge {
     id: string;
-    ts: number;
-    name: string;
-    scientific_name: string;
-    relation: string;
+    type: string;
+    created: number;
+    expired: number;
+    first_version: string;
+    last_version: string;
+    from: string;
+    to: string;
+    release_created: number;
+    release_expired: number;
 }
 
-export interface GetTermResult {
-    term: Term,
+
+export interface RelatedTerm {
+    term: TermNode;
+    edge: TermEdge;
+}
+
+// export interface TermBrief {
+//     ns: Namespace;
+//     id: string;
+//     ts: number;
+//     name: string;
+//     scientific_name: string;
+//     relation: string;
+// }
+
+export type TermBrief = TermNode;
+
+export interface GetTermsParams {
+    ids: Array<string>;
+    ts: number;
+    ns: Namespace;
+}
+
+export interface GetTermsResult {
+    results: Array<TermNode>,
     ts: number
     // ignore the stats
 }
 
 export interface GetRelatedObjectsParams {
-    ns: string;
+    ns: Namespace;
     id: string;
     ts: number;
 }
@@ -101,9 +128,9 @@ export interface GetRelatedObjectsResult {
 }
 
 export default class OntologyAPIClient extends DynamicServiceClient {
-    static module: string = 'ontology_re_api';
+    static module: string = 'OntologyAPI';
 
-    async getParents({ ns, id, ts }: { ns: string, id: string, ts: number }): Promise<GetParentsResult> {
+    async getParents({ ns, id, ts }: { ns: Namespace, id: string, ts: number }): Promise<GetParentsResult> {
         const params: GetParentsParams = {
             ns, id, ts
         };
@@ -113,17 +140,17 @@ export default class OntologyAPIClient extends DynamicServiceClient {
         return result;
     }
 
-    async getTerm({ ns, id, ts }: { ns: string, id: string, ts: number }): Promise<GetTermResult> {
-        const params: GetTermParams = {
-            ns, id, ts
+    async getTerms({ ns, ids, ts }: GetTermsParams): Promise<GetTermsResult> {
+        const params: GetTermsParams = {
+            ns, ids, ts
         }
-        const [result] = await this.callFunc<[GetTermParams], [GetTermResult]>('get_term', [
+        const [result] = await this.callFunc<[GetTermsParams], [GetTermsResult]>('get_terms', [
             params
         ]);
         return result;
     }
 
-    async getChildren({ ns, id, ts }: { ns: string, id: string, ts: number }): Promise<GetChildrenResult> {
+    async getChildren({ ns, id, ts }: { ns: Namespace, id: string, ts: number }): Promise<GetChildrenResult> {
         const params: GetChildrenParams = {
             ns, id, ts
         };
@@ -133,7 +160,7 @@ export default class OntologyAPIClient extends DynamicServiceClient {
         return result;
     }
 
-    async getRelatedObjects({ ns, id, ts }: { ns: string, id: string, ts: number }): Promise<GetRelatedObjectsResult> {
+    async getRelatedObjects({ ns, id, ts }: { ns: Namespace, id: string, ts: number }): Promise<GetRelatedObjectsResult> {
         const params: GetRelatedObjectsParams = {
             ns, id, ts
         };

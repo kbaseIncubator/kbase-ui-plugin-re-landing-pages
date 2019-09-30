@@ -37,7 +37,7 @@ export default class Data extends React.Component<Props, State> {
     }
 
     selectTerm(termRef: OntologyReference) {
-        return this.db.getSelectedTerm(termRef);
+        return this.db.setSelectedTerm(termRef);
     }
 
     navigateToTerm(termRef: OntologyReference) {
@@ -76,10 +76,10 @@ export default class Data extends React.Component<Props, State> {
     }
 
     componentDidUpdate(previousProps: Props) {
-        // if (previousProps.termRef.id !== this.props.termRef.id ||
-        //     previousProps.termRef.timestamp !== this.props.termRef.timestamp) {
-        //     this.db.getTargetTerm(this.props.termRef);
-        // }
+        if (previousProps.termRef.id !== this.props.termRef.id ||
+            previousProps.termRef.timestamp !== this.props.termRef.timestamp) {
+            this.db.getTargetTerm(this.props.termRef);
+        }
     }
 
     render() {
