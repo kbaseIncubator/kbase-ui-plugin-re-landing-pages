@@ -20,7 +20,7 @@ interface State { }
 
 export default class OntologyView extends React.Component<Props, State> {
     componentDidMount() {
-        this.props.setTitle(`Ontology Landing Page ${this.props.targetTerm.name}`);
+        this.props.setTitle(`Ontology Landing Page for "${this.props.targetTerm.name}" (${this.props.targetTerm.goID})`);
     }
 
     renderLayout() {
