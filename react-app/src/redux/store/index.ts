@@ -1,11 +1,12 @@
 import { BaseStoreState, makeBaseStoreState } from '@kbase/ui-components';
 import { createStore, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import reducer from './reducers';
+import reducer from '../reducers';
 
-import { TaxonomyStoreState } from '../landingPages/taxonomy/redux/store';
-import { TaxonReference } from '../types/taxonomy';
-import { OntologyReference } from '../types/ontology';
+import { TaxonomyStoreState } from '../../landingPages/taxonomy/redux/store';
+import { TaxonReference } from '../../types/taxonomy';
+import { OntologyReference } from '../../types/ontology';
+import OntologyView from '../../landingPages/ontology/Main/view';
 
 export enum ViewType {
     NONE,
@@ -59,31 +60,74 @@ export type RelationEngineView =
 
 export interface LandingPageStoreState { }
 
-// VIEW STATE
+// VIEW STATES
+/*
+ Sync view state
+ Primarily for top level views which don't have an async load operation.
+*/
 
-export interface ViewStateNone<T> {
-    status: ViewStatus.NONE;
+export enum SyncViewStatus {
+    NONE,
+    LOADED,
+    ERROR
 }
 
-export interface ViewStateLoading<T> {
-    status: ViewStatus.LOADING;
-    type: T;
+export interface SyncViewStateNone<T> {
+    status: SyncViewStatus.NONE;
 }
 
-export interface ViewStateError<T> {
-    status: ViewStatus.ERROR;
+export interface SyncViewStateError<T> {
+    status: SyncViewStatus.ERROR;
     error: string;
     type: T;
 }
 
-export interface ViewStateLoaded<T, S> {
-    status: ViewStatus.LOADED;
+export interface SyncViewStateLoaded<T, S> {
+    status: SyncViewStatus.LOADED;
     type: T;
     state: S;
 }
-export type ViewState<T, S> = ViewStateNone<T> | ViewStateLoading<T> | ViewStateLoaded<T, S> | ViewStateError<T>;
+export type SyncViewState<T, S> = SyncViewStateNone<T> | SyncViewStateLoaded<T, S> | SyncViewStateError<T>;
 
-export type TaxonomyView = ViewState<ViewType.TAXONOMY, TaxonomyStoreState>;
+/*
+Async view state
+For any component which requires loading.
+*/
+
+export enum AsyncViewStatus {
+    NONE,
+    LOADING,
+    LOADED,
+    ERROR
+}
+
+export interface AsyncViewStateNone<T> {
+    status: AsyncViewStatus.NONE;
+    type: T;
+}
+
+export interface AsyncViewStateLoading<T> {
+    status: AsyncViewStatus.LOADING;
+    type: T;
+}
+
+export interface AsyncViewStateError<T> {
+    status: AsyncViewStatus.ERROR;
+    error: string;
+    type: T;
+}
+
+export interface AsyncViewStateLoaded<T, S> {
+    status: AsyncViewStatus.LOADED;
+    type: T;
+    state: S;
+}
+export type AsyncViewState<T, S> = AsyncViewStateNone<T> | AsyncViewStateLoading<T> | AsyncViewStateLoaded<T, S> | AsyncViewStateError<T>;
+
+
+// And the specific landing page views
+
+export type TaxonomyView = SyncViewState<ViewType.TAXONOMY, TaxonomyStoreState>;
 
 export interface NavigationBase {
     type: ViewType;
@@ -122,12 +166,26 @@ export type Navigation = NavigationNone | NavigationSome;
 
 export type LandingPageView = TaxonomyView;
 
+// OKAY, back to REDUX
+
+// export interface TaxonomyView {
+
+// }
+
+// export interface OntologyView {
+
+// }
+
+export type View = TaxonomyView | OntologyView | null;
+
+
 // STORE STATE type definition
 export interface StoreState extends BaseStoreState {
     // viewer: TaxonView | null;
     // view: RelationEngineView;
     navigation: Navigation;
     trigger: number;
+    view: View
 }
 
 // Store Construction
@@ -139,7 +197,8 @@ export function makeInitialStoreState(): StoreState {
         navigation: {
             type: ViewType.NONE
         },
-        trigger: 0
+        trigger: 0,
+        view: null
     };
 }
 

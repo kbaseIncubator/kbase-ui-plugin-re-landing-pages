@@ -1,10 +1,10 @@
 import React from 'react';
-import { OntologyReference, OntologyTermRelatedBrief, ontologyNamespaceToString } from '../../../types/ontology';
+import { OntologyReference, ontologyNamespaceToString, OntologyTermBrief } from '../react-app/src/types/ontology';
 import { Tooltip, Icon } from 'antd';
 import './Term.css';
 
 export interface Props {
-    term: OntologyTermRelatedBrief;
+    term: OntologyTermBrief;
     isActive: boolean;
     selectTermRef: (ref: OntologyReference) => void;
     navigateToTermRef: (ref: OntologyReference) => void;

@@ -10,7 +10,6 @@ export interface DetailProps {
 }
 
 interface DetailState {
-
 }
 
 export default class Detail extends React.Component<DetailProps, DetailState> {
@@ -26,6 +25,16 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
             )
         });
     }
+
+    renderComments() {
+        if (this.props.term.comments.length === 0) {
+            return <i>-</i>;
+        }
+        return this.props.term.comments.map((comment, index) => {
+            return <p key={String(index)}>{comment}</p>
+        });
+    }
+
     renderDetail() {
         return (
             <div className="InfoTable DetailTable">
@@ -55,10 +64,11 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                 </div>
                 <div className="InfoTable-row">
                     <div className="InfoTable-labelCol">
-                        Comment
+                        Comments
                     </div>
                     <div className="InfoTable-dataCol">
-                        {this.props.term.comment || <i>-</i>}
+                        {this.renderComments()}
+
                     </div>
                 </div>
                 <div className="InfoTable-row">

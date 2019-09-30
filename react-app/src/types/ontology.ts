@@ -8,7 +8,7 @@ export enum OntologyNamespace {
 
 export function stringToOntologyNamespace(namespace: string): OntologyNamespace {
     switch (namespace) {
-        case 'go_ontology':
+        case 'go':
             return OntologyNamespace.GO;
         default:
             throw new Error('Ontology namespace not supported: ' + namespace);
@@ -18,7 +18,7 @@ export function stringToOntologyNamespace(namespace: string): OntologyNamespace 
 export function ontologyNamespaceToString(namespace: OntologyNamespace): string {
     switch (namespace) {
         case OntologyNamespace.GO:
-            return 'go_ontology';
+            return 'go';
     }
 }
 
@@ -80,7 +80,7 @@ export interface OntologyTermBase {
     // id: OntologyID;
     name: string;
     // relation: OntologyRelation;
-    comment: Array<string>
+    comments: Array<string>
     definition: string;
     isObsolete: boolean;
 }

@@ -95,15 +95,15 @@ export default class RelationEngineAPIClient extends DynamicServiceClient {
                         reject(new Error('Taxonomy ref is '));
                         return;
                     }
-                    const [, namespace, id, ...more] = m;
+                    const [, namespace, id, timestampString] = m;
                     let timestamp: number;
-                    if (more.length) {
-                        timestamp = parseInt(more[0]);
+                    if (timestampString) {
+                        timestamp = parseInt(timestampString);
                     } else {
                         timestamp = Date.now();
                     }
                     switch (namespace) {
-                        case 'go_ontology':
+                        case 'go':
                             resolve([
                                 {
                                     collection: 'ontology',

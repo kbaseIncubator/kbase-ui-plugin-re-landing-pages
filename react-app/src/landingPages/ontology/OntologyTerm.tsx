@@ -6,7 +6,7 @@ import './OntologyTerm.css';
 export interface Props {
     term: OntologyTermBrief;
     isActive: boolean;
-    selectTermRef: (ref: OntologyReference) => void;
+    selectTerm: (termRef: OntologyReference) => void;
     navigateToTermRef: (ref: OntologyReference) => void;
 }
 
@@ -22,7 +22,7 @@ export default class OntologyTerm extends React.Component<Props, State> {
         };
     }
     clickTerm() {
-        this.props.selectTermRef(this.props.term.ref);
+        this.props.selectTerm(this.props.term.ref);
     }
     clickNavigateToTerm() {
         const hash = [
@@ -56,7 +56,6 @@ export default class OntologyTerm extends React.Component<Props, State> {
             <div className="OntologyTerm-name">
                 {this.props.term.name}
             </div>
-
         </div>;
         // <div className="OntologyTerm-id">
         //         {this.props.term.ref.id}
@@ -104,7 +103,6 @@ export default class OntologyTerm extends React.Component<Props, State> {
         const term = this.props.term;
         const classNames = ['OntologyTerm'];
         if (this.props.isActive) {
-            const classNames = ['OntologyTerm'];
             classNames.push('OntologyTerm-active');
         }
 
@@ -116,7 +114,7 @@ export default class OntologyTerm extends React.Component<Props, State> {
         );
 
         return (
-            <Tooltip title={tooltipTitle} placement="right">
+            <Tooltip title={tooltipTitle} placement="right" key={this.props.term.ref.id}>
                 <div
                     className={classNames.join(' ')}
                     key={this.props.term.ref.id}

@@ -5,12 +5,15 @@ import Column from 'antd/lib/table/Column';
 import { LinkedObjectsCollection, LinkedObjectsData } from './LinkedDataDB';
 import { DBCollectionStatus } from '../../../../lib/DB2';
 import { UIError } from '../../../../types';
+import { SorterResult, PaginationConfig } from 'antd/lib/table';
+import { SortSpec, stringToSortDirection } from './LinkedDataDB';
 
 const DEFAULT_PAGE_SIZE = 12;
 
 export interface Props {
     linkedObjectsCollection: LinkedObjectsCollection
     setPage: (page: number, pageSize: number) => void
+    updateView: (page: number, pageSize: number, sort: SortSpec | null) => void
 }
 
 interface State { }
@@ -18,6 +21,21 @@ interface State { }
 export default class LinkedData extends React.Component<Props, State> {
     onChangePage(page: number, pageSize?: number) {
         this.props.setPage(page, pageSize || DEFAULT_PAGE_SIZE);
+    }
+
+    onChangeTable(pagination: PaginationConfig, filters: Record<string, string[]>, sorter: SorterResult<LinkedObject>) {
+        let sort: SortSpec | null;
+        if (sorter.column && sorter.column.dataIndex) {
+            const sortColumn = sorter.column.dataIndex;
+            const sortDirection = stringToSortDirection(sorter.order === 'descend' ? 'descending' : 'ascending');
+            sort = {
+                sortColumn, sortDirection
+            };
+        } else {
+            sort = null;
+        }
+
+        this.props.updateView(pagination.current || 1, pagination.pageSize || DEFAULT_PAGE_SIZE, sort);
     }
 
     componentDidMount() {
@@ -35,7 +53,7 @@ export default class LinkedData extends React.Component<Props, State> {
     }
 
     renderLinkedObjects(data: LinkedObjectsData, isLoading: boolean) {
-        return <Table
+        return <Table<LinkedObject>
             dataSource={data.linkedObjects}
             size="small"
             className="KBaseAntdOverride-remove-table-border ScrollingFlexTable"
@@ -47,11 +65,12 @@ export default class LinkedData extends React.Component<Props, State> {
             }}
             pagination={{
                 position: 'top',
-                onChange: this.onChangePage.bind(this),
+                // onChange: this.onChangePage.bind(this),
                 defaultPageSize: DEFAULT_PAGE_SIZE,
                 total: data.totalCount
             }}
             loading={isLoading}
+            onChange={this.onChangeTable.bind(this)}
         >
             <Column
                 title="Type"
@@ -68,9 +87,10 @@ export default class LinkedData extends React.Component<Props, State> {
                 title="Object"
                 dataIndex="objectName"
                 width="35%"
-                sorter={(a: LinkedObject, b: LinkedObject) => {
-                    return a.objectName.localeCompare(b.objectName);
-                }}
+                // sorter={(a: LinkedObject, b: LinkedObject) => {
+                //     return a.objectName.localeCompare(b.objectName);
+                // }}
+                sorter={true}
                 render={(objectName: string, linkedObject: LinkedObject) => {
                     const url = [
                         '',
@@ -142,9 +162,10 @@ export default class LinkedData extends React.Component<Props, State> {
                 title="Object Created"
                 dataIndex="createdAt"
                 width="10%"
-                sorter={(a: LinkedObject, b: LinkedObject) => {
-                    return a.createdAt - b.createdAt;
-                }}
+                // sorter={(a: LinkedObject, b: LinkedObject) => {
+                //     return a.createdAt - b.createdAt;
+                // }}
+                sorter={true}
                 render={(createdAt: number) => {
                     return Intl.DateTimeFormat('en-US').format(createdAt);
                 }}
@@ -153,9 +174,10 @@ export default class LinkedData extends React.Component<Props, State> {
                 title="Linked At"
                 dataIndex="linkedAt"
                 width="10%"
-                sorter={(a: LinkedObject, b: LinkedObject) => {
-                    return a.linkedAt - b.linkedAt;
-                }}
+                // sorter={(a: LinkedObject, b: LinkedObject) => {
+                //     return a.linkedAt - b.linkedAt;
+                // }}
+                sorter={true}
                 defaultSortOrder='descend'
                 render={(linkedAt: number) => {
                     return Intl.DateTimeFormat('en-US').format(linkedAt);

@@ -1,5 +1,7 @@
 # initial ontology api needs
 
+TODO: redo this doc with how the api has shaped up??
+
 This is the result of a brainstorming session after having worked out a couple of potential interfaces for the ontology term landing page
 
 Note that I've left out some features (complexity) provided by OBO, for the sake of simplicity for now. E.g. dbxrefs are left out. Feel free to add additional properties as needed, or remove extraneous ones. 

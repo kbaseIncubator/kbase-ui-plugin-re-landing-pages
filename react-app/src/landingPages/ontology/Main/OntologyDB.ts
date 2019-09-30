@@ -53,6 +53,7 @@ export default class OntologyDB extends DB<OntologyDBState> {
                 }
             });
         } catch (ex) {
+            console.error('ERROR', ex);
             this.set((state: OntologyDBState) => {
                 return {
                     ...state,
@@ -63,17 +64,25 @@ export default class OntologyDB extends DB<OntologyDBState> {
         }
     }
 
-    getSelectedTerm(termRef: OntologyReference) {
+    async setSelectedTerm(termRef: OntologyReference) {
+        const state = this.get();
+
+        if (state.status !== DBStatus.LOADED) {
+            return;
+        }
+
+        const client = new OntologyModel({
+            token: this.props.token,
+            url: this.props.config.services.ServiceWizard.url
+        });
+
+        const { term } = await client.getTerm({ ref: termRef })
+
         this.set((state: OntologyDBState) => {
             return {
                 ...state,
-                status: DBStatus.LOADING
+                selectedTerm: term
             };
         });
-
-        // const client = new OntologyModel({
-        //     token: this.props.token,
-        //     url: this.props.config.services.ServiceWizard.url
-        // })
     }
 }

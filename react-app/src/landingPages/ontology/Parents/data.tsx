@@ -1,5 +1,5 @@
 import React from 'react';
-import OntologyDB, { OntologyDBStateLoaded } from './OntologyDB';
+import ParentsDB, { ParentsDBStateLoaded } from './ParentsDB';
 import { DBStatus, DBStateError } from '../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
 import View from './view';
@@ -11,19 +11,20 @@ export interface Props {
     token: string;
     config: AppConfig;
     termRef: OntologyReference;
+    selectedTermRef: OntologyReference | null;
+    selectTerm: (termRef: OntologyReference) => void;
     // taxonID: TaxonID;
-    navigate: (termRef: OntologyReference) => void;
-    setTitle: (title: string) => void;
+    navigateToTermRef: (termRef: OntologyReference) => void;
 }
 
 interface State { }
 
 export default class Data extends React.Component<Props, State> {
-    db: OntologyDB;
+    db: ParentsDB;
     currentlyNavigatedOntologyRef: OntologyReference | null;
     constructor(props: Props) {
         super(props);
-        this.db = new OntologyDB({
+        this.db = new ParentsDB({
             onUpdate: () => {
                 this.forceUpdate();
             },
@@ -36,12 +37,8 @@ export default class Data extends React.Component<Props, State> {
         this.currentlyNavigatedOntologyRef = null;
     }
 
-    selectTerm(termRef: OntologyReference) {
-        return this.db.setSelectedTerm(termRef);
-    }
-
     navigateToTerm(termRef: OntologyReference) {
-        return this.props.navigate(termRef);
+        return this.props.navigateToTermRef(termRef);
     }
 
     renderLoading() {
@@ -59,27 +56,26 @@ export default class Data extends React.Component<Props, State> {
         );
     }
 
-    renderLoaded(db: OntologyDBStateLoaded) {
+    renderLoaded(db: ParentsDBStateLoaded) {
         return (
             <View
-                targetTerm={db.targetTerm}
-                selectedTerm={db.selectedTerm}
-                selectTerm={this.selectTerm.bind(this)}
-                navigate={this.navigateToTerm.bind(this)}
-                setTitle={this.props.setTitle}
+                terms={db.terms}
+                selectedTermRef={this.props.selectedTermRef}
+                selectTerm={this.props.selectTerm.bind(this)}
+                navigateToTermRef={this.props.navigateToTermRef.bind(this)}
             />
         );
     }
 
     componentDidMount() {
-        this.db.getTargetTerm(this.props.termRef);
+        this.db.getParentTerms(this.props.termRef);
     }
 
     componentDidUpdate(previousProps: Props) {
-        if (previousProps.termRef.id !== this.props.termRef.id ||
-            previousProps.termRef.timestamp !== this.props.termRef.timestamp) {
-            this.db.getTargetTerm(this.props.termRef);
-        }
+        // if (previousProps.termRef.id !== this.props.termRef.id ||
+        //     previousProps.termRef.timestamp !== this.props.termRef.timestamp) {
+        //     this.db.getTargetTerm(this.props.termRef);
+        // }
     }
 
     render() {
