@@ -3,16 +3,21 @@ import { RootState } from '@kbase/ui-components';
 import {
     RelationEngineID,
     Navigation,
-    NavigationSome
+    NavigationSome,
+    View,
+    ViewStatus
 } from '../../redux/store';
-import { ViewType } from '../../redux/store/view';
+import { ViewType, TopLevelView, AsyncViewStatus, AsyncViewError, AsyncViewLoaded, TopLevelViewState } from '../../redux/store/view';
 import Taxonomy from '../../landingPages/taxonomy';
 import OntologyView from '../../landingPages/ontology';
+import { Spin, Alert } from 'antd';
+import { view } from '../../redux/actions';
+import { UIError } from '../../types';
 
 export interface DispatcherProps {
     token: string | null;
     rootState: RootState;
-    navigation: Navigation;
+    view: TopLevelView;
     trigger: number;
     navigate: (relationEngineID: RelationEngineID) => void;
 }
@@ -56,18 +61,58 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         }
     }
 
-    renderNavigation() {
-        switch (this.props.navigation.type) {
-            case ViewType.NONE:
-                return this.renderNavigationNone();
-            default:
-                return this.renderNavigationSome(this.props.navigation);
-            // case ViewStatus.LOADING:
-            //     return this.renderNavigationLoading(this.props.view);
-            // case ViewStatus.LOADED:
-            //     return this.renderNavigationLoaded(this.props.view);
-            // case ViewStatus.ERROR:
-            //     return this.renderNavigationError(this.props.view);
+    // renderNavigation() {
+    //     switch (this.props.navigation.type) {
+    //         case ViewType.NONE:
+    //             return this.renderNavigationNone();
+    //         default:
+    //             return this.renderNavigationSome(this.props.navigation);
+    //         // case ViewStatus.LOADING:
+    //         //     return this.renderNavigationLoading(this.props.view);
+    //         // case ViewStatus.LOADED:
+    //         //     return this.renderNavigationLoaded(this.props.view);
+    //         // case ViewStatus.ERROR:
+    //         //     return this.renderNavigationError(this.props.view);
+    //     }
+    // }
+
+    renderLoadingState() {
+        return (
+            <Spin />
+        )
+    }
+
+    renderViewState(view: AsyncViewLoaded<TopLevelViewState>) {
+        return (
+            <div>
+                <p>
+                    Will load the view!
+            </p>
+                <p>
+                    {view.state.ref.id}
+                </p>
+            </div>
+        )
+    }
+
+    renderErrorState(view: AsyncViewError<UIError>) {
+        return (
+            <Alert type="error" message={view.error.message} />
+        )
+    }
+
+    renderView() {
+        const view = this.props.view;
+        switch (view.status) {
+            case AsyncViewStatus.NONE:
+                // nothing to do? Just wait.
+                return;
+            case AsyncViewStatus.LOADING:
+                return this.renderLoadingState();
+            case AsyncViewStatus.LOADED:
+                return this.renderViewState(view);
+            case AsyncViewStatus.ERROR:
+                return this.renderErrorState(view);
         }
     }
 
@@ -128,7 +173,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         return (
             <div className="Col scrollable">
                 <div className="Row-auto">{this.renderRootState()}</div>
-                <div className="Row  scrollable">{this.renderNavigation()}</div>
+                <div className="Row  scrollable">{this.renderView()}</div>
             </div>
         );
     }

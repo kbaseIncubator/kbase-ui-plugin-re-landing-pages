@@ -1,7 +1,7 @@
 import { Action, Reducer } from 'redux';
 import { baseReducer, BaseStoreState } from '@kbase/ui-components';
-import { StoreState } from './store';
-import { AppActions, NavigateSuccess } from './actions';
+import { StoreState } from '../store';
+import { AppActions, NavigateSuccess } from '../actions';
 
 function navigateSuccess(state: StoreState, action: NavigateSuccess): StoreState {
     return {

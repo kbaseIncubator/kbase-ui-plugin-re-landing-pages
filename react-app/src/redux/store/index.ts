@@ -3,16 +3,13 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import reducer from '../reducers';
 
-import { TaxonomyStoreState } from '../../landingPages/taxonomy/redux/store';
+// import { TaxonomyStoreState } from '../../landingPages/taxonomy/redux/store';
 import { TaxonReference } from '../../types/taxonomy';
 import { OntologyReference } from '../../types/ontology';
-import OntologyView from '../../landingPages/ontology/Main/view';
+import { AsyncViewStatus, TopLevelView, ViewType, ViewBase } from './view';
+import { TaxonomyView } from './taxonomy';
+import { OntologyView } from './ontology';
 
-export enum ViewType {
-    NONE,
-    TAXONOMY,
-    ONTOLOGY
-}
 
 export type RelationEngineID = string;
 export enum RelationEngineNodeType {
@@ -27,107 +24,41 @@ export enum ViewStatus {
     ERROR
 }
 
-export interface RelationEngineViewBase {
-    status: ViewStatus;
-}
+// export interface RelationEngineViewBase {
+//     status: ViewStatus;
+// }
 
-export interface RelationEngineViewNone {
-    status: ViewStatus.NONE;
-}
+// export interface RelationEngineViewNone {
+//     status: ViewStatus.NONE;
+// }
 
-export interface RelationEngineViewLoading {
-    status: ViewStatus.LOADING;
-}
+// export interface RelationEngineViewLoading {
+//     status: ViewStatus.LOADING;
+// }
 
-export interface RelationEngineViewLoaded {
-    status: ViewStatus.LOADED;
-    relationEngineID: RelationEngineID;
-    relationEngineNodeType: RelationEngineNodeType;
-    viewType: ViewType;
-    currentView: LandingPageView;
-}
+// export interface RelationEngineViewLoaded {
+//     status: ViewStatus.LOADED;
+//     relationEngineID: RelationEngineID;
+//     relationEngineNodeType: RelationEngineNodeType;
+//     viewType: ViewType;
+//     currentView: LandingPageView;
+// }
 
-export interface RelationEngineViewError {
-    status: ViewStatus.ERROR;
-    message: string;
-}
+// export interface RelationEngineViewError {
+//     status: ViewStatus.ERROR;
+//     message: string;
+// }
 
-export type RelationEngineView =
-    | RelationEngineViewNone
-    | RelationEngineViewLoading
-    | RelationEngineViewLoaded
-    | RelationEngineViewError;
+// export type RelationEngineView =
+//     | RelationEngineViewNone
+//     | RelationEngineViewLoading
+//     | RelationEngineViewLoaded
+//     | RelationEngineViewError;
 
 export interface LandingPageStoreState { }
 
-// VIEW STATES
-/*
- Sync view state
- Primarily for top level views which don't have an async load operation.
-*/
-
-export enum SyncViewStatus {
-    NONE,
-    LOADED,
-    ERROR
-}
-
-export interface SyncViewStateNone<T> {
-    status: SyncViewStatus.NONE;
-}
-
-export interface SyncViewStateError<T> {
-    status: SyncViewStatus.ERROR;
-    error: string;
-    type: T;
-}
-
-export interface SyncViewStateLoaded<T, S> {
-    status: SyncViewStatus.LOADED;
-    type: T;
-    state: S;
-}
-export type SyncViewState<T, S> = SyncViewStateNone<T> | SyncViewStateLoaded<T, S> | SyncViewStateError<T>;
-
-/*
-Async view state
-For any component which requires loading.
-*/
-
-export enum AsyncViewStatus {
-    NONE,
-    LOADING,
-    LOADED,
-    ERROR
-}
-
-export interface AsyncViewStateNone<T> {
-    status: AsyncViewStatus.NONE;
-    type: T;
-}
-
-export interface AsyncViewStateLoading<T> {
-    status: AsyncViewStatus.LOADING;
-    type: T;
-}
-
-export interface AsyncViewStateError<T> {
-    status: AsyncViewStatus.ERROR;
-    error: string;
-    type: T;
-}
-
-export interface AsyncViewStateLoaded<T, S> {
-    status: AsyncViewStatus.LOADED;
-    type: T;
-    state: S;
-}
-export type AsyncViewState<T, S> = AsyncViewStateNone<T> | AsyncViewStateLoading<T> | AsyncViewStateLoaded<T, S> | AsyncViewStateError<T>;
 
 
-// And the specific landing page views
-
-export type TaxonomyView = SyncViewState<ViewType.TAXONOMY, TaxonomyStoreState>;
 
 export interface NavigationBase {
     type: ViewType;
@@ -141,19 +72,11 @@ export interface NavigationNone {
 export interface NavigationTaxonomy {
     type: ViewType.TAXONOMY;
     ref: TaxonReference
-    // namespace: string;
-    // id: string;
-    // timestamp?: number
-    // relationEngineID: RelationEngineID;
 }
 
 export interface NavigationOntology {
     type: ViewType.ONTOLOGY;
     ref: OntologyReference
-    // namespace: string;
-    // id: string;
-    // timestamp?: number
-    // relationEngineID: RelationEngineID;
 }
 
 export type NavigationSome = NavigationTaxonomy | NavigationOntology;
@@ -164,7 +87,7 @@ export type Navigation = NavigationNone | NavigationSome;
 //     state: S;
 // }
 
-export type LandingPageView = TaxonomyView;
+// export type LandingPageView = TaxonomyView;
 
 // OKAY, back to REDUX
 
@@ -176,16 +99,16 @@ export type LandingPageView = TaxonomyView;
 
 // }
 
-export type View = TaxonomyView | OntologyView | null;
+
+
+export type View = ViewBase<TaxonomyView> | ViewBase<OntologyView> | null;
 
 
 // STORE STATE type definition
 export interface StoreState extends BaseStoreState {
-    // viewer: TaxonView | null;
-    // view: RelationEngineView;
     navigation: Navigation;
     trigger: number;
-    view: View
+    view: TopLevelView;
 }
 
 // Store Construction
@@ -198,7 +121,9 @@ export function makeInitialStoreState(): StoreState {
             type: ViewType.NONE
         },
         trigger: 0,
-        view: null
+        view: {
+            status: AsyncViewStatus.NONE
+        }
     };
 }
 

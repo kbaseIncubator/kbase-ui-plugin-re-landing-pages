@@ -1,10 +1,11 @@
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { StoreState, RelationEngineID, NavigationSome, ViewType } from './store';
-import RelationEngineAPIClient from '../lib/RelationEngineAPIClient';
-import { RelationEngineCollection } from '../types';
-import { stringToTaxonomyNamespace } from '../types/taxonomy';
-import { stringToOntologyNamespace } from '../types/ontology';
+import { StoreState, RelationEngineID, NavigationSome, View } from '../store';
+import { ViewType } from '../store/view';
+import RelationEngineAPIClient from '../../lib/RelationEngineAPIClient';
+import { RelationEngineCollection } from '../../types';
+import { stringToTaxonomyNamespace } from '../../types/taxonomy';
+import { stringToOntologyNamespace } from '../../types/ontology';
 // import * as uiLib from '@kbase/ui-lib';
 
 export enum AppActions {
@@ -26,10 +27,6 @@ export interface NavigateStart extends Action<AppActions.NAVIGATE_START> {
 export interface NavigateSuccess extends Action<AppActions.NAVIGATE_SUCCESS> {
     type: AppActions.NAVIGATE_SUCCESS;
     navigation: NavigationSome;
-    // relationEngineID: RelationEngineID;
-    // relationEngineNodeType: RelationEngineNodeType;
-    // viewType: ViewType;
-    // view: LandingPageView;
 }
 
 export interface NavigateError extends Action<AppActions.NAVIGATE_ERROR> {
@@ -52,19 +49,10 @@ export function navigateError(message: string): NavigateError {
 
 export function navigateSuccess(
     navigation: NavigationSome
-    // viewType: ViewType,
-    // relationEngineID: RelationEngineID
-    // relationEngineNodeType: RelationEngineNodeType,
-
-    // view: LandingPageView
 ): NavigateSuccess {
     return {
         type: AppActions.NAVIGATE_SUCCESS,
         navigation
-        // relationEngineID,
-        // relationEngineNodeType,
-        // viewType
-        // view
     };
 }
 
@@ -135,6 +123,19 @@ export function navigate(relationEngineID: RelationEngineID) {
             console.error('ERROR', ex);
             dispatch(navigateError(ex.message));
         }
+
+    };
+}
+
+export function view(view: View) {
+    return async (dispatch: ThunkDispatch<StoreState, void, Action>, getState: () => StoreState) => {
+
+
+        // determine which view should be invoked
+
+        // issue the store update accordingly
+
+        // the view should be invoked by the ... dispatcher?
 
     };
 }

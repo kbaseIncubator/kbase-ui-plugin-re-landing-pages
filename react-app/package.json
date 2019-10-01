@@ -51,5 +51,17 @@
         ]
     },
     "homepage": "./",
-    "xproxy": "https://ci.kbase.us"
+    "xproxy": "https://ci.kbase.us",
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        {
+            "language": "typescript",
+            "autoFix": true
+        },
+        {
+            "language": "typescriptreact",
+            "autoFix": true
+        }
+    ]
 }

@@ -24,7 +24,6 @@
     flex: 1 1 0px;
     overflow-x: hidden;
     white-space: nowrap;
-
     user-select: none;
 }
 
@@ -34,12 +33,12 @@
 }
 
 .OntologyTerm-name {
-    overflow-x: auto;
+    overflow-x: hidden;
     text-overflow: ellipsis;
     /* overflow-x: hidden;
-white-space: nowrap;
-text-overflow: ellipsis;
-user-select: none; */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    user-select: none; */
 }
 
 /* .OntologyTerm-id {

@@ -2,16 +2,17 @@ import { StoreState, RelationEngineID, Navigation, View } from '../../redux/stor
 import { Dispatch } from 'react';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
-import { Dispatcher } from './Dispatcher';
+import { Dispatcher } from './view';
 import { RootState } from '@kbase/ui-components';
-import { navigate, view } from '../../redux/actions';
+import { navigate } from '../../redux/actions';
+import { TopLevelView } from '../../redux/store/view';
 
 interface OwnProps { }
 
 interface StateProps {
     token: string | null;
     rootState: RootState;
-    navigation: Navigation;
+    view: TopLevelView;
     trigger: number;
 }
 
@@ -24,8 +25,8 @@ function mapStateToProps(state: StoreState, props: OwnProps): StateProps {
     const {
         auth: { userAuthorization },
         root: { state: rootState },
-        navigation,
-        trigger
+        trigger,
+        view
     } = state;
 
     // Auth integration.
@@ -36,7 +37,7 @@ function mapStateToProps(state: StoreState, props: OwnProps): StateProps {
         token = userAuthorization.token;
     }
 
-    return { token, rootState, navigation, trigger };
+    return { token, rootState, view, trigger };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>, ownProps: OwnProps): DispatchProps {
