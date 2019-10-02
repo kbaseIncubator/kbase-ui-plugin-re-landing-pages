@@ -75,9 +75,33 @@ export interface TermNode {
     release_expired: number;
 }
 
+// aka relation
+/*
+ case 'is_a':
+            return OntologyRelation.IS_A;
+        case 'part_of':
+            return OntologyRelation.PART_OF;
+        case 'has_part':
+            return OntologyRelation.HAS_PART;
+        case 'regulates':
+            return OntologyRelation.REGULATES;
+        case 'positively_regulates':
+            return OntologyRelation.POSITIVELY_REGULATES;
+        case 'negatively_regulates':
+            return OntologyRelation.NEGATIVELY_REGULATES;
+        case 'occurs_in':
+            return OntologyRelation.OCCURS_IN;
+        case 'ends_during':
+            return OntologyRelation.ENDS_DURING;
+        case 'happens_during':
+            return OntologyRelation.HAPPENS_DURING;
+*/
+export type EdgeType = 'is_a' | 'part_of' | 'has_part' | 'regulates' | 'positively_regulates' |
+    'negatively_regulates' | 'occurs_in' | 'ends_during' | 'happens_during';
+
 export interface TermEdge {
     id: string;
-    type: string;
+    type: EdgeType;
     created: number;
     expired: number;
     first_version: string;
@@ -87,7 +111,6 @@ export interface TermEdge {
     release_created: number;
     release_expired: number;
 }
-
 
 export interface RelatedTerm {
     term: TermNode;

@@ -1,10 +1,10 @@
-import { StoreState, RelationEngineID, Navigation, View } from '../../redux/store';
+import { StoreState, RelationEngineID, Navigation } from '../../redux/store';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { Dispatcher } from './Dispatcher';
 import { RootState } from '@kbase/ui-components';
-import { navigate, view } from '../../redux/actions';
+import { navigate } from '../../redux/actions';
 
 interface OwnProps { }
 

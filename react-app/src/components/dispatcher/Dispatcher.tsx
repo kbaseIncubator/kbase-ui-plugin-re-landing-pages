@@ -116,7 +116,9 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
                 this.props.navigate(relationEngineID);
             } else {
                 // TODO: remove?
-                this.props.navigate('taxonomy/ncbi_taxonomy/562');
+                // #review/ontology/go/GO:0007610
+                // this.props.navigate('taxonomy/ncbi_taxonomy/562');
+                this.props.navigate('ontology/go/GO:0007610');
             }
         }
     }

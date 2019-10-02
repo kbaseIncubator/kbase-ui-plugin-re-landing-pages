@@ -11,10 +11,7 @@ export interface Props {
     token: string;
     config: AppConfig;
     termRef: OntologyReference;
-    selectedTermRef: OntologyReference | null;
-    selectTerm: (termRef: OntologyReference) => void;
-    // taxonID: TaxonID;
-    navigateToTermRef: (termRef: OntologyReference) => void;
+    // navigateToTermRef: (termRef: OntologyReference) => void;
 }
 
 interface State { }
@@ -41,9 +38,9 @@ export default class Data extends React.Component<Props, State> {
     //     return this.db.getSelectedTerm(termRef);
     // }
 
-    navigateToTerm(termRef: OntologyReference) {
-        return this.props.navigateToTermRef(termRef);
-    }
+    // navigateToTerm(termRef: OntologyReference) {
+    //     return this.props.navigateToTermRef(termRef);
+    // }
 
     renderLoading() {
         return <Icon type="loading" />;
@@ -64,9 +61,6 @@ export default class Data extends React.Component<Props, State> {
         return (
             <View
                 terms={db.terms}
-                selectedTermRef={this.props.selectedTermRef}
-                selectTerm={this.props.selectTerm.bind(this)}
-                navigateToTermRef={this.props.navigateToTermRef.bind(this)}
             />
         );
     }

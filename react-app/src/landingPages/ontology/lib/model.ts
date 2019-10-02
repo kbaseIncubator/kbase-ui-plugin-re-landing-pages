@@ -1,5 +1,5 @@
-import OntologyAPIClient, { Namespace, TermNode, RelatedTerm } from './OntologyAPIClient';
-import { OntologyReference, OntologyNamespace, OntologyTerm, OntologySource, GOOntologyTerm } from '../../../types/ontology';
+import OntologyAPIClient, { Namespace, TermNode, RelatedTerm, EdgeType } from './OntologyAPIClient';
+import { OntologyReference, OntologyNamespace, OntologyTerm, OntologySource, GOOntologyTerm, OntologyRelatedTerm, OntologyRelation } from '../../../types/ontology';
 import { RelationEngineCollection } from '../../../types';
 
 export interface GetTermParams {
@@ -25,7 +25,7 @@ export interface GetParentsParams {
 // TODO: this should be a "related term", although maybe the relation 
 // collapses out with ontology - are they all is_a at least for parents, children?
 export interface GetParentsResult {
-    terms: Array<OntologyTerm>
+    terms: Array<OntologyRelatedTerm>
 }
 
 export interface GetChildrenParams {
@@ -35,7 +35,7 @@ export interface GetChildrenParams {
 // TODO: this should be a "related term", although maybe the relation 
 // collapses out with ontology - are they all is_a at least for parents, children?
 export interface GetChildrenResult {
-    terms: Array<OntologyTerm>
+    terms: Array<OntologyRelatedTerm>
 }
 
 export function ontologyNamespaceToString(namespace: OntologyNamespace): Namespace {
@@ -99,8 +99,72 @@ export function termNodeToTerm(term: TermNode, ts: number): OntologyTerm {
     }
 }
 
-export function relatedTermToTerm(relatedTerm: RelatedTerm, ts: number): OntologyTerm {
-    return termNodeToTerm(relatedTerm.term, ts);
+/*
+  IS_A = 'OntologyRelation$is_a',
+    PART_OF = 'OntologyRelation$part_of',
+    HAS_PART = 'OntologyRelation$has_part',
+    REGULATES = 'OntologyRelation$regulates',
+    POSITIVELY_REGULATES = 'OntologyRelation$positivelyRegulates',
+    NEGATIVELY_REGULATES = 'OntologyRelation$negativelyRegulates',
+    OCCURS_IN = 'OntologyRelation$occursIn',
+    ENDS_DURING = 'OntologyRelation$endsDuring',
+    HAPPENS_DURING = 'OntologyRelation$happensDuring'
+*/
+
+export function stringToTermRelation(relationString: EdgeType): OntologyRelation {
+    switch (relationString) {
+        case 'is_a':
+            return OntologyRelation.IS_A;
+        case 'part_of':
+            return OntologyRelation.PART_OF;
+        case 'has_part':
+            return OntologyRelation.HAS_PART;
+        case 'regulates':
+            return OntologyRelation.REGULATES;
+        case 'positively_regulates':
+            return OntologyRelation.POSITIVELY_REGULATES;
+        case 'negatively_regulates':
+            return OntologyRelation.NEGATIVELY_REGULATES;
+        case 'occurs_in':
+            return OntologyRelation.OCCURS_IN;
+        case 'ends_during':
+            return OntologyRelation.ENDS_DURING;
+        case 'happens_during':
+            return OntologyRelation.HAPPENS_DURING;
+        default:
+            throw new Error('Unknown relation: ' + relationString);
+    }
+}
+
+export function relationToString(relation: OntologyRelation): EdgeType {
+    switch (relation) {
+        case OntologyRelation.IS_A:
+            return 'is_a';
+        case OntologyRelation.PART_OF:
+            return 'part_of';
+        case OntologyRelation.HAS_PART:
+            return 'has_part';
+        case OntologyRelation.REGULATES:
+            return 'regulates';
+        case OntologyRelation.POSITIVELY_REGULATES:
+            return 'positively_regulates';
+        case OntologyRelation.NEGATIVELY_REGULATES:
+            return 'negatively_regulates';
+        case OntologyRelation.OCCURS_IN:
+            return 'occurs_in';
+        case OntologyRelation.ENDS_DURING:
+            return 'ends_during';
+        case OntologyRelation.HAPPENS_DURING:
+            return 'happens_during';
+    }
+}
+
+export function relatedTermToTerm(relatedTerm: RelatedTerm, ts: number): OntologyRelatedTerm {
+    const term = termNodeToTerm(relatedTerm.term, ts);
+    const relation = stringToTermRelation(relatedTerm.edge.type)
+    return {
+        term, relation
+    }
 }
 
 export default class OntologyModel {
