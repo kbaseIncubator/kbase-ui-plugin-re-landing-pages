@@ -1,5 +1,5 @@
 import DB, { DBProps, DBStatus, DBStateNone, DBStateLoading, DBStateLoaded, DBStateError } from '../../../lib/DB';
-import { OntologyTerm, OntologyReference, GOOntologyTerm } from '../../../types/ontology';
+import { OntologyReference, OntologyRelatedTerm } from '../../../types/ontology';
 import { AppConfig } from '@kbase/ui-components';
 import OntologyModel from '../lib/model';
 
@@ -7,7 +7,7 @@ export type ParentsDBStateNone = DBStateNone;
 export type ParentsDBStateLoading = DBStateLoading;
 export type ParentsDBStateError = DBStateError;
 export interface ParentsDBStateLoaded extends DBStateLoaded {
-    terms: Array<OntologyTerm>;
+    terms: Array<OntologyRelatedTerm>;
 }
 
 export type ParentsDBState = ParentsDBStateNone | ParentsDBStateLoading | ParentsDBStateLoaded | ParentsDBStateError;
@@ -43,8 +43,8 @@ export default class ParentsDB extends DB<ParentsDBState> {
                 ref: termRef
             });
 
-            terms.sort((a: GOOntologyTerm, b: GOOntologyTerm) => {
-                return a.name.localeCompare(b.name);
+            terms.sort((a: OntologyRelatedTerm, b: OntologyRelatedTerm) => {
+                return a.term.name.localeCompare(b.term.name);
             });
 
             this.set((state: ParentsDBState) => {

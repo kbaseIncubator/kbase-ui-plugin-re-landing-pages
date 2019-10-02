@@ -42,7 +42,14 @@ export enum OntologySource {
 }
 export enum OntologyRelation {
     IS_A = 'OntologyRelation$is_a',
-    PART_OF = 'OntologyRelation$part_of'
+    PART_OF = 'OntologyRelation$part_of',
+    HAS_PART = 'OntologyRelation$has_part',
+    REGULATES = 'OntologyRelation$regulates',
+    POSITIVELY_REGULATES = 'OntologyRelation$positivelyRegulates',
+    NEGATIVELY_REGULATES = 'OntologyRelation$negativelyRegulates',
+    OCCURS_IN = 'OntologyRelation$occursIn',
+    ENDS_DURING = 'OntologyRelation$endsDuring',
+    HAPPENS_DURING = 'OntologyRelation$happensDuring'
 }
 
 // Brief term - for list displays

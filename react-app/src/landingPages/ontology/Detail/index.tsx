@@ -4,6 +4,7 @@ import './style.css';
 import { OntologyTerm, Synonym } from '../../../types/ontology';
 import TermLink from '../TermLink';
 import LinkedObjects from './LinkedObjects';
+import Children from '../Children';
 
 export interface DetailProps {
     term: OntologyTerm
@@ -73,43 +74,48 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                 </div>
                 <div className="InfoTable-row">
                     <div className="InfoTable-labelCol">
-                        Synonyms
-                    </div>
+                        synonyms
+                </div>
                     <div className="InfoTable-dataCol">
-
-                        <div className="InfoTable-row">
-                            <div className="InfoTable-labelCol">
-                                exact
-                                </div>
-                            <div className="InfoTable-dataCol">
-                                {this.renderSynonyms(this.props.term.synonyms.exact)}
-                            </div>
+                        {this.renderAllSynonyms()}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    renderAllSynonyms() {
+        return (
+            <div className="InfoTable DetailTable">
+                <div className="InfoTable-row">
+                    <div className="InfoTable-labelCol">
+                        exact
                         </div>
-
-                        <div className="InfoTable-row">
-                            <div className="InfoTable-labelCol">
-                                narrow
+                    <div className="InfoTable-dataCol">
+                        {this.renderSynonyms(this.props.term.synonyms.exact)}
+                    </div>
+                </div>
+                <div className="InfoTable-row">
+                    <div className="InfoTable-labelCol">
+                        narrow
                                 </div>
-                            <div className="InfoTable-dataCol">
-                                {this.renderSynonyms(this.props.term.synonyms.narrow)}
-                            </div>
-                        </div>
-                        <div className="InfoTable-row">
-                            <div className="InfoTable-labelCol">
-                                broad
+                    <div className="InfoTable-dataCol">
+                        {this.renderSynonyms(this.props.term.synonyms.narrow)}
+                    </div>
+                </div>
+                <div className="InfoTable-row">
+                    <div className="InfoTable-labelCol">
+                        broad
                                 </div>
-                            <div className="InfoTable-dataCol">
-                                {this.renderSynonyms(this.props.term.synonyms.broad)}
-                            </div>
-                        </div>
-                        <div className="InfoTable-row">
-                            <div className="InfoTable-labelCol">
-                                related
+                    <div className="InfoTable-dataCol">
+                        {this.renderSynonyms(this.props.term.synonyms.broad)}
+                    </div>
+                </div>
+                <div className="InfoTable-row">
+                    <div className="InfoTable-labelCol">
+                        related
                                 </div>
-                            <div className="InfoTable-dataCol">
-                                {this.renderSynonyms(this.props.term.synonyms.broad)}
-                            </div>
-                        </div>
+                    <div className="InfoTable-dataCol">
+                        {this.renderSynonyms(this.props.term.synonyms.broad)}
                     </div>
                 </div>
             </div>
@@ -135,19 +141,34 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
             </div>
         )
     }
+    renderChildren() {
+        return <Children
+            termRef={this.props.term.ref}
+        />
+    }
 
     render() {
         const tabs = [
+            {
+                tab: 'graph',
+                title: 'Graph',
+                component: this.renderGraph()
+            },
             {
                 tab: 'detail',
                 title: 'Detail',
                 component: this.renderDetail()
             },
-            // {
-            //     tab: 'graph',
-            //     title: 'Graph',
-            //     component: this.renderGraph()
-            // },
+            {
+                tab: 'synonyms',
+                title: 'Synonyms',
+                component: this.renderAllSynonyms()
+            },
+            {
+                tab: 'children',
+                title: 'Children',
+                component: this.renderChildren()
+            },
             {
                 tab: 'linked',
                 title: 'Linked Objects',

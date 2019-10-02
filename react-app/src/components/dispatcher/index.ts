@@ -11,14 +11,13 @@ interface OwnProps { }
 interface StateProps {
     token: string | null;
     rootState: RootState;
-    // view: RelationEngineView;
-    // viewState: ViewStatus;
     navigation: Navigation;
     trigger: number;
 }
 
 interface DispatchProps {
     navigate: (relationEngineID: RelationEngineID) => void;
+    // view: (view: View) => void;
 }
 
 function mapStateToProps(state: StoreState, props: OwnProps): StateProps {
@@ -44,7 +43,10 @@ function mapDispatchToProps(dispatch: Dispatch<Action>, ownProps: OwnProps): Dis
     return {
         navigate: (relationEngineID: RelationEngineID) => {
             dispatch(navigate(relationEngineID) as any);
-        }
+        },
+        // view: (view: View) => {
+        //     dispatch(view(view) as any)
+        // }
     };
 }
 

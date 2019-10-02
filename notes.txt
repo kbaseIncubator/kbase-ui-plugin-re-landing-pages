@@ -1,6 +1,5 @@
 http://ci.kbase.us/#review/taxonomy/ncbi_taxonomy/136841
 
-
 GO:0008343
 
 http://localhost:3000/#review/ontology/go/GO:0007610

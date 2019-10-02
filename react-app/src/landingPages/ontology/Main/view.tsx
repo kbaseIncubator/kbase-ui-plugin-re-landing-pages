@@ -1,7 +1,6 @@
 import React from 'react';
 import { OntologyReference, OntologyTerm } from '../../../types/ontology';
 import './style.css';
-import Nav from '../Nav';
 import Detail from '../Detail';
 import { Row, Col } from 'antd';
 import SourceInfo from './SourceInfo';
@@ -37,11 +36,8 @@ export default class OntologyView extends React.Component<Props, State> {
                     </Row>
                 </div>
                 <div className="Row scrollable">
-                    <div className="Col scrollable" style={{ flex: '0 0 20em' }}>
-                        <Nav targetTerm={this.props.targetTerm} selectedTerm={this.props.selectedTerm} selectTerm={this.props.selectTerm.bind(this)} />
-                    </div>
 
-                    <div className="Col scrollable" style={{ marginLeft: '10px' }}>
+                    <div className="Col scrollable" >
                         <Detail term={this.props.selectedTerm} />
                     </div>
                 </div>

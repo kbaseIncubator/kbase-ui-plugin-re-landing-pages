@@ -12,11 +12,7 @@ export type MainState = NoneState | LoadingState | ErrorState | MainLoadedState;
 
 type State = NoneState | LoadedState | LoadingState | ErrorState;
 
-export interface TaxonomyStoreState {
-    taxonomy: {
-        main: MainState;
-    };
-}
+
 
 // export function makeInitialStoreState(): TaxonomyStoreState {
 //     return {

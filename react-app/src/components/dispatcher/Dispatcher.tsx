@@ -3,16 +3,15 @@ import { RootState } from '@kbase/ui-components';
 import {
     RelationEngineID,
     Navigation,
-    ViewType,
     NavigationSome
 } from '../../redux/store';
+import { ViewType } from '../../redux/store/view';
 import Taxonomy from '../../landingPages/taxonomy';
 import OntologyView from '../../landingPages/ontology';
 
 export interface DispatcherProps {
     token: string | null;
     rootState: RootState;
-    // view: RelationEngineView;
     navigation: Navigation;
     trigger: number;
     navigate: (relationEngineID: RelationEngineID) => void;
@@ -41,23 +40,6 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
     renderNavigationNone() {
         return <div>none</div>;
     }
-
-    // renderNavigationLoading(view: RelationEngineViewLoading) {
-    //     return <Loading message="Loading view..." />;
-    // }
-
-    // renderNavigationLoaded(view: RelationEngineViewLoaded) {
-    //     // This is currently how we dispatch to the type-specific
-    //     // landing page.
-    //     switch (view.relationEngineNodeType) {
-    //         case RelationEngineNodeType.TAXON:
-    //             return <Taxonomy taxonID={view.relationEngineID} />;
-    //     }
-    // }
-
-    // renderNavigationError(view: RelationEngineViewError) {
-    //     return <Alert type="error" message={`View Error: ${view.message}`} />;
-    // }
 
     renderNavigationSome(navigation: NavigationSome) {
         // This is currently how we dispatch to the type-specific
@@ -134,7 +116,9 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
                 this.props.navigate(relationEngineID);
             } else {
                 // TODO: remove?
-                this.props.navigate('taxonomy/ncbi_taxonomy/562');
+                // #review/ontology/go/GO:0007610
+                // this.props.navigate('taxonomy/ncbi_taxonomy/562');
+                this.props.navigate('ontology/go/GO:0007610');
             }
         }
     }

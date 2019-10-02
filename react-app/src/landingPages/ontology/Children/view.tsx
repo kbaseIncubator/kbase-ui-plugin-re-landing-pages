@@ -1,42 +1,43 @@
 import React from 'react';
-import { OntologyReference, OntologyTermBrief } from '../../../types/ontology';
+import { OntologyRelatedTerm, OntologyRelation } from '../../../types/ontology';
 import './style.css';
-import Term from '../OntologyTerm';
-import { Empty } from 'antd';
+import { Empty, Table } from 'antd';
+import Column from 'antd/lib/table/Column';
+import { relationToString } from '../lib/model';
 
 export interface Props {
-    terms: Array<OntologyTermBrief>;
-    // maxItems: number;
-    // totalItems: number;
-    selectedTermRef: OntologyReference | null;
-    selectTerm: (termRef: OntologyReference) => void;
-    navigateToTermRef: (termRef: OntologyReference) => void;
+    terms: Array<OntologyRelatedTerm>;
 }
 
 interface State { }
 
 export default class OntologyList extends React.Component<Props, State> {
+    renderRelation(relation: OntologyRelation) {
+        return relationToString(relation);
 
-    navigateToTerm(termRef: OntologyReference) {
-        this.props.navigateToTermRef(termRef);
     }
-    renderItemsPlain() {
-        return this.props.terms.map((term) => {
-            const isActive = this.props.selectedTermRef !== null &&
-                this.props.selectedTermRef.collection === term.ref.collection &&
-                this.props.selectedTermRef.namespace === term.ref.namespace &&
-                this.props.selectedTermRef.id === term.ref.id;
-
-            return (
-                <Term
-                    term={term}
-                    isActive={isActive}
-                    selectTerm={this.props.selectTerm.bind(this)}
-                    key={term.ref.id}
-                    navigateToTermRef={this.navigateToTerm.bind(this)}
-                />
-            );
-        });
+    renderItemsTable() {
+        return <Table<OntologyRelatedTerm>
+            dataSource={this.props.terms}
+            className="KBaseAntdOverride-remove-table-border ScrollingFlexTable"
+            size="small"
+            pagination={false}
+            scroll={{ y: '100%' }}
+        >
+            <Column dataIndex='term.name' title="Name" width="60%" />
+            <Column dataIndex="term.goID" title="ID" width="20%"
+                render={(id: string, term: OntologyRelatedTerm) => {
+                    return (
+                        <a href={`/#review/ontology/go/${id}/${term.term.ref.timestamp}`} target="_parent">
+                            {id}
+                        </a>
+                    )
+                }} />
+            <Column dataIndex="relation" title="Relation" width="20%"
+                render={(relation: OntologyRelation) => {
+                    return this.renderRelation(relation);
+                }} />
+        </Table>
     }
     renderNoItems() {
         return <Empty description="No Children" image={Empty.PRESENTED_IMAGE_SIMPLE} />;
@@ -45,6 +46,6 @@ export default class OntologyList extends React.Component<Props, State> {
         if (this.props.terms.length === 0) {
             return this.renderNoItems();
         }
-        return this.renderItemsPlain();
+        return this.renderItemsTable();
     }
 }
