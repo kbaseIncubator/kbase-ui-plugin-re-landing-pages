@@ -1,7 +1,6 @@
 import { TaxonReference, Taxon, TaxonomyNamespace, NCBITaxon, taxonomyNamespaceToString } from '../../../types/taxonomy';
 import TaxonAPIClient from './TaxonAPIClient';
 import { RelationEngineCollection } from '../../../types';
-import { WorkspaceType } from '../../../types/ontology';
 
 // const INITIAL_BATCH_SIZE = 100;
 // const BATCH_SIZE = 1000;
@@ -14,11 +13,17 @@ export interface GetChildrenOptions {
     searchTerm: string;
 }
 
-export interface WorkspaceType {
+export interface WorkspaceObjectType {
     module: string;
     name: string;
     majorVersion: number;
     minorVersion: number;
+}
+
+export enum WorkspaceType {
+    UNKNOWN,
+    NARRATIVE,
+    REFDATA
 }
 
 export interface LinkedObject {
@@ -29,7 +34,9 @@ export interface LinkedObject {
     objectName: string;
     workspaceUpdatedAt: number;
     createdAt: number;
-    type: WorkspaceType;
+    type: WorkspaceObjectType;
+    workspaceType: WorkspaceType;
+    title: string;
 }
 
 export interface GetLinkedObjectsOptions {
@@ -279,6 +286,18 @@ export class TaxonomyModel {
         const result = await this.taxonomyClient.getAssociatedWorkspaceObjects(params);
 
         const linkedObjects = result.results.map((result) => {
+            let workspaceType: WorkspaceType;
+            let title: string;
+            if (result.ws_obj.workspace.narr_name) {
+                workspaceType = WorkspaceType.NARRATIVE;
+                title = result.ws_obj.workspace.narr_name;
+            } else if (result.ws_obj.workspace.refdata_source) {
+                workspaceType = WorkspaceType.REFDATA;
+                title = result.ws_obj.workspace.refdata_source + ' Reference Data';
+            } else {
+                workspaceType = WorkspaceType.UNKNOWN;
+                title = 'Unknown Workspace Type';
+            }
             return {
                 linkedAt: result.edge.updated_at,
                 objectID: result.ws_obj.object_id,
@@ -292,7 +311,9 @@ export class TaxonomyModel {
                     name: result.ws_obj.type.type_name,
                     majorVersion: result.ws_obj.type.maj_ver,
                     minorVersion: result.ws_obj.type.min_ver
-                }
+                },
+                workspaceType,
+                title
             };
         });
         return {

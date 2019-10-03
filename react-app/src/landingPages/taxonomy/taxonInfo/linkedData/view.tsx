@@ -1,5 +1,5 @@
 import React from 'react';
-import { LinkedObject, WorkspaceType } from '../../lib/model';
+import { LinkedObject, WorkspaceType, WorkspaceObjectType } from '../../lib/model';
 import { Table, Tooltip, Spin, Alert } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { LinkedObjectsCollection, LinkedObjectsData } from './LinkedDataDB';
@@ -76,7 +76,7 @@ export default class LinkedData extends React.Component<Props, State> {
                 title="Type"
                 dataIndex="type"
                 width="10%"
-                render={(type: WorkspaceType) => {
+                render={(type: WorkspaceObjectType) => {
                     const typeID = [[type.module, type.name].join('.'), [type.majorVersion, type.minorVersion].join('.')].join('-');
                     return <a href={`/#spec/type/${typeID}`} target="_blank" rel="noopener noreferrer">
                         {type.name}
@@ -152,10 +152,19 @@ export default class LinkedData extends React.Component<Props, State> {
                 title="Narrative"
                 width="35%"
                 dataIndex="workspaceID"
-                render={(workspaceID: number) => {
-                    return <a href={`/narrative/${workspaceID}`} target="_blank" rel="noopener noreferrer">
-                        Narrative or refdata ws title
-                    </a>
+                render={(workspaceID: number, linkedObject: LinkedObject) => {
+                    switch (linkedObject.workspaceType) {
+                        case WorkspaceType.NARRATIVE:
+                            return <a href={`/narrative/${workspaceID}`} target="_blank" rel="noopener noreferrer">
+                                {linkedObject.title}
+                            </a>
+                        case WorkspaceType.REFDATA:
+                            return <span>{linkedObject.title}</span>;
+                        case WorkspaceType.UNKNOWN:
+                            return <span>{linkedObject.title}</span>;
+
+                    }
+
                 }}
             />
             <Column

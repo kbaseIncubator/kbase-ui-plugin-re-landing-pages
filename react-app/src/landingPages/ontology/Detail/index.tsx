@@ -171,7 +171,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
             },
             {
                 tab: 'linked',
-                title: 'Linked Objects',
+                title: 'Linked Data',
                 component: this.renderLinkedObjects()
             },
             // {

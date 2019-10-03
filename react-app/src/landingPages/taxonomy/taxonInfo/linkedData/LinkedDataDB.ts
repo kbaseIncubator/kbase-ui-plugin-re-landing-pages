@@ -135,7 +135,7 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
                 offset,
                 limit
             });
-
+            console.log('linked', result);
             return result;
         };
 
