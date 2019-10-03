@@ -31,8 +31,12 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
         if (this.props.term.comments.length === 0) {
             return <i>-</i>;
         }
+
         return this.props.term.comments.map((comment, index) => {
-            return <p key={String(index)}>{comment}</p>
+            const comments = comment.split('\n');
+            return comments.map((comment) => {
+                return <p key={String(index)}>{comment}</p>
+            });
         });
     }
 
@@ -171,7 +175,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
             },
             {
                 tab: 'linked',
-                title: 'Linked Objects',
+                title: 'Linked Data',
                 component: this.renderLinkedObjects()
             },
             // {

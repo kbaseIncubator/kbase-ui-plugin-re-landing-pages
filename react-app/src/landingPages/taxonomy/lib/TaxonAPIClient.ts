@@ -127,6 +127,10 @@ export interface GetAssociatedWorkspaceObjectsResultResult {
             type_name: string;
             maj_ver: number;
             min_ver: number;
+        },
+        workspace: {
+            narr_name: string | null;
+            refdata_source: string | null;
         }
     };
 }
@@ -229,6 +233,7 @@ export default class TaxonomyAPIClient extends DynamicServiceClient {
         const [result] = await this.callFunc<[GetAssociatedWorkspaceObjectsParams], [GetAssociatedWorkspaceObjectsResult]>('get_associated_ws_objects', [
             params
         ]);
+        console.log('associated', result);
         return result;
     }
 }
