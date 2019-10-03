@@ -12,8 +12,8 @@ export default class SourceInfo extends React.Component<Props, State> {
     render() {
         return (
             <div className="Row">
-                <div className="Col-auto">
-                    <img src="images/go-logo.png" style={{ height: '64px' }} alt="Gene Ontology Logo" />
+                <div className="Col-auto" style={{ justifyContent: 'center' }}>
+                    <img src="images/go-logo.png" style={{ height: '50px' }} alt="Gene Ontology Logo" />
                 </div>
                 <div className="Col">
                     <div className="InfoTable">
