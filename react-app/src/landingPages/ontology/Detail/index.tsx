@@ -5,6 +5,7 @@ import { OntologyTerm, Synonym } from '../../../types/ontology';
 import TermLink from '../TermLink';
 import LinkedObjects from './LinkedObjects';
 import Children from '../Children';
+import AncestorGraph from '../AncestorGraph';
 
 export interface DetailProps {
     term: OntologyTerm
@@ -34,8 +35,8 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
 
         return this.props.term.comments.map((comment, index) => {
             const comments = comment.split('\n');
-            return comments.map((comment) => {
-                return <p key={String(index)}>{comment}</p>
+            return comments.map((comment, index2) => {
+                return <p key={String(index) + '-' + String(index2)}>{comment}</p>
             });
         });
     }
@@ -73,7 +74,6 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                     </div>
                     <div className="InfoTable-dataCol">
                         {this.renderComments()}
-
                     </div>
                 </div>
                 <div className="InfoTable-row">
@@ -127,9 +127,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
     }
     renderGraph() {
         return (
-            <div>
-                graph here...
-            </div>
+            <AncestorGraph termRef={this.props.term.ref} />
         )
     }
     renderLinkedObjects() {

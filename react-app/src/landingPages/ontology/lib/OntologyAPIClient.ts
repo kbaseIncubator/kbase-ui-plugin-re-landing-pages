@@ -60,7 +60,7 @@ export interface TermNode {
     comments: Array<string>;
     def: {
         val: string;
-        xrefs: Array<string>;
+        xrefs: Array<XRef>;
     };
     created: number;
     expired: number;
@@ -135,8 +135,9 @@ export interface GetTermsParams {
 }
 
 export interface GetTermsResult {
-    results: Array<TermNode>,
-    ts: number
+    results: Array<TermNode>;
+    ts: number;
+    ns: string;
     // ignore the stats
 }
 
@@ -148,6 +149,20 @@ export interface GetRelatedObjectsParams {
 
 export interface GetRelatedObjectsResult {
 
+}
+
+export interface GetHierarchicalAncestorsParams {
+    ns: Namespace;
+    id: string;
+    ts: number;
+    offset: number;
+    limit: number;
+}
+
+export interface GetHierarchicalAncestorsResult {
+    results: Array<RelatedTerm>;
+    ns: Namespace;
+    ts: number;
 }
 
 export default class OntologyAPIClient extends DynamicServiceClient {
@@ -188,6 +203,16 @@ export default class OntologyAPIClient extends DynamicServiceClient {
             ns, id, ts
         };
         const [result] = await this.callFunc<[GetRelatedObjectsParams], [GetRelatedObjectsResult]>('get_children', [
+            params
+        ]);
+        return result;
+    }
+
+    async getHierarchicalAncestors({ ns, id, ts }: { ns: Namespace, id: string, ts: number }): Promise<GetHierarchicalAncestorsResult> {
+        const params: GetHierarchicalAncestorsParams = {
+            ns, id, ts, offset: 0, limit: 1000
+        };
+        const [result] = await this.callFunc<[GetHierarchicalAncestorsParams], [GetHierarchicalAncestorsResult]>('get_hierarchical_ancestors', [
             params
         ]);
         return result;

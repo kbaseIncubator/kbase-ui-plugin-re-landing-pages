@@ -46,7 +46,7 @@ export default class LinkedObjectsDB extends DB<LinkedObjectsDBState> {
                         name: 'Genome'
                     },
                     scientificName: 'Escherichia coli',
-                    feature: 'CF61_RS00005'
+                    feature: 'CF61_RS00005a'
                 },
                 {
                     object: {
@@ -59,7 +59,7 @@ export default class LinkedObjectsDB extends DB<LinkedObjectsDBState> {
                         name: 'Genome'
                     },
                     scientificName: 'Escherichia coli',
-                    feature: 'CF61_RS00005'
+                    feature: 'CF61_RS00005b'
                 },
                 {
                     object: {
@@ -72,7 +72,7 @@ export default class LinkedObjectsDB extends DB<LinkedObjectsDBState> {
                         name: 'Genome'
                     },
                     scientificName: 'Escherichia coli',
-                    feature: 'CF61_RS00005'
+                    feature: 'CF61_RS00005c'
                 },
                 {
                     object: {
@@ -85,7 +85,7 @@ export default class LinkedObjectsDB extends DB<LinkedObjectsDBState> {
                         name: 'Genome'
                     },
                     scientificName: 'Escherichia coli',
-                    feature: 'CF61_RS00005'
+                    feature: 'CF61_RS00005d'
                 }
             ]
 

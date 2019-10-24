@@ -8,18 +8,24 @@ export interface Props {
 }
 
 interface State {
-
 }
 
 export default class LinkedObjects extends React.Component<Props, State> {
     renderTable() {
-        return <Table
+        return <Table<LinkedObject>
             dataSource={this.props.linkedObjects}
             className="KBaseAntdOverride-remove-table-border ScrollingFlexTable"
             size="small"
             pagination={false}
             scroll={{ y: '100%' }}
-            // rowKey="name"
+            rowKey={(row: LinkedObject) => {
+                return [
+                    row.object.workspaceID,
+                    row.object.id,
+                    row.object.version,
+                    row.feature
+                ].join(':');
+            }}
             bordered={false}
         >
             <Table.Column
