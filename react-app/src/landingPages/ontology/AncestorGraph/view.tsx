@@ -53,7 +53,7 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                 }}
                 key="term.id"
                 title="Name"
-                width="90%"
+                width="85%"
                 render={(term: OntologyTerm, termNode: TermsGraphNode) => {
                     return <span
                         style={{ cursor: 'pointer' }}
@@ -70,10 +70,11 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                     return a.term.name.localeCompare(b.term.name);
                 }}
                 title="ID"
-                width="10%"
+                width="15%"
+
                 render={(term: OntologyTerm) => {
                     const url = [
-                        '#review',
+                        '/#review',
                         'ontology',
                         ontologyNamespaceToString(term.ref.namespace),
                         term.ref.id

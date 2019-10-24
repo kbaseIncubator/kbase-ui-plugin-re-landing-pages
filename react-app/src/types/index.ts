@@ -1,6 +1,3 @@
-// import { OntologySource } from './ontology';
-// import { TaxonomySource } from './taxonomy';
-
 type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
 
 interface JSONArray extends Array<JSONValue> { };
