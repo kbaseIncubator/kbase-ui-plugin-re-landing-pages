@@ -32,6 +32,14 @@ export default class Data extends React.Component<Props, State> {
         });
     }
 
+    componentDidMount() {
+        const db = this.db.get();
+        switch (db.status) {
+            case DBStatus.NONE:
+                this.db.getLinkedObjects(this.props.termRef);
+        }
+    }
+
     renderLoading() {
         return <Icon type="loading" />;
     }
@@ -52,7 +60,6 @@ export default class Data extends React.Component<Props, State> {
         const db = this.db.get();
         switch (db.status) {
             case DBStatus.NONE:
-                this.db.getLinkedObjects(this.props.termRef);
                 return this.renderLoading();
             case DBStatus.LOADING:
                 return this.renderLoading();

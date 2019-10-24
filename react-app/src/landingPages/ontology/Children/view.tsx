@@ -22,6 +22,9 @@ export default class OntologyList extends React.Component<Props, State> {
             className="KBaseAntdOverride-remove-table-border ScrollingFlexTable"
             size="small"
             pagination={false}
+            rowKey={(row: OntologyRelatedTerm) => {
+                return row.term.ref.id;
+            }}
             scroll={{ y: '100%' }}
         >
             <Column dataIndex='term.name' title="Name" width="60%" />

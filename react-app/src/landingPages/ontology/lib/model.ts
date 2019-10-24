@@ -38,6 +38,33 @@ export interface GetChildrenResult {
     terms: Array<OntologyRelatedTerm>
 }
 
+export interface GetAncestorGraphParams {
+    ref: OntologyReference;
+}
+
+export type NodeID = string;
+
+export interface TermsGraphNode {
+    term: OntologyTerm;
+    isRoot: boolean;
+    id: NodeID;
+}
+
+export interface TermsGraphRelation {
+    relation: OntologyRelation;
+    from: NodeID;
+    to: NodeID;
+}
+
+export interface TermsGraph {
+    terms: Array<TermsGraphNode>;
+    relations: Array<TermsGraphRelation>;
+}
+
+export interface GetAncestorGraphResult {
+    termsGraph: TermsGraph;
+}
+
 export function ontologyNamespaceToString(namespace: OntologyNamespace): Namespace {
     switch (namespace) {
         case OntologyNamespace.GO:
@@ -254,6 +281,76 @@ export default class OntologyModel {
             terms: result.results.map((item) => {
                 return relatedTermToTerm(item, result.ts);
             })
+        };
+    }
+
+    async getAncestorGraph({ ref }: GetAncestorGraphParams): Promise<GetAncestorGraphResult> {
+        const client = new OntologyAPIClient({
+            token: this.token,
+            url: this.url
+        });
+
+        const result = await client.getHierarchicalAncestors({
+            ns: ontologyNamespaceToString(ref.namespace),
+            id: ref.id,
+            ts: ref.timestamp || Date.now()
+        });
+
+        const relations: Array<TermsGraphRelation> = [];
+        result.results.forEach((item) => {
+            const relation = stringToTermRelation(item.edge.type);
+            // if (item.edge.from === 'GO:0008150' || item.edge.to === 'GO:0008150') {
+            //     console.log('R', item.edge.from === item.edge.to, item.edge.from, item.edge.to);
+            // }
+            // if (item.term.id === 'GO:0008150') {
+            //     console.log('T', item);
+            // }
+            if (relations.some((r) => {
+                return r.from === item.edge.from &&
+                    r.to === item.edge.to &&
+                    r.relation === relation
+            })) {
+                return;
+            }
+            relations.push({
+                relation,
+                from: item.edge.from,
+                to: item.edge.to
+            });
+        });
+        const relationsMap = relations.reduce((m, r) => {
+            let nodes = m.get(r.from);
+            if (!nodes) {
+                nodes = [];
+            }
+            nodes.push(r);
+            m.set(r.from, nodes);
+            return m;
+        }, new Map<string, Array<TermsGraphRelation>>());
+
+        const terms = new Map<string, TermsGraphNode>();
+        result.results.forEach((item) => {
+            if (!terms.has(item.term.id)) {
+                const term = termNodeToTerm(item.term, result.ts);
+                let isRoot = false;
+                const nodes = relationsMap.get(term.ref.id);
+                if (!nodes) {
+                    console.log('is root');
+                    isRoot = true;
+                }
+
+                terms.set(item.term.id, {
+                    id: term.ref.id,
+                    term, isRoot
+                });
+            }
+        });
+
+        return {
+            termsGraph: {
+                terms: Array.from(terms.values()),
+                relations
+            }
         };
     }
 }
