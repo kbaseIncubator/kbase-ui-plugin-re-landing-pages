@@ -165,6 +165,34 @@ export interface GetHierarchicalAncestorsResult {
     ts: number;
 }
 
+export interface GetAssociatedWSObjectsParams {
+    id: string,
+    ns: Namespace,
+    ts: number,
+    offset: number,
+    limit: number
+}
+
+export interface RelatedWSObject {
+    features: Array<{
+        feature_id: string;
+        updated_at: number;
+    }>,
+    ws_obj: {
+        name: string,
+        workspace_id: number;
+        object_id: number;
+        version: number;
+    }
+}
+
+export interface GetAssociatedWSObjectsResults {
+    results: Array<RelatedWSObject>;
+    ns: string;
+    ts: number;
+    stats: any;
+}
+
 export default class OntologyAPIClient extends DynamicServiceClient {
     static module: string = 'OntologyAPI';
 
@@ -213,6 +241,13 @@ export default class OntologyAPIClient extends DynamicServiceClient {
             ns, id, ts, offset: 0, limit: 1000
         };
         const [result] = await this.callFunc<[GetHierarchicalAncestorsParams], [GetHierarchicalAncestorsResult]>('get_hierarchical_ancestors', [
+            params
+        ]);
+        return result;
+    }
+
+    async getAssociatedWSObjects(params: GetAssociatedWSObjectsParams): Promise<GetAssociatedWSObjectsResults> {
+        const [result] = await this.callFunc<[GetAssociatedWSObjectsParams], [GetAssociatedWSObjectsResults]>('get_associated_ws_objects', [
             params
         ]);
         return result;
