@@ -42,6 +42,29 @@ export interface GetAncestorGraphParams {
     ref: OntologyReference;
 }
 
+export interface GetRelatedFeaturesParams {
+    ref: OntologyReference;
+    offset: number;
+    limit: number;
+}
+
+export interface WorkspaceObjectReference {
+    workspaceID: number;
+    objectID: number;
+    version: number;
+}
+
+export interface RelatedFeature {
+    objectName: string;
+    featureID: string;
+    relatedAt: number;
+    objectRef: WorkspaceObjectReference;
+}
+
+export interface GetRelatedFeaturesResult {
+    features: Array<RelatedFeature>
+}
+
 export type NodeID = string;
 
 export interface TermsGraphNode {
@@ -284,6 +307,57 @@ export default class OntologyModel {
         };
     }
 
+    async getRelatedFeatures({ ref, offset, limit }: GetRelatedFeaturesParams): Promise<GetRelatedFeaturesResult> {
+        const client = new OntologyAPIClient({
+            token: this.token,
+            url: this.url
+        });
+
+        const result = await client.getAssociatedWSObjects({
+            ns: ontologyNamespaceToString(ref.namespace),
+            id: ref.id,
+            ts: ref.timestamp || Date.now(),
+            offset, limit
+        })
+
+        // const features: Array<RelatedFeature> = result.results.reduce((features, genomeWithFeatures) => {
+        //     genomeWithFeatures.features.forEach((feature) => {
+        //         features.push({
+        //             featureID: feature.feature_id,
+        //             relatedAt: feature.updated_at,
+        //             objectName: genomeWithFeatures.ws_obj.name,
+        //             objectRef: {
+        //                 workspaceID: genomeWithFeatures.ws_obj.workspace_id,
+        //                 objectID: genomeWithFeatures.ws_obj.object_id,
+        //                 version: genomeWithFeatures.ws_obj.version
+        //             }
+        //         });
+        //     })
+        //     return features;
+        // }, []: Array<RelatedFeature>);
+
+
+        const features: Array<RelatedFeature> = []
+        result.results.forEach((genomeWithFeatures) => {
+            genomeWithFeatures.features.forEach((feature) => {
+                features.push({
+                    featureID: feature.feature_id,
+                    relatedAt: feature.updated_at,
+                    objectName: genomeWithFeatures.ws_obj.name,
+                    objectRef: {
+                        workspaceID: genomeWithFeatures.ws_obj.workspace_id,
+                        objectID: genomeWithFeatures.ws_obj.object_id,
+                        version: genomeWithFeatures.ws_obj.version
+                    }
+                });
+            })
+        });
+
+        return {
+            features
+        }
+    }
+
     async getAncestorGraph({ ref }: GetAncestorGraphParams): Promise<GetAncestorGraphResult> {
         const client = new OntologyAPIClient({
             token: this.token,
@@ -335,7 +409,6 @@ export default class OntologyModel {
                 let isRoot = false;
                 const nodes = relationsMap.get(term.ref.id);
                 if (!nodes) {
-                    console.log('is root');
                     isRoot = true;
                 }
 

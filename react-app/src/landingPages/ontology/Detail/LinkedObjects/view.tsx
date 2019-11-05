@@ -1,10 +1,10 @@
 import React from 'react';
 import './style.css';
 import { Table } from 'antd';
-import { LinkedObject } from '../../../../types/ontology';
+import { RelatedFeature } from '../../lib/model';
 
 export interface Props {
-    linkedObjects: Array<LinkedObject>;
+    linkedObjects: Array<RelatedFeature>;
 }
 
 interface State {
@@ -12,36 +12,73 @@ interface State {
 
 export default class LinkedObjects extends React.Component<Props, State> {
     renderTable() {
-        return <Table<LinkedObject>
+        return <Table<RelatedFeature>
             dataSource={this.props.linkedObjects}
             className="KBaseAntdOverride-remove-table-border ScrollingFlexTable"
             size="small"
             pagination={false}
             scroll={{ y: '100%' }}
-            rowKey={(row: LinkedObject) => {
+            rowKey={(row: RelatedFeature) => {
                 return [
-                    row.object.workspaceID,
-                    row.object.id,
-                    row.object.version,
-                    row.feature
+                    row.objectRef.workspaceID,
+                    row.objectRef.objectID,
+                    row.objectRef.version,
+                    row.featureID
                 ].join(':');
             }}
             bordered={false}
         >
             <Table.Column
-                dataIndex={"scientificName"}
-                title="Scientific Name"
+                dataIndex={"objectName"}
+                title="Object Name"
                 width="40%"
+                render={(objectName: string, row: RelatedFeature) => {
+                    const hash = [
+                        'dataview',
+                        String(row.objectRef.workspaceID),
+                        String(row.objectRef.objectID),
+                        String(row.objectRef.version)
+                    ].join('/');
+                    const url = new URL('', window.location.origin);
+                    url.hash = hash;
+                    return (
+                        <a href={url.toString()} target="_blank">
+                            {objectName}
+                        </a>
+                    )
+                }}
             />
             <Table.Column
-                dataIndex={"type.name"}
-                title="Type"
-                width="30%"
-            />
-            <Table.Column
-                dataIndex={"feature"}
+                dataIndex={"featureID"}
                 title="Feature"
-                width="30%"
+                width="40%"
+                render={(featureID: string, row: RelatedFeature) => {
+                    const hash = [
+                        'dataview',
+                        String(row.objectRef.workspaceID),
+                        String(row.objectRef.objectID),
+                        String(row.objectRef.version)
+                    ].join('/');
+                    // Note the sample url just to make URL happy.
+                    const url = new URL('', window.location.origin);
+                    url.hash = hash;
+                    const search = url.searchParams;
+                    search.set('sub', 'Feature');
+                    search.set('subid', featureID);
+                    return (
+                        <a href={url.toString()} target="_blank">
+                            {featureID}
+                        </a>
+                    )
+                }}
+            />
+            <Table.Column
+                dataIndex={"relatedAt"}
+                width="20%"
+                title="Linked"
+                render={(relatedAt: number) => {
+                    return Intl.DateTimeFormat('en-US').format(relatedAt);
+                }}
             />
         </Table>
     }
