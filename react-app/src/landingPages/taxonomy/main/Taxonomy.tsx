@@ -3,7 +3,7 @@ import React from 'react';
 import { SourceInfo } from '../SourceInfo';
 import LineageNavigator from '../LineageNavigator';
 import TaxonSummary from '../TaxonSummary';
-import { Taxon, TaxonReference } from '../../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { Row, Col } from 'antd';
 import TaxonInfo from '../taxonInfo/TaxonInfo';
 import './Taxonomy.css';
@@ -12,8 +12,8 @@ export interface TaxonomyProps {
     // lineage: Array<Taxon>;
     selectedTaxon: Taxon;
     targetTaxon: Taxon;
-    selectTaxonRef: (taxonRef: TaxonReference) => void;
-    navigateToTaxonREf: (taxonRef: TaxonReference) => void;
+    selectTaxonRef: (taxonRef: TaxonomyReference) => void;
+    navigateToTaxonREf: (taxonRef: TaxonomyReference) => void;
     setTitle: (title: string) => void;
 }
 

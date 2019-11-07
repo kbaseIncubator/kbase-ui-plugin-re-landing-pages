@@ -1,6 +1,6 @@
 import DB, { DBProps, DBStatus, DBStateNone, DBStateLoading, DBStateLoaded, DBStateError } from '../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
-import { Taxon, TaxonReference } from '../../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonomyModel } from '../lib/model';
 
 export type LineageDBStateNone = DBStateNone;
@@ -25,7 +25,7 @@ export default class LineageDB extends DB<LineageDBState> {
         super(props);
         this.props = props;
     }
-    async getLineage(taxonRef: TaxonReference) {
+    async getLineage(taxonRef: TaxonomyReference) {
         try {
             this.set((state: LineageDBState) => {
                 return {

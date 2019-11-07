@@ -1,6 +1,6 @@
-import OntologyAPIClient, { Namespace, TermNode, RelatedTerm, EdgeType } from './OntologyAPIClient';
-import { OntologyReference, OntologyNamespace, OntologyTerm, OntologySource, GOOntologyTerm, OntologyRelatedTerm, OntologyRelation } from '../../../types/ontology';
-import { RelationEngineCollection } from '../../../types';
+import OntologyAPIClient, {  TermNode, RelatedTerm, EdgeType } from './OntologyAPIClient';
+import { OntologyReference, OntologyNamespace, OntologyTerm, OntologySource, GOOntologyTerm, OntologyRelatedTerm, OntologyRelation, stringToOntologyNamespace } from '../../../types/ontology';
+import { RelationEngineCategory, RelationEngineDataSource } from '../../../types/core';
 
 export interface GetTermParams {
     ref: OntologyReference
@@ -88,31 +88,15 @@ export interface GetAncestorGraphResult {
     termsGraph: TermsGraph;
 }
 
-export function ontologyNamespaceToString(namespace: OntologyNamespace): Namespace {
-    switch (namespace) {
-        case OntologyNamespace.GO:
-            return 'go';
-    }
-}
-
-export function stringToOntologyNamespace(ns: Namespace): OntologyNamespace {
-    switch (ns) {
-        case 'go':
-            return OntologyNamespace.GO
-        default:
-            throw new Error('Unknown ontology namespace: ' + ns);
-    }
-}
-
 export function termNodeToTerm(term: TermNode, ts: number): OntologyTerm {
-    const namespace = stringToOntologyNamespace('go');
+    const namespace = stringToOntologyNamespace('go_ontology');
     switch (namespace) {
-        case OntologyNamespace.GO:
+        case 'go_ontology':
             const temp: GOOntologyTerm = {
                 type: OntologySource.GO,
                 ref: {
-                    collection: RelationEngineCollection.ONTOLOGY,
-                    namespace: OntologyNamespace.GO, // TODO: stringToOntologyNamespace(term.ns),
+                    category: RelationEngineCategory.ONTOLOGY,
+                    dataSource: RelationEngineDataSource.GO, // TODO: stringToOntologyNamespace(term.ns),
                     id: term.id,
                     timestamp: ts
                 },
@@ -146,6 +130,8 @@ export function termNodeToTerm(term: TermNode, ts: number): OntologyTerm {
                 }, // TODO:
             };
             return temp;
+        default:
+            throw new Error('Ontology namespace not yet supported: ' + namespace);
     }
 }
 
@@ -217,6 +203,18 @@ export function relatedTermToTerm(relatedTerm: RelatedTerm, ts: number): Ontolog
     }
 }
 
+export function ontologyReferenceToNamespace(ref: OntologyReference): OntologyNamespace {
+    switch (ref.category) {
+        case RelationEngineCategory.ONTOLOGY:
+            switch (ref.dataSource) {
+                case RelationEngineDataSource.GO:
+                    return 'go_ontology';
+                case RelationEngineDataSource.ENVO:
+                    return 'envo_ontology';
+            }
+    }
+}
+
 export default class OntologyModel {
     ontologyClient: OntologyAPIClient;
     token: string;
@@ -252,14 +250,14 @@ export default class OntologyModel {
 
     // }
 
-    async getTerm({ ref }: GetTermParams): Promise<GetTermResult> {
+    async getTerm({ ref }: {ref: OntologyReference}): Promise<GetTermResult> {
         const client = new OntologyAPIClient({
             token: this.token,
             url: this.url
         });
 
         const result = await client.getTerms({
-            ns: ontologyNamespaceToString(ref.namespace),
+            ns: ontologyReferenceToNamespace(ref),
             ids: [ref.id],
             ts: ref.timestamp || Date.now()
         });
@@ -276,7 +274,7 @@ export default class OntologyModel {
         });
 
         const result = await client.getParents({
-            ns: ontologyNamespaceToString(ref.namespace),
+            ns: ontologyReferenceToNamespace(ref),
             id: ref.id,
             ts: ref.timestamp || Date.now()
         });
@@ -295,7 +293,7 @@ export default class OntologyModel {
         });
 
         const result = await client.getChildren({
-            ns: ontologyNamespaceToString(ref.namespace),
+            ns: ontologyReferenceToNamespace(ref),
             id: ref.id,
             ts: ref.timestamp || Date.now()
         });
@@ -314,7 +312,7 @@ export default class OntologyModel {
         });
 
         const result = await client.getAssociatedWSObjects({
-            ns: ontologyNamespaceToString(ref.namespace),
+            ns: ontologyReferenceToNamespace(ref),
             id: ref.id,
             ts: ref.timestamp || Date.now(),
             offset, limit
@@ -365,9 +363,13 @@ export default class OntologyModel {
         });
 
         const result = await client.getHierarchicalAncestors({
-            ns: ontologyNamespaceToString(ref.namespace),
+            ns: ontologyReferenceToNamespace(ref),
             id: ref.id,
-            ts: ref.timestamp || Date.now()
+            ts: ref.timestamp || Date.now(),
+            // TODO: should these be params? We can't support paging for the ancestor graph,
+            // and it should never be too large, so probably remove from the upstream api??
+            offset: 0,
+            limit: 1000
         });
 
         const relations: Array<TermsGraphRelation> = [];

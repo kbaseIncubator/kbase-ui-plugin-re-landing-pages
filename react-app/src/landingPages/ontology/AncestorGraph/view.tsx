@@ -1,7 +1,7 @@
 import React from 'react';
-import { TermsGraph, relationToString, TermsGraphNode } from '../lib/model';
+import { TermsGraph, relationToString, TermsGraphNode, ontologyReferenceToNamespace } from '../lib/model';
 import NetworkGraph, { NetworkData } from './NetworkGraph';
-import { OntologyTerm, ontologyNamespaceToString } from '../../../types/ontology';
+import { OntologyTerm } from '../../../types/ontology';
 import './style.css';
 import { Table } from 'antd';
 
@@ -75,8 +75,7 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                 render={(term: OntologyTerm) => {
                     const url = [
                         '/#review',
-                        'ontology',
-                        ontologyNamespaceToString(term.ref.namespace),
+                        ontologyReferenceToNamespace(term.ref),
                         term.ref.id
                     ].join('/');
                     return (

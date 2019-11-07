@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import reducer from '../reducers';
 
 // import { TaxonomyStoreState } from '../../landingPages/taxonomy/redux/store';
-import { TaxonReference } from '../../types/taxonomy';
+import { TaxonomyReference } from '../../types/taxonomy';
 import { OntologyReference } from '../../types/ontology';
 import { AsyncViewStatus, TopLevelView, ViewType, ViewBase } from './view';
 import { TaxonomyView } from './taxonomy';
@@ -71,7 +71,7 @@ export interface NavigationNone {
 
 export interface NavigationTaxonomy {
     type: ViewType.TAXONOMY;
-    ref: TaxonReference
+    ref: TaxonomyReference
 }
 
 export interface NavigationOntology {

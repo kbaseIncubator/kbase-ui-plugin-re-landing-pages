@@ -2,17 +2,13 @@ import React from 'react';
 import { RootState } from '@kbase/ui-components';
 import {
     RelationEngineID,
-    Navigation,
-    NavigationSome,
-    View,
-    ViewStatus
+    NavigationSome
 } from '../../redux/store';
 import { ViewType, TopLevelView, AsyncViewStatus, AsyncViewError, AsyncViewLoaded, TopLevelViewState } from '../../redux/store/view';
 import Taxonomy from '../../landingPages/taxonomy';
 import OntologyView from '../../landingPages/ontology';
 import { Spin, Alert } from 'antd';
-import { view } from '../../redux/actions';
-import { UIError } from '../../types';
+import { UIError } from '../../types/error'; 
 
 export interface DispatcherProps {
     token: string | null;
@@ -160,7 +156,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
                 this.props.navigate(relationEngineID);
             } else {
                 // TODO: remove?
-                this.props.navigate('taxonomy/ncbi_taxonomy/562');
+                this.props.navigate('ncbi_taxonomy/562');
             }
         }
     }

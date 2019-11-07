@@ -1,5 +1,5 @@
 import { Action, Dispatch } from 'redux';
-import { Taxon, TaxonReference } from '../../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonomyModel } from '../lib/model';
 import { StoreState } from '../../../redux/store';
 
@@ -38,7 +38,7 @@ export interface LoadSuccess extends Action<TaxonomyActionType.LOAD_SUCCESS> {
     type: TaxonomyActionType.LOAD_SUCCESS;
     // lineage: Array<Taxon>;
     // offspring: Array<Taxon>;
-    selectedTaxonRef: TaxonReference;
+    selectedTaxonRef: TaxonomyReference;
     selectedTaxon: Taxon;
     targetTaxon: Taxon;
 }
@@ -69,7 +69,7 @@ export function loadError(message: string): LoadError {
     };
 }
 
-export function loadSuccess(selectedTaxonRef: TaxonReference, selectedTaxon: Taxon, targetTaxon: Taxon): LoadSuccess {
+export function loadSuccess(selectedTaxonRef: TaxonomyReference, selectedTaxon: Taxon, targetTaxon: Taxon): LoadSuccess {
     return {
         type: TaxonomyActionType.LOAD_SUCCESS,
         selectedTaxonRef,
@@ -88,7 +88,7 @@ export function unload() {
  * Thunks
  */
 
-export function load(taxonRef: TaxonReference) {
+export function load(taxonRef: TaxonomyReference) {
     return async (dispatch: Dispatch<Action>, getState: () => StoreState) => {
         dispatch(loadStart());
 
@@ -130,7 +130,7 @@ export function load(taxonRef: TaxonReference) {
 
 export interface SelectTaxon {
     type: TaxonomyActionType.SELECT_TAXON;
-    taxonRef: TaxonReference;
+    taxonRef: TaxonomyReference;
 }
 
 interface SelectTaxonStart {
@@ -175,7 +175,7 @@ function selectTaxonSuccess(taxon: Taxon): SelectTaxonSuccess {
  * Thunks
  */
 
-export function selectTaxon(taxonRef: TaxonReference) {
+export function selectTaxon(taxonRef: TaxonomyReference) {
     return async (dispatch: Dispatch<Action>, getState: () => StoreState) => {
         dispatch(selectTaxonStart());
 

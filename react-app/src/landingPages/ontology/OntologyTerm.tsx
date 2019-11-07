@@ -2,6 +2,7 @@ import React from 'react';
 import { OntologyReference, OntologyTermBrief, ontologyNamespaceToString } from '../../types/ontology';
 import { Tooltip, Icon } from 'antd';
 import './OntologyTerm.css';
+import { ontologyReferenceToNamespace } from './lib/model';
 
 export interface Props {
     term: OntologyTermBrief;
@@ -27,8 +28,7 @@ export default class OntologyTerm extends React.Component<Props, State> {
     clickNavigateToTerm() {
         const hash = [
             'review',
-            'ontology',
-            ontologyNamespaceToString(this.props.term.ref.namespace),
+            ontologyReferenceToNamespace(this.props.term.ref),
             this.props.term.ref.id,
             String(this.props.term.ref.timestamp)
         ].join('/');

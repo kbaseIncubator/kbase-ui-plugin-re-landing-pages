@@ -1,4 +1,5 @@
 import { DynamicServiceClient } from "@kbase/ui-lib";
+import { RelationEngineNamespace } from "../../../types/core";
 
 export interface GetParentsParams {
     ns: Namespace;
@@ -6,7 +7,8 @@ export interface GetParentsParams {
     ts: number;
 }
 
-export type Namespace = 'go';
+// TODO: this should not live here, or should just be a string?
+export type Namespace = 'go_ontology' | 'envo_ontology';
 
 export interface GetParentsResult {
     results: Array<RelatedTerm>;
@@ -142,7 +144,7 @@ export interface GetTermsResult {
 }
 
 export interface GetRelatedObjectsParams {
-    ns: Namespace;
+    ns: RelationEngineNamespace;
     id: string;
     ts: number;
 }
@@ -196,50 +198,35 @@ export interface GetAssociatedWSObjectsResults {
 export default class OntologyAPIClient extends DynamicServiceClient {
     static module: string = 'OntologyAPI';
 
-    async getParents({ ns, id, ts }: { ns: Namespace, id: string, ts: number }): Promise<GetParentsResult> {
-        const params: GetParentsParams = {
-            ns, id, ts
-        };
+    async getParents(params: GetParentsParams): Promise<GetParentsResult> {
         const [result] = await this.callFunc<[GetParentsParams], [GetParentsResult]>('get_parents', [
             params
         ]);
         return result;
     }
 
-    async getTerms({ ns, ids, ts }: GetTermsParams): Promise<GetTermsResult> {
-        const params: GetTermsParams = {
-            ns, ids, ts
-        }
+    async getTerms(params: GetTermsParams): Promise<GetTermsResult> {
         const [result] = await this.callFunc<[GetTermsParams], [GetTermsResult]>('get_terms', [
             params
         ]);
         return result;
     }
 
-    async getChildren({ ns, id, ts }: { ns: Namespace, id: string, ts: number }): Promise<GetChildrenResult> {
-        const params: GetChildrenParams = {
-            ns, id, ts
-        };
+    async getChildren(params: GetChildrenParams): Promise<GetChildrenResult> {
         const [result] = await this.callFunc<[GetChildrenParams], [GetChildrenResult]>('get_children', [
             params
         ]);
         return result;
     }
 
-    async getRelatedObjects({ ns, id, ts }: { ns: Namespace, id: string, ts: number }): Promise<GetRelatedObjectsResult> {
-        const params: GetRelatedObjectsParams = {
-            ns, id, ts
-        };
+    async getRelatedObjects(params: GetRelatedObjectsParams): Promise<GetRelatedObjectsResult> {
         const [result] = await this.callFunc<[GetRelatedObjectsParams], [GetRelatedObjectsResult]>('get_children', [
             params
         ]);
         return result;
     }
 
-    async getHierarchicalAncestors({ ns, id, ts }: { ns: Namespace, id: string, ts: number }): Promise<GetHierarchicalAncestorsResult> {
-        const params: GetHierarchicalAncestorsParams = {
-            ns, id, ts, offset: 0, limit: 1000
-        };
+    async getHierarchicalAncestors(params: GetHierarchicalAncestorsParams): Promise<GetHierarchicalAncestorsResult> {
         const [result] = await this.callFunc<[GetHierarchicalAncestorsParams], [GetHierarchicalAncestorsResult]>('get_hierarchical_ancestors', [
             params
         ]);

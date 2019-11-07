@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pagination, Icon, Input, Spin } from 'antd';
 import TaxonList from '../TaxonList';
-import { TaxonReference } from '../../../types/taxonomy';
+import { TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonDBState, TaxonDBStateError, TaxonDBStateLoaded, TaxonDBStateReLoading } from './TaxonChildrenDB';
 import { DBStatus } from '../../../lib/DB';
 import './index.css';
@@ -11,13 +11,13 @@ const DEFAULT_PAGE_SIZE = 10;
 
 export interface Props {
     db: TaxonDBState;
-    taxonRef: TaxonReference;
-    selectedTaxonRef: TaxonReference | null;
+    taxonRef: TaxonomyReference;
+    selectedTaxonRef: TaxonomyReference | null;
     // taxa: Array<Taxon>;
     // total: number;
-    selectTaxonRef: (taxonRef: TaxonReference) => void;
-    navigateToTaxonRef: (taxonRef: TaxonReference) => void;
-    fetchChildren: (taxonRef: TaxonReference, page: number, pageSize: number, searchTerm: string) => void;
+    selectTaxonRef: (taxonRef: TaxonomyReference) => void;
+    navigateToTaxonRef: (taxonRef: TaxonomyReference) => void;
+    fetchChildren: (taxonRef: TaxonomyReference, page: number, pageSize: number, searchTerm: string) => void;
 }
 
 export interface State { }

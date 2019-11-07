@@ -1,11 +1,11 @@
 import { AsyncView } from "./view";
-import { TaxonReference, Taxon } from '../../types/taxonomy';
-import { UIError } from "../../types";
+import { TaxonomyReference, Taxon } from '../../types/taxonomy';
+import { UIError } from "../../types/error";
 import { LinkedObjects } from './workspace';
 import { WikipediaDescription } from './wikpedia';
 
 export interface MainState {
-    selectedTaxonRef: TaxonReference;
+    selectedTaxonRef: TaxonomyReference;
     selectedTaxon: Taxon;
     targetTaxon: Taxon;
 }

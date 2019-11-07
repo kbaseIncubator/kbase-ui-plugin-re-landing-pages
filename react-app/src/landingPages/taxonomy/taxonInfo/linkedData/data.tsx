@@ -3,20 +3,20 @@ import { DBCollectionStatus } from '../../../../lib/DB2';
 
 import { AppConfig } from '@kbase/ui-components';
 import LinkedData from './view';
-import { TaxonReference } from '../../../../types/taxonomy';
+import { TaxonomyReference } from '../../../../types/taxonomy';
 import LinkedDataDB, { SortSpec } from './LinkedDataDB';
 
 export interface Props {
     token: string;
     config: AppConfig;
-    taxonRef: TaxonReference;
+    taxonRef: TaxonomyReference;
 }
 
 interface State { }
 
 export default class Data extends React.Component<Props, State> {
     db: LinkedDataDB;
-    lastTaxonRef: TaxonReference;
+    lastTaxonRef: TaxonomyReference;
     constructor(props: Props) {
         super(props);
         this.db = new LinkedDataDB({

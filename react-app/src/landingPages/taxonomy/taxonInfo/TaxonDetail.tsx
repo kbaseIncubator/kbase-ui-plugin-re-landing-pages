@@ -1,7 +1,8 @@
 import React from 'react';
-import { Taxon, TaxonomyNamespace, NCBITaxon } from '../../../types/taxonomy';
+import { Taxon, NCBITaxon } from '../../../types/taxonomy';
 import TaxonDetailNCBI from './TaxonDetailNCBI';
 import { Alert } from 'antd';
+import { RelationEngineDataSource } from '../../../types/core';
 
 export interface TaxonDetailProps {
     taxon: Taxon;
@@ -12,8 +13,8 @@ interface TaxonDetailState { }
 export default class TaxonDetail extends React.Component<TaxonDetailProps, TaxonDetailState> {
     render() {
         const taxon = this.props.taxon;
-        switch (taxon.ref.namespace) {
-            case TaxonomyNamespace.NCBI:
+        switch (taxon.ref.dataSource) {
+            case RelationEngineDataSource.NCBI:
                 // TODO: why does this not prove to TS that we have a NCBITaxon?
                 return <TaxonDetailNCBI taxon={taxon as NCBITaxon} />;
             default:
