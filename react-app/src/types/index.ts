@@ -1,33 +1,3 @@
-type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
-
-interface JSONArray extends Array<JSONValue> { };
-
-interface JSONObject {
-    [x: string]: JSONValue
-}
-
-export interface UIError {
-    code: string;
-    source: string;
-    message: string;
-    data?: JSONValue;
-}
-
-export class UIException extends Error {
-    code: string;
-    source: string;
-    message: string;
-    data?: JSONValue;
-    constructor({ message, code, source, data }: { message: string, code: string, source: string, data?: JSONValue }) {
-        super(message);
-        this.code = code;
-        this.source = source;
-        this.message = message;
-        this.data = data;
-    }
-}
-
-// export type NodeSource = TaxonomySource | OntologySource;
 
 export enum ObjectClass {
     TAXONOMY,
@@ -58,45 +28,86 @@ export interface LoadedState {
     status: LoadingStatus.LOADED;
 }
 
-export enum RelationEngineCollection {
-    TAXONOMY,
-    ONTOLOGY
-}
-
-export function relationEngineCollectionToString(collection: RelationEngineCollection): string {
-    switch (collection) {
-        case RelationEngineCollection.TAXONOMY:
-            return 'taxonomy';
-        case RelationEngineCollection.ONTOLOGY:
-            return 'ontology';
-    }
-}
-
-export function stringToRelationEngineCollection(collection: string): RelationEngineCollection {
-    switch (collection) {
-        case 'taxonomy':
-            return RelationEngineCollection.TAXONOMY;
-        case 'ontology':
-            return RelationEngineCollection.ONTOLOGY;
-        default:
-            throw new Error('Unrecognized relation engine collection name "' + collection + '"');
-
-    }
-}
-
-// export enum RelationEngineNamespace {
+// export enum RelationEngineCategory {
+//     TAXONOMY,
+//     ONTOLOGY
 // }
 
-export type RelationEngineNamespace = any;
-
-export type RelationEngineID = string;
-
-export type RelationEngineTimestamp = number;
 
 
-export interface RelationEngineReference {
-    collection: RelationEngineCollection,
-    namespace: RelationEngineNamespace,
-    id: RelationEngineID;
-    timestamp: RelationEngineTimestamp;
-}
+// export function relationEngineReferenceToNamespace(ref: RelationEngineReference): RelationEngineNamespace {
+//     switch (ref.category) {
+//         case RelationEngineCategory.ONTOLOGY:
+//             switch (ref.dataSource) {
+//                 case RelationEngineDataSource.GO:
+//                     return 'go_ontology';
+//                 case RelationEngineDataSource.ENVO:
+//                     return 'envo_ontology';
+//             }
+//         case RelationEngineCategory.TAXONOMY:
+//             switch (ref.dataSource) {
+//                 case RelationEngineDataSource.NCBI:
+//                     return 'ncbi_taxonomy';
+//                 case RelationEngineDataSource.GTDB:
+//                     return 'gtdb_taxonomy';
+//                 case RelationEngineDataSource.RDP:
+//                     return 'rdp_taxonomy';
+//             }
+//     }
+// }
+
+
+
+
+
+// export type RelationEngineCategory = 'ontology' | 'taxonomy';
+
+// export enum RelationEngineDataSource {
+//     ENVO,
+//     GO,
+//     GTDB,
+//     NCBI,
+//     RDP
+// }
+
+// export type RelationEngineNamespace =
+//     'envo_ontology' |
+//     'go_ontology' |
+//     'gtdb_taxonomy' |
+//     'ncbi_taxonomy' |
+//     'rdp_taxonomy';
+
+
+
+// export type RelationEngineDataSource = RelationEngineNamespace;
+
+
+
+// export interface RelationEngineReferenceBase {
+//     category: core.RelationEngineCategory,
+//     dataSource: core.RelationEngineDataSource;
+//     // namespace: RelationEngineNamespace,
+//     id: RelationEngineID;
+//     timestamp: RelationEngineTimestamp;
+// }
+
+// export interface RelationEngineReferenceG<CategoryType extends RelationEngineCategory, DataSourceType extends RelationEngineDataSource> {
+//     category: CategoryType;
+//     dataSource: DataSourceType;
+//     id: RelationEngineID;
+//     timestamp: RelationEngineTimestamp
+// }
+
+// export type RelationEngineReferencex = OntologyReference | TaxonomyReference;
+
+// export type RelationEngineReference =
+//     RelationEngineReferenceG<RelationEngineCategory.ONTOLOGY, RelationEngineDataSource.GO> |
+//     RelationEngineReferenceG<RelationEngineCategory.ONTOLOGY, RelationEngineDataSource.ENVO> |
+//     RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.NCBI> |
+//     RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.GTDB> |
+//     RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.RDP>
+
+
+
+// WTF
+

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Taxon, TaxonReference } from '../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../types/taxonomy';
 import './TaxonList.css';
 import TaxonItem from './TaxonItem';
 import { Empty } from 'antd';
@@ -8,18 +8,18 @@ export interface Props {
     taxa: Array<Taxon>;
     maxItems: number;
     totalItems: number;
-    selectedTaxonRef: TaxonReference | null;
-    selectTaxonRef: (ref: TaxonReference) => void;
-    navigateToTaxonRef: (ref: TaxonReference) => void;
+    selectedTaxonRef: TaxonomyReference | null;
+    selectTaxonRef: (ref: TaxonomyReference) => void;
+    navigateToTaxonRef: (ref: TaxonomyReference) => void;
 }
 
 interface State { }
 
 export default class TaxonList extends React.Component<Props, State> {
-    selectTaxon(ref: TaxonReference) {
+    selectTaxon(ref: TaxonomyReference) {
         this.props.selectTaxonRef(ref);
     }
-    navigateToTaxon(ref: TaxonReference) {
+    navigateToTaxon(ref: TaxonomyReference) {
         this.props.navigateToTaxonRef(ref);
     }
     renderItemsPlain() {

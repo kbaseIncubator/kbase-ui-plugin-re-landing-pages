@@ -6,7 +6,7 @@ import { Dispatch } from 'react';
 import { Action } from 'redux';
 import { navigate } from '../../../redux/actions';
 import { OntologyReference } from '../../../types/ontology';
-import { ontologyNamespaceToString } from '../lib/model';
+import { ontologyReferenceToNamespace } from '../lib/model';
 
 
 export interface OwnProps { }
@@ -39,8 +39,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>, props: OwnProps): Dispat
     return {
         navigate: (ref: OntologyReference) => {
             const relationEngineID = [
-                'ontology',
-                ontologyNamespaceToString(ref.namespace),
+                ontologyReferenceToNamespace(ref),
                 ref.id,
                 String(ref.timestamp)
             ].join('/');

@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
 import { navigate } from '../../../redux/actions';
-import { TaxonReference, taxonomyNamespaceToString } from '../../../types/taxonomy';
+import { TaxonomyReference } from '../../../types/taxonomy';
+import { relationEngineReferenceToNamespace } from '../../../types/transform';
 
 export interface OwnProps { }
 
@@ -15,7 +16,7 @@ export interface StateProps {
 }
 
 export interface DispatchProps {
-    navigate: (ref: TaxonReference) => void;
+    navigate: (ref: TaxonomyReference) => void;
     setTitle: (title: string) => void;
 }
 
@@ -35,10 +36,9 @@ function mapStateToProps(state: StoreState, props: OwnProps): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>, props: OwnProps): DispatchProps {
     return {
-        navigate: (ref: TaxonReference) => {
+        navigate: (ref: TaxonomyReference) => {
             const relationEngineID = [
-                'taxonomy',
-                taxonomyNamespaceToString(ref.namespace),
+                relationEngineReferenceToNamespace(ref),
                 ref.id,
                 String(ref.timestamp)
             ].join('/');

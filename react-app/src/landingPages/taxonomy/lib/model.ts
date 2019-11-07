@@ -1,6 +1,7 @@
-import { TaxonReference, Taxon, TaxonomyNamespace, NCBITaxon, taxonomyNamespaceToString } from '../../../types/taxonomy';
+import { TaxonomyReference, Taxon, NCBITaxon } from '../../../types/taxonomy';
 import TaxonAPIClient from './TaxonAPIClient';
-import { RelationEngineCollection } from '../../../types';
+import { relationEngineReferenceToNamespace } from '../../../types/transform';
+import { RelationEngineCategory, RelationEngineDataSource, } from '../../../types/core';
 
 // const INITIAL_BATCH_SIZE = 100;
 // const BATCH_SIZE = 1000;
@@ -55,12 +56,12 @@ export class TaxonomyModel {
         this.taxonomyClient = new TaxonAPIClient({ token, url });
     }
 
-    async getLineage(taxonRef: TaxonReference): Promise<Array<Taxon>> {
+    async getLineage(taxonRef: TaxonomyReference): Promise<Array<Taxon>> {
         const {
-            namespace, id, timestamp
+            id, timestamp
         } = taxonRef;
         const result = await this.taxonomyClient.getLineage({
-            ns: taxonomyNamespaceToString(namespace),
+            ns: relationEngineReferenceToNamespace(taxonRef),
             id,
             ts: timestamp
         });
@@ -74,8 +75,8 @@ export class TaxonomyModel {
             }
             return {
                 ref: {
-                    collection: RelationEngineCollection.TAXONOMY,
-                    namespace: TaxonomyNamespace.NCBI,
+                    category: RelationEngineCategory.TAXONOMY,
+                    dataSource: RelationEngineDataSource.NCBI,
                     id: taxonResult.id,
                     timestamp: result.ts
                 },
@@ -95,13 +96,13 @@ export class TaxonomyModel {
         return taxons;
     }
 
-    async getChildren(taxonRef: TaxonReference, options: GetChildrenOptions): Promise<[Array<Taxon>, number]> {
+    async getChildren(taxonRef: TaxonomyReference, options: GetChildrenOptions): Promise<[Array<Taxon>, number]> {
         const {
-            namespace, id, timestamp
+            id, timestamp
         } = taxonRef;
 
         const result = await this.taxonomyClient.getChildren({
-            ns: taxonomyNamespaceToString(namespace),
+            ns: relationEngineReferenceToNamespace(taxonRef),
             id,
             ts: timestamp,
             offset: options.offset,
@@ -118,8 +119,8 @@ export class TaxonomyModel {
             }
             return {
                 ref: {
-                    collection: RelationEngineCollection.TAXONOMY,
-                    namespace: TaxonomyNamespace.NCBI,
+                    category: RelationEngineCategory.TAXONOMY,
+                    dataSource: RelationEngineDataSource.NCBI,
                     id: taxonResult.id,
                     timestamp: result.ts
                 },
@@ -229,13 +230,13 @@ export class TaxonomyModel {
     //     return [result, totalCount, totalLimit];
     // }
 
-    async getTaxon(taxonRef: TaxonReference): Promise<Taxon> {
+    async getTaxon(taxonRef: TaxonomyReference): Promise<Taxon> {
         const {
-            namespace, id, timestamp
+            id, timestamp
         } = taxonRef;
 
         const result = await this.taxonomyClient.getTaxon({
-            ns: taxonomyNamespaceToString(namespace),
+            ns: relationEngineReferenceToNamespace(taxonRef),
             id,
             ts: timestamp
         });
@@ -255,8 +256,8 @@ export class TaxonomyModel {
         // comparing the string coming in...
         const taxon: Taxon = {
             ref: {
-                collection: RelationEngineCollection.TAXONOMY,
-                namespace: TaxonomyNamespace.NCBI,
+                category: RelationEngineCategory.TAXONOMY,
+                dataSource: RelationEngineDataSource.NCBI,
                 id: taxonResult.id,
                 timestamp: result.ts
             },
@@ -275,9 +276,9 @@ export class TaxonomyModel {
         return taxon;
     }
 
-    async getLinkedObjects(taxonRef: TaxonReference, options: GetLinkedObjectsOptions): Promise<GetLinkedObjectsResult> {
+    async getLinkedObjects(taxonRef: TaxonomyReference, options: GetLinkedObjectsOptions): Promise<GetLinkedObjectsResult> {
         const params = {
-            taxon_ns: taxonomyNamespaceToString(taxonRef.namespace),
+            taxon_ns: relationEngineReferenceToNamespace(taxonRef),
             taxon_id: taxonRef.id,
             ts: taxonRef.timestamp,
             offset: options.offset,

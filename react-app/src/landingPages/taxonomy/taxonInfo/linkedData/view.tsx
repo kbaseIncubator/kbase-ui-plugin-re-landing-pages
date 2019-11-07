@@ -4,7 +4,7 @@ import { Table, Tooltip, Spin, Alert } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { LinkedObjectsCollection, LinkedObjectsData } from './LinkedDataDB';
 import { DBCollectionStatus } from '../../../../lib/DB2';
-import { UIError } from '../../../../types';
+import { UIError } from '../../../../types/error';
 import { SorterResult, PaginationConfig } from 'antd/lib/table';
 import { SortSpec, stringToSortDirection } from './LinkedDataDB';
 

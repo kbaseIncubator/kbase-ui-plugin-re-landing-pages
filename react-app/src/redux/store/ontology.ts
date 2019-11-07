@@ -1,6 +1,6 @@
 import { AsyncView } from "./view";
 import { OntologyReference, OntologyTerm } from '../../types/ontology';
-import { UIError } from "../../types";
+import { UIError } from "../../types/error";
 import { LinkedObjects } from "./workspace";
 
 export interface MainState {

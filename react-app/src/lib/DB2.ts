@@ -1,4 +1,4 @@
-// import { UIError } from "../types";
+// import { UIError } from '../types/error';
 
 export interface DBProps<T> {
     onUpdate: () => void;

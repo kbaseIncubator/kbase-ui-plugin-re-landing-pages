@@ -1,12 +1,12 @@
 import React from 'react';
-import { Taxon, TaxonReference } from '../../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import TaxonList from '../TaxonList';
 
 export interface Props {
     lineage: Array<Taxon>;
-    selectedTaxonRef: TaxonReference;
-    selectTaxonRef: (ref: TaxonReference) => void;
-    navigateToTaxonRef: (ref: TaxonReference) => void;
+    selectedTaxonRef: TaxonomyReference;
+    selectTaxonRef: (ref: TaxonomyReference) => void;
+    navigateToTaxonRef: (ref: TaxonomyReference) => void;
 }
 
 interface State { }

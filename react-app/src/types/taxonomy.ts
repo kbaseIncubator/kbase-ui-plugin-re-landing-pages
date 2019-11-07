@@ -1,45 +1,60 @@
-import { RelationEngineReference, RelationEngineCollection } from ".";
+import { RelationEngineReference, RelationEngineDataSource, RelationEngineCategory, RelationEngineReferenceG } from "./core";
 
-export enum TaxonomyNamespace {
-    NCBI,
-    GTDB
-}
+// export enum TaxonomyNamespace {
+//     NCBI,
+//     GTDB
+// }
 
-export function taxonomyNamespaceToString(namespace: TaxonomyNamespace) {
-    switch (namespace) {
-        case TaxonomyNamespace.NCBI:
-            return 'ncbi_taxonomy';
-        case TaxonomyNamespace.GTDB:
-            return 'gtdb';
-    }
-}
+// // export type TaxonomyNamespace = 'ncbi_taxonomy' | 'gtdb_taxonomy';
 
-export function stringToTaxonomyNamespace(namespace: string) {
-    switch (namespace) {
-        case 'ncbi_taxonomy':
-            return TaxonomyNamespace.NCBI;
-        case 'gtdb':
-            return TaxonomyNamespace.GTDB;
-        default:
-            throw new Error('Unrecognized namespace "' + namespace + '"');
-    }
-}
+// export function taxonomyNamespaceToString(namespace: TaxonomyNamespace): string {
+//     switch (namespace) {
+//         case TaxonomyNamespace.NCBI:
+//             return 'ncbi_taxonomy';
+//         case TaxonomyNamespace.GTDB:
+//             return 'gtdb_taxonomy';
+//     }
+// }
 
-export interface TaxonReferenceBase extends RelationEngineReference {
-    collection: RelationEngineCollection.TAXONOMY,
-    namespace: TaxonomyNamespace;
-}
+// export function stringToTaxonomyNamespace(namespace: string): TaxonomyNamespace {
+//     switch (namespace) {
+//         case 'ncbi_taxonomy':
+//             return TaxonomyNamespace.NCBI;
+//         case 'gtdb_taxonomy':
+//             return TaxonomyNamespace.GTDB;
+//         default:
+//             throw new Error('Unrecognized namespace "' + namespace + '"');
+//     }
+// }
 
-export interface TaxonReferenceNCBI extends TaxonReferenceBase {
-    namespace: TaxonomyNamespace.NCBI;
-}
+// export interface TaxonomyReferenceBase extends RelationEngineReferenceBase {
+//     category: RelationEngineCategory.TAXONOMY,
+//     // dataSource: RelationEngineDataSource.TAXONOMY;
+// }
 
-export interface TaxonReferenceGTDB extends TaxonReferenceBase {
-    namespace: TaxonomyNamespace.GTDB;
-}
+// export interface TaxonomyReferenceNCBI extends TaxonomyReferenceBase {
+//     dataSource: RelationEngineDataSource.NCBI;
+// }
 
-export type TaxonReference = TaxonReferenceNCBI | TaxonReferenceGTDB;
+// export interface TaxonomyReferenceGTDB extends TaxonomyReferenceBase {
+//     dataSource: RelationEngineDataSource.GTDB;
+// }
 
+// export interface TaxonomyReferenceRDP extends TaxonomyReferenceBase {
+//     dataSource: RelationEngineDataSource.RDP;
+// }
+
+// export type TaxonomyReference = TaxonomyReferenceNCBI | TaxonomyReferenceGTDB | TaxonomyReferenceRDP;
+
+export type TaxonomyNamespace =
+    'gtdb_taxonomy' |
+    'ncbi_taxonomy' |
+    'rdp_taxonomy';
+
+export type TaxonomyReference =
+    RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.NCBI> |
+    RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.GTDB> |
+    RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.RDP>;
 
 export interface TaxonAlias {
     category: string;
@@ -47,7 +62,7 @@ export interface TaxonAlias {
 }
 
 export interface TaxonBase {
-    ref: TaxonReference,
+    ref: TaxonomyReference,
     name: string;
     rank: string;
     isBiological: boolean;
@@ -55,16 +70,20 @@ export interface TaxonBase {
 
 
 export interface NCBITaxon extends TaxonBase {
-    ref: TaxonReferenceNCBI;
+    ref: RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.NCBI>;
     ncbiID: number;
     geneticCode: number;
     aliases: Array<TaxonAlias>;
 }
 
 export interface GTDBTaxon extends TaxonBase {
-    ref: TaxonReferenceGTDB;
+    ref: RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.GTDB>;
 }
 
-export type Taxon = NCBITaxon | GTDBTaxon;
+export interface RDPTaxon extends TaxonBase {
+    ref: RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.RDP>;
+}
+
+export type Taxon = NCBITaxon | GTDBTaxon | RDPTaxon;
 
 

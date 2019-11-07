@@ -1,4 +1,5 @@
-import { RelationEngineReference, UIError } from "../../types";
+import { RelationEngineReference } from "../../types/core";
+import { UIError } from '../../types/error';
 import { TaxonomyView } from "./taxonomy";
 import { OntologyView } from "./ontology";
 

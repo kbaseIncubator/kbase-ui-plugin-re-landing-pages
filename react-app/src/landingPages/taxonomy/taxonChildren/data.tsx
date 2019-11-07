@@ -4,16 +4,16 @@ import { DBStatus } from '../../../lib/DB';
 
 import { AppConfig } from '@kbase/ui-components';
 import TaxonChildren from './TaxonChildren';
-import { TaxonReference } from '../../../types/taxonomy';
+import { TaxonomyReference } from '../../../types/taxonomy';
 import { Alert } from 'antd';
 
 export interface Props {
     token: string;
     config: AppConfig;
-    taxonRef: TaxonReference;
-    selectedTaxonRef: TaxonReference | null;
-    selectTaxonRef: (taxonRef: TaxonReference) => void;
-    navigateToTaxonRef: (taxonRef: TaxonReference) => void;
+    taxonRef: TaxonomyReference;
+    selectedTaxonRef: TaxonomyReference | null;
+    selectTaxonRef: (taxonRef: TaxonomyReference) => void;
+    navigateToTaxonRef: (taxonRef: TaxonomyReference) => void;
 }
 
 interface State { }
@@ -38,7 +38,7 @@ export default class Data extends React.Component<Props, State> {
         // this.db.stop();
     }
 
-    fetchChildren(taxonRef: TaxonReference, page: number, pageSize: number, searchTerm: string) {
+    fetchChildren(taxonRef: TaxonomyReference, page: number, pageSize: number, searchTerm: string) {
         return this.db.fetchChildren({ taxonRef, page, pageSize, searchTerm });
     }
 

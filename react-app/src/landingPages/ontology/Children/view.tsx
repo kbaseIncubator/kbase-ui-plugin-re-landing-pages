@@ -38,9 +38,10 @@ export default class OntologyList extends React.Component<Props, State> {
                             {term.term.definition}
                         </div>
                     )
+                    // TODO: fix the hard coded url below!
                     return (
                         <Tooltip title={tooltip} placement="left">
-                            <a href={`/#review/ontology/go/${id}/${term.term.ref.timestamp}`} target="_parent">
+                            <a href={`/#review/go_ontology/${id}/${term.term.ref.timestamp}`} target="_parent">
                                 {id}
                             </a>
                         </Tooltip>

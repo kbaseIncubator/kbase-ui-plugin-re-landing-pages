@@ -42,7 +42,7 @@ export default class LinkedObjects extends React.Component<Props, State> {
                     const url = new URL('', window.location.origin);
                     url.hash = hash;
                     return (
-                        <a href={url.toString()} target="_blank">
+                        <a href={url.toString()} target="_blank" rel="noopener noreferrer">
                             {objectName}
                         </a>
                     )
@@ -66,7 +66,7 @@ export default class LinkedObjects extends React.Component<Props, State> {
                     search.set('sub', 'Feature');
                     search.set('subid', featureID);
                     return (
-                        <a href={url.toString()} target="_blank">
+                        <a href={url.toString()} target="_blank" rel="noopener noreferrer">
                             {featureID}
                         </a>
                     )

@@ -1,5 +1,5 @@
 import React from 'react';
-import { UIError } from "../types";
+import { UIError } from "../types/error";
 import { Alert, Icon } from 'antd';
 
 export interface ErrorViewProps {

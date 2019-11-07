@@ -1,5 +1,5 @@
 import React from 'react';
-import { Taxon, TaxonReference } from '../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../types/taxonomy';
 import './LineageNavigator.css';
 import TaxonItem from './TaxonItem';
 import TaxonChildren from './taxonChildren';
@@ -8,14 +8,14 @@ import Lineage from './lineage';
 export interface LineageProps {
     selectedTaxon: Taxon;
     targetTaxon: Taxon;
-    selectTaxonRef: (ref: TaxonReference) => void;
-    navigateToTaxonRef: (ref: TaxonReference) => void;
+    selectTaxonRef: (ref: TaxonomyReference) => void;
+    navigateToTaxonRef: (ref: TaxonomyReference) => void;
 }
 
 interface LineageState { }
 
 export default class LineageNavigator extends React.Component<LineageProps, LineageState> {
-    onClick(ref: TaxonReference) {
+    onClick(ref: TaxonomyReference) {
         this.props.selectTaxonRef(ref);
         // alert('navigate to ' + taxonId);
     }
@@ -59,7 +59,7 @@ export default class LineageNavigator extends React.Component<LineageProps, Line
     }
 
     renderChildren() {
-        let selectedRef: TaxonReference | null;
+        let selectedRef: TaxonomyReference | null;
         if (this.props.selectedTaxon) {
             selectedRef = this.props.selectedTaxon.ref;
         } else {

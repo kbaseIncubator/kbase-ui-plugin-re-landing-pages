@@ -1,6 +1,6 @@
 import DB, { DBProps, DBStatus, DBStateNone, DBStateLoading, DBStateLoaded, DBStateError } from '../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
-import { Taxon, TaxonReference } from '../../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonomyModel } from '../lib/model';
 
 export type TaxonInfoDBStateNone = DBStateNone;
@@ -31,7 +31,7 @@ export default class TaxonInfoDB extends DB<TaxonInfoDBState> {
         this.serviceWizardURL = props.config.services.ServiceWizard.url;
     }
     // Remember, pages are 1 based; offset is 0 based.
-    async fetchTaxon(taxonRef: TaxonReference) {
+    async fetchTaxon(taxonRef: TaxonomyReference) {
         try {
             this.set((state: TaxonInfoDBState) => {
                 return {

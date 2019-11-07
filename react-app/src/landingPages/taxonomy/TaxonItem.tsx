@@ -1,14 +1,14 @@
 import React from 'react';
-import { Taxon, TaxonReference, taxonomyNamespaceToString } from '../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../types/taxonomy';
 import { Tooltip, Icon } from 'antd';
 import './TaxonItem.css';
-import { relationEngineCollectionToString } from '../../types';
+import { relationEngineReferenceToNamespace } from '../../types/transform';
 
 export interface Props {
     taxon: Taxon;
     isActive: boolean;
-    selectTaxonRef: (ref: TaxonReference) => void;
-    navigateToTaxonRef: (ref: TaxonReference) => void;
+    selectTaxonRef: (ref: TaxonomyReference) => void;
+    navigateToTaxonRef: (ref: TaxonomyReference) => void;
 }
 
 interface State {
@@ -29,8 +29,7 @@ export default class TaxonItem extends React.Component<Props, State> {
         // const fixedID = this.props.taxon.id.replace('/', ':');
         const hash = [
             'review',
-            relationEngineCollectionToString(this.props.taxon.ref.collection),
-            taxonomyNamespaceToString(this.props.taxon.ref.namespace),
+            relationEngineReferenceToNamespace(this.props.taxon.ref),
             this.props.taxon.ref.id,
             String(this.props.taxon.ref.timestamp)
         ].join('/');

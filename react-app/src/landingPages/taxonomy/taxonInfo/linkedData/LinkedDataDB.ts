@@ -1,8 +1,8 @@
 import DB, { DBProps, DBCollectionNone, DBCollectionLoading, DBCollectionLoaded, DBCollectionReloading, DBCollectionError, DBCollectionStatus } from '../../../../lib/DB2';
 import { AppConfig } from '@kbase/ui-components';
 import { TaxonomyModel, LinkedObject, GetLinkedObjectsResult } from '../../lib/model';
-import { TaxonReference } from '../../../../types/taxonomy';
-import { UIError } from '../../../../types';
+import { TaxonomyReference } from '../../../../types/taxonomy';
+import { UIError } from '../../../../types/error';
 
 export interface LinkedObjectsData {
     linkedObjects: Array<LinkedObject>;
@@ -118,7 +118,7 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
         this.currentTask = null;
     }
 
-    async fetchLinkedObjects({ taxonRef, page, pageSize }: { taxonRef: TaxonReference; page: number; pageSize: number }) {
+    async fetchLinkedObjects({ taxonRef, page, pageSize }: { taxonRef: TaxonomyReference; page: number; pageSize: number }) {
         if (this.currentTask) {
             this.currentTask.cancel();
         }
@@ -210,7 +210,7 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
         }
     }
 
-    async queryLinkedObjects({ taxonRef, page, pageSize, sort }: { taxonRef: TaxonReference; page: number; pageSize: number, sort: SortSpec | null }) {
+    async queryLinkedObjects({ taxonRef, page, pageSize, sort }: { taxonRef: TaxonomyReference; page: number; pageSize: number, sort: SortSpec | null }) {
         if (this.currentTask) {
             this.currentTask.cancel();
         }

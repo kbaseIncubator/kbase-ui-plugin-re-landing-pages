@@ -3,16 +3,16 @@ import TaxonDB, { TaxonDBStateLoaded } from './TaxonDB';
 import { DBStatus, DBStateError } from '../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
 import Taxonomy from './Taxonomy';
-import { TaxonReference } from '../../../types/taxonomy';
+import { TaxonomyReference } from '../../../types/taxonomy';
 import { Icon } from 'antd';
 import ErrorView from '../../../components/ErrorView';
 
 export interface Props {
     token: string;
     config: AppConfig;
-    taxonRef: TaxonReference;
+    taxonRef: TaxonomyReference;
     // taxonID: TaxonID;
-    navigate: (taxonRef: TaxonReference) => void;
+    navigate: (taxonRef: TaxonomyReference) => void;
     setTitle: (title: string) => void;
 }
 
@@ -20,7 +20,7 @@ interface State { }
 
 export default class Data extends React.Component<Props, State> {
     db: TaxonDB;
-    currentlyNavigatedTaxonRef: TaxonReference | null;
+    currentlyNavigatedTaxonRef: TaxonomyReference | null;
     constructor(props: Props) {
         super(props);
         this.db = new TaxonDB({
@@ -36,11 +36,11 @@ export default class Data extends React.Component<Props, State> {
         this.currentlyNavigatedTaxonRef = null;
     }
 
-    selectTaxon(taxonRef: TaxonReference) {
+    selectTaxon(taxonRef: TaxonomyReference) {
         return this.db.getSelectedTaxon(taxonRef);
     }
 
-    navigateToTaxon(taxonRef: TaxonReference) {
+    navigateToTaxon(taxonRef: TaxonomyReference) {
         return this.props.navigate(taxonRef);
     }
 

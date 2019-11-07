@@ -1,15 +1,17 @@
-import { RelationEngineReference, RelationEngineCollection } from ".";
+import { RelationEngineDataSource, RelationEngineCategory, RelationEngineReferenceG } from "./core";
 
 // Ontology Term Reference
 
-export enum OntologyNamespace {
-    GO
-}
+// export enum OntologyNamespace {
+//     GO
+// }
 
 export function stringToOntologyNamespace(namespace: string): OntologyNamespace {
     switch (namespace) {
-        case 'go':
-            return OntologyNamespace.GO;
+        case 'go_ontology':
+            return 'go_ontology';
+        case 'envo_ontology':
+            return 'envo_ontology';
         default:
             throw new Error('Ontology namespace not supported: ' + namespace);
     }
@@ -17,22 +19,35 @@ export function stringToOntologyNamespace(namespace: string): OntologyNamespace 
 
 export function ontologyNamespaceToString(namespace: OntologyNamespace): string {
     switch (namespace) {
-        case OntologyNamespace.GO:
-            return 'go';
+        case 'go_ontology':
+            return 'go_ontology';
+        case 'envo_ontology':
+                return 'envo_ontology';
     }
 }
 
 
-export interface OntologyReferenceBase extends RelationEngineReference {
-    collection: RelationEngineCollection.ONTOLOGY,
-    namespace: OntologyNamespace;
-}
+// export interface OntologyReferenceBase extends RelationEngineReferenceBase {
+//     category: RelationEngineCategory.ONTOLOGY;
+// }
 
-export interface OntologyReferenceGO extends OntologyReferenceBase {
-    namespace: OntologyNamespace.GO;
-}
+// export interface OntologyReferenceGO extends OntologyReferenceBase {
+//     dataSource: RelationEngineDataSource.GO;
+// }
 
-export type OntologyReference = OntologyReferenceGO
+// export interface OntologyReferenceENVO extends OntologyReferenceBase {
+//     dataSource: RelationEngineDataSource.ENVO;
+// }
+
+// export type OntologyReference = OntologyReferenceGO | OntologyReferenceENVO
+
+export type OntologyNamespace =
+    'envo_ontology' |
+    'go_ontology';
+
+export type OntologyReference =
+    RelationEngineReferenceG<RelationEngineCategory.ONTOLOGY, RelationEngineDataSource.GO> |
+    RelationEngineReferenceG<RelationEngineCategory.ONTOLOGY, RelationEngineDataSource.ENVO>;
 
 
 // export type OntologyID = string;
@@ -55,16 +70,12 @@ export enum OntologyRelation {
 // Brief term - for list displays
 
 export interface OntologyTermBriefBase {
-    // type: OntologySource;
     ref: OntologyReference;
-    // id: OntologyID;
     name: string;
-    // relation: OntologyRelation
 }
 
 export interface GOOntologyTermBrief extends OntologyTermBriefBase {
-    // type: OntologySource.GO
-    ref: OntologyReferenceGO
+    ref: RelationEngineReferenceG<RelationEngineCategory.ONTOLOGY, RelationEngineDataSource.GO>
     goID: string;
 }
 
@@ -83,10 +94,7 @@ export interface OntologyTermRelatedBrief extends OntologyTermBrief {
 
 export interface OntologyTermBase {
     ref: OntologyReference;
-    // type: OntologySource;
-    // id: OntologyID;
     name: string;
-    // relation: OntologyRelation;
     comments: Array<string>
     definition: string;
     isObsolete: boolean;
@@ -100,11 +108,6 @@ export enum GOSynonymScope {
 }
 
 export type Synonym = string;
-
-// export interface GOSynonym {
-//     name: string;
-//     scope: GOSynonymScope;
-// }
 
 export interface GOSynonyms {
     exact: Array<Synonym>;

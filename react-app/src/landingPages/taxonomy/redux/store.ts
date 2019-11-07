@@ -1,9 +1,9 @@
 import { LoadedState, NoneState, LoadingState, ErrorState } from "../../../types";
-import { TaxonReference, Taxon } from '../../../types/taxonomy';
+import { TaxonomyReference, Taxon } from '../../../types/taxonomy';
 
 
 export interface MainLoadedState extends LoadedState {
-    selectedTaxonRef: TaxonReference;
+    selectedTaxonRef: TaxonomyReference;
     selectedTaxon: Taxon;
     targetTaxon: Taxon;
 }

@@ -3,10 +3,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StoreState, RelationEngineID, NavigationSome, View } from '../store';
 import { ViewType } from '../store/view';
 import RelationEngineAPIClient from '../../lib/RelationEngineAPIClient';
-import { RelationEngineCollection } from '../../types';
-import { stringToTaxonomyNamespace } from '../../types/taxonomy';
-import { stringToOntologyNamespace } from '../../types/ontology';
-// import * as uiLib from '@kbase/ui-lib';
+import { stringToRelationEngineRef, stringToNamespace } from '../../types/transform';
+import { RelationEngineCategory } from '../../types/core';
 
 export enum AppActions {
     NAVIGATE = 'kbase-ui-plugin-landing-pages/navigate',
@@ -65,7 +63,7 @@ export function navigate(relationEngineID: RelationEngineID) {
             app: {
                 config: {
                     services: {
-                        ServiceWizard: { url }
+                        RelationEngine: {url}
                     }
                 }
             }
@@ -77,25 +75,36 @@ export function navigate(relationEngineID: RelationEngineID) {
 
         const reClient = new RelationEngineAPIClient({
             url,
-            token: userAuthorization.token
+            token: userAuthorization.token,
+            // TODO: move timeout into config
+            timeout: 10000
         });
 
+        // TODO: for now we use the relation engine id string ns/id or ns/id/ts, but
+        // we should move to parsing this out before getting here...
+
         try {
-            const [nodeInfo] = await reClient.getNodeInfo(relationEngineID);
-            switch (nodeInfo.collection) {
-                case 'taxonomy':
+            // TODO: combine getting the re ref with getting the namespace info,
+            // since the re ref needs the category.
+
+            const [ns,,] = relationEngineID.split('/');
+            const namespace = stringToNamespace(ns);
+
+            const dataSourceInfo = await reClient.dataSourceInfo(namespace);
+            console.log('datasource info?', dataSourceInfo);
+            const categoryString = dataSourceInfo.data_source.category;
+            const relationEngineRef = stringToRelationEngineRef(relationEngineID, categoryString);
+
+            // const [nodeInfo] = await reClient.getNodeInfo(relationEngineID);
+            switch (relationEngineRef.category) {
+                case RelationEngineCategory.TAXONOMY:
                     // TODO: add source info here, or let the taxonomy landing page do
                     // it by itself? I think it is better to do it after the first dispatch
                     // here, because then the landing page can fold it into its type system,
                     // rather than requiring the top level to do that. E.g. source->enum.
                     dispatch(navigateSuccess({
                         type: ViewType.TAXONOMY,
-                        ref: {
-                            collection: RelationEngineCollection.TAXONOMY,
-                            namespace: stringToTaxonomyNamespace(nodeInfo.namespace),
-                            id: nodeInfo.id,
-                            timestamp: nodeInfo.timestamp
-                        }
+                        ref: relationEngineRef
                     }));
                     // const x = {
                     //     type: ViewType.TAXONOMY,
@@ -107,15 +116,10 @@ export function navigate(relationEngineID: RelationEngineID) {
                     //     }
                     // };
                     break;
-                case 'ontology':
+                case RelationEngineCategory.ONTOLOGY:
                     dispatch(navigateSuccess({
                         type: ViewType.ONTOLOGY,
-                        ref: {
-                            collection: RelationEngineCollection.ONTOLOGY,
-                            namespace: stringToOntologyNamespace(nodeInfo.namespace),
-                            id: nodeInfo.id,
-                            timestamp: nodeInfo.timestamp
-                        }
+                        ref: relationEngineRef
                     }));
                     break;
             }

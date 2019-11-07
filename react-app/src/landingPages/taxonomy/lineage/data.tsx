@@ -4,17 +4,17 @@ import { DBStatus, DBStateError } from '../../../lib/DB';
 
 import { AppConfig } from '@kbase/ui-components';
 import Lineage from './Lineage';
-import { TaxonReference } from '../../../types/taxonomy';
+import { TaxonomyReference } from '../../../types/taxonomy';
 import { Icon } from 'antd';
 import ErrorView from '../../../components/ErrorView';
 
 export interface Props {
     token: string;
     config: AppConfig;
-    taxonRef: TaxonReference;
-    selectedTaxonRef: TaxonReference;
-    selectTaxonRef: (taxonRef: TaxonReference) => void;
-    navigateToTaxonRef: (taxonRef: TaxonReference) => void;
+    taxonRef: TaxonomyReference;
+    selectedTaxonRef: TaxonomyReference;
+    selectTaxonRef: (taxonRef: TaxonomyReference) => void;
+    navigateToTaxonRef: (taxonRef: TaxonomyReference) => void;
 }
 
 interface State { }

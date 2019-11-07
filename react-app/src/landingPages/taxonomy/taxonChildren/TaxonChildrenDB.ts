@@ -8,7 +8,7 @@ import DB, {
     DBStateReLoading
 } from '../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
-import { Taxon, TaxonReference } from '../../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonomyModel } from '../lib/model';
 
 export type TaxonDBStateNone = DBStateNone;
@@ -98,7 +98,7 @@ export default class TaxonChildrenDB extends DB<TaxonDBState> {
         pageSize,
         searchTerm
     }: {
-        taxonRef: TaxonReference;
+        taxonRef: TaxonomyReference;
         page: number;
         pageSize: number;
         searchTerm: string;

@@ -1,6 +1,6 @@
 import DB, { DBProps, DBStatus, DBStateNone, DBStateLoading, DBStateLoaded, DBStateError } from '../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
-import { Taxon, TaxonReference } from '../../../types/taxonomy';
+import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonomyModel } from '../lib/model';
 
 export type TaxonDBStateNone = DBStateNone;
@@ -26,7 +26,7 @@ export default class TaxonDB extends DB<TaxonDBState> {
         super(props);
         this.props = props;
     }
-    async getTargetTaxon(taxonRef: TaxonReference) {
+    async getTargetTaxon(taxonRef: TaxonomyReference) {
         try {
             this.set((state: TaxonDBState) => {
                 return {
@@ -64,7 +64,7 @@ export default class TaxonDB extends DB<TaxonDBState> {
         }
     }
 
-    async getSelectedTaxon(taxonRef: TaxonReference) {
+    async getSelectedTaxon(taxonRef: TaxonomyReference) {
         try {
             // this.set((state: TaxonDBState) => {
             //     return {
