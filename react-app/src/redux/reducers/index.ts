@@ -1,7 +1,7 @@
 import { Action, Reducer } from 'redux';
 import { baseReducer, BaseStoreState } from '@kbase/ui-components';
-import { StoreState } from '../store';
-import { AppActions, NavigateSuccess } from '../actions';
+import { StoreState, ViewStatus } from '../store';
+import { AppActions, NavigateSuccess, NavigateError } from '../actions';
 
 function navigateSuccess(state: StoreState, action: NavigateSuccess): StoreState {
     return {
@@ -15,6 +15,14 @@ function navigateSuccess(state: StoreState, action: NavigateSuccess): StoreState
         // }
         navigation: action.navigation,
         trigger: Date.now()
+    };
+}
+
+function navigateError(state: StoreState, action: NavigateError): StoreState {
+    return {
+        ...state,
+
+        // TODO: Need to add navigation error condition to the store...
     };
 }
 
@@ -40,6 +48,8 @@ const reducer: Reducer<StoreState | undefined, Action> = (state: StoreState | un
         //     return navigateStart(state, action as NavigateStart);
         case AppActions.NAVIGATE_SUCCESS:
             return navigateSuccess(state, action as NavigateSuccess);
+        case AppActions.NAVIGATE_ERROR:
+            return navigateError(state, action as NavigateError);
     }
     return state;
 };

@@ -11,9 +11,9 @@ import { SortSpec, stringToSortDirection } from './LinkedDataDB';
 const DEFAULT_PAGE_SIZE = 12;
 
 export interface Props {
-    linkedObjectsCollection: LinkedObjectsCollection
-    setPage: (page: number, pageSize: number) => void
-    updateView: (page: number, pageSize: number, sort: SortSpec | null) => void
+    linkedObjectsCollection: LinkedObjectsCollection;
+    setPage: (page: number, pageSize: number) => void;
+    updateView: (page: number, pageSize: number, sort: SortSpec | null) => void;
 }
 
 interface State { }
@@ -23,7 +23,7 @@ export default class LinkedData extends React.Component<Props, State> {
         this.props.setPage(page, pageSize || DEFAULT_PAGE_SIZE);
     }
 
-    onChangeTable(pagination: PaginationConfig, filters: Record<string, string[]>, sorter: SorterResult<LinkedObject>) {
+    onChangeTable(pagination: PaginationConfig, filters: Partial<Record<keyof LinkedObject, string[]>>, sorter: SorterResult<LinkedObject>) {
         let sort: SortSpec | null;
         if (sorter.column && sorter.column.dataIndex) {
             const sortColumn = sorter.column.dataIndex;
@@ -80,7 +80,7 @@ export default class LinkedData extends React.Component<Props, State> {
                     const typeID = [[type.module, type.name].join('.'), [type.majorVersion, type.minorVersion].join('.')].join('-');
                     return <a href={`/#spec/type/${typeID}`} target="_blank" rel="noopener noreferrer">
                         {type.name}
-                    </a>
+                    </a>;
                 }}
             />
             <Column
@@ -102,7 +102,7 @@ export default class LinkedData extends React.Component<Props, State> {
                     const headerStyle = {
                         fontStyle: 'italic',
                         marginRight: '3px'
-                    }
+                    };
                     const tooltip = (
                         <div>
                             <div>
@@ -138,14 +138,14 @@ export default class LinkedData extends React.Component<Props, State> {
                                 </span>
                             </div>
                         </div>
-                    )
+                    );
                     return (
                         <Tooltip title={tooltip}>
                             <a href={url} target="_blank" rel="noopener noreferrer">
                                 {objectName}
                             </a>
                         </Tooltip>
-                    )
+                    );
                 }}
             />
             <Column
@@ -157,7 +157,7 @@ export default class LinkedData extends React.Component<Props, State> {
                         case WorkspaceType.NARRATIVE:
                             return <a href={`/narrative/${workspaceID}`} target="_blank" rel="noopener noreferrer">
                                 {linkedObject.title}
-                            </a>
+                            </a>;
                         case WorkspaceType.REFDATA:
                             return <span>{linkedObject.title}</span>;
                         case WorkspaceType.UNKNOWN:
@@ -192,17 +192,17 @@ export default class LinkedData extends React.Component<Props, State> {
                     return Intl.DateTimeFormat('en-US').format(linkedAt);
                 }}
             />
-        </Table>
+        </Table>;
     }
     renderLoading() {
         return (
             <Spin />
-        )
+        );
     }
     renderError(error: UIError) {
         return (
             <Alert type="error" message={error.message} />
-        )
+        );
     }
     render() {
         const collection = this.props.linkedObjectsCollection;
@@ -216,7 +216,7 @@ export default class LinkedData extends React.Component<Props, State> {
             case DBCollectionStatus.LOADED:
                 return this.renderLinkedObjects(collection.data, false);
             case DBCollectionStatus.RELOADING:
-                return this.renderLinkedObjects(collection.data, true)
+                return this.renderLinkedObjects(collection.data, true);
         }
     }
 }
