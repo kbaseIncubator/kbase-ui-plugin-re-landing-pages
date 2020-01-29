@@ -8,6 +8,7 @@ import {
 import { ViewType } from '../../redux/store/view';
 import Taxonomy from '../../landingPages/taxonomy';
 import OntologyView from '../../landingPages/ontology';
+import { Alert } from 'antd';
 
 export interface DispatcherProps {
     token: string | null;
@@ -38,7 +39,15 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
     }
 
     renderNavigationNone() {
-        return <div>none</div>;
+        const message = <div>
+            <p>
+                This navigation not supported
+            </p>
+            <p>
+                {this.props.navigation.type}
+            </p>
+        </div>;
+        return <Alert type="error" message={message} />;
     }
 
     renderNavigationSome(navigation: NavigationSome) {
@@ -70,7 +79,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         }
     }
 
-    parseHash(hash: string): { path: Array<string>; params: { relationEngineID: string } } {
+    parseHash(hash: string): { path: Array<string>; params: { relationEngineID: string; }; } {
         const hashRe = /^#(.*?)\/(.*)$/;
         const m = hashRe.exec(hash);
 
@@ -82,6 +91,8 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         // TODO: for real
 
         const [, path, relationEngineID] = m;
+
+        console.log('parse hash', path, relationEngineID);
 
         return {
             path: [path],

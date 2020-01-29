@@ -42,7 +42,7 @@ export function navigateError(message: string): NavigateError {
     return {
         type: AppActions.NAVIGATE_ERROR,
         message
-    }
+    };
 }
 
 export function navigateSuccess(
@@ -63,7 +63,7 @@ export function navigate(relationEngineID: RelationEngineID) {
             app: {
                 config: {
                     services: {
-                        RelationEngine: {url}
+                        RelationEngine: { url }
                     }
                 }
             }
@@ -87,7 +87,7 @@ export function navigate(relationEngineID: RelationEngineID) {
             // TODO: combine getting the re ref with getting the namespace info,
             // since the re ref needs the category.
 
-            const [ns,,] = relationEngineID.split('/');
+            const [ns, ,] = relationEngineID.split('/');
             const namespace = stringToNamespace(ns);
 
             const dataSourceInfo = await reClient.dataSourceInfo(namespace);
