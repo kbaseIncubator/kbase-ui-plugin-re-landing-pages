@@ -1,9 +1,11 @@
-import OntologyAPIClient, {  TermNode, RelatedTerm, EdgeType } from './OntologyAPIClient';
+import OntologyAPIClient, { TermNode, RelatedTerm, EdgeType } from './OntologyAPIClient';
 import { OntologyReference, OntologyNamespace, OntologyTerm, OntologySource, GOOntologyTerm, OntologyRelatedTerm, OntologyRelation, stringToOntologyNamespace } from '../../../types/ontology';
 import { RelationEngineCategory, RelationEngineDataSource } from '../../../types/core';
 
+const REQUEST_TIMEOUT = 30000;
+
 export interface GetTermParams {
-    ref: OntologyReference
+    ref: OntologyReference;
 }
 
 export interface GetTermResult {
@@ -11,7 +13,7 @@ export interface GetTermResult {
 }
 
 export interface GetTermsParams {
-    refs: Array<OntologyReference>
+    refs: Array<OntologyReference>;
 }
 
 export interface GetTermsResult {
@@ -25,7 +27,7 @@ export interface GetParentsParams {
 // TODO: this should be a "related term", although maybe the relation 
 // collapses out with ontology - are they all is_a at least for parents, children?
 export interface GetParentsResult {
-    terms: Array<OntologyRelatedTerm>
+    terms: Array<OntologyRelatedTerm>;
 }
 
 export interface GetChildrenParams {
@@ -35,7 +37,7 @@ export interface GetChildrenParams {
 // TODO: this should be a "related term", although maybe the relation 
 // collapses out with ontology - are they all is_a at least for parents, children?
 export interface GetChildrenResult {
-    terms: Array<OntologyRelatedTerm>
+    terms: Array<OntologyRelatedTerm>;
 }
 
 export interface GetAncestorGraphParams {
@@ -62,7 +64,7 @@ export interface RelatedFeature {
 }
 
 export interface GetRelatedFeaturesResult {
-    features: Array<RelatedFeature>
+    features: Array<RelatedFeature>;
 }
 
 export type NodeID = string;
@@ -108,22 +110,22 @@ export function termNodeToTerm(term: TermNode, ts: number): OntologyTerm {
                 name: term.name,
                 synonyms: {
                     exact: term.synonyms.filter((synonym) => {
-                        return synonym.pred === 'hasExactSynonym'
+                        return synonym.pred === 'hasExactSynonym';
                     }).map((synonym) => {
                         return synonym.val;
                     }),
                     narrow: term.synonyms.filter((synonym) => {
-                        return synonym.pred === 'hasNarrowSynonym'
+                        return synonym.pred === 'hasNarrowSynonym';
                     }).map((synonym) => {
                         return synonym.val;
                     }),
                     broad: term.synonyms.filter((synonym) => {
-                        return synonym.pred === 'hasBroadSynonym'
+                        return synonym.pred === 'hasBroadSynonym';
                     }).map((synonym) => {
                         return synonym.val;
                     }),
                     related: term.synonyms.filter((synonym) => {
-                        return synonym.pred === 'hasRelatedSynonym'
+                        return synonym.pred === 'hasRelatedSynonym';
                     }).map((synonym) => {
                         return synonym.val;
                     }),
@@ -197,10 +199,10 @@ export function relationToString(relation: OntologyRelation): EdgeType {
 
 export function relatedTermToTerm(relatedTerm: RelatedTerm, ts: number): OntologyRelatedTerm {
     const term = termNodeToTerm(relatedTerm.term, ts);
-    const relation = stringToTermRelation(relatedTerm.edge.type)
+    const relation = stringToTermRelation(relatedTerm.edge.type);
     return {
         term, relation
-    }
+    };
 }
 
 export function ontologyReferenceToNamespace(ref: OntologyReference): OntologyNamespace {
@@ -219,10 +221,10 @@ export default class OntologyModel {
     ontologyClient: OntologyAPIClient;
     token: string;
     url: string;
-    constructor({ token, url }: { token: string; url: string }) {
+    constructor({ token, url }: { token: string; url: string; }) {
         this.token = token;
         this.url = url;
-        this.ontologyClient = new OntologyAPIClient({ token, url });
+        this.ontologyClient = new OntologyAPIClient({ token, url, timeout: REQUEST_TIMEOUT });
     }
 
     // async getTerms({ refs }: GetTermsParams): Promise<GetTermsResult> {
@@ -250,10 +252,11 @@ export default class OntologyModel {
 
     // }
 
-    async getTerm({ ref }: {ref: OntologyReference}): Promise<GetTermResult> {
+    async getTerm({ ref }: { ref: OntologyReference; }): Promise<GetTermResult> {
         const client = new OntologyAPIClient({
             token: this.token,
-            url: this.url
+            url: this.url,
+            timeout: REQUEST_TIMEOUT
         });
 
         const result = await client.getTerms({
@@ -270,7 +273,8 @@ export default class OntologyModel {
     async getParents({ ref }: GetParentsParams): Promise<GetParentsResult> {
         const client = new OntologyAPIClient({
             token: this.token,
-            url: this.url
+            url: this.url,
+            timeout: REQUEST_TIMEOUT
         });
 
         const result = await client.getParents({
@@ -289,7 +293,8 @@ export default class OntologyModel {
     async getChildren({ ref }: GetChildrenParams): Promise<GetChildrenResult> {
         const client = new OntologyAPIClient({
             token: this.token,
-            url: this.url
+            url: this.url,
+            timeout: REQUEST_TIMEOUT
         });
 
         const result = await client.getChildren({
@@ -308,7 +313,8 @@ export default class OntologyModel {
     async getRelatedFeatures({ ref, offset, limit }: GetRelatedFeaturesParams): Promise<GetRelatedFeaturesResult> {
         const client = new OntologyAPIClient({
             token: this.token,
-            url: this.url
+            url: this.url,
+            timeout: REQUEST_TIMEOUT
         });
 
         const result = await client.getAssociatedWSObjects({
@@ -316,7 +322,7 @@ export default class OntologyModel {
             id: ref.id,
             ts: ref.timestamp || Date.now(),
             offset, limit
-        })
+        });
 
         // const features: Array<RelatedFeature> = result.results.reduce((features, genomeWithFeatures) => {
         //     genomeWithFeatures.features.forEach((feature) => {
@@ -335,7 +341,7 @@ export default class OntologyModel {
         // }, []: Array<RelatedFeature>);
 
 
-        const features: Array<RelatedFeature> = []
+        const features: Array<RelatedFeature> = [];
         result.results.forEach((genomeWithFeatures) => {
             genomeWithFeatures.features.forEach((feature) => {
                 features.push({
@@ -348,18 +354,19 @@ export default class OntologyModel {
                         version: genomeWithFeatures.ws_obj.version
                     }
                 });
-            })
+            });
         });
 
         return {
             features
-        }
+        };
     }
 
     async getAncestorGraph({ ref }: GetAncestorGraphParams): Promise<GetAncestorGraphResult> {
         const client = new OntologyAPIClient({
             token: this.token,
-            url: this.url
+            url: this.url,
+            timeout: REQUEST_TIMEOUT
         });
 
         const result = await client.getHierarchicalAncestors({
@@ -384,7 +391,7 @@ export default class OntologyModel {
             if (relations.some((r) => {
                 return r.from === item.edge.from &&
                     r.to === item.edge.to &&
-                    r.relation === relation
+                    r.relation === relation;
             })) {
                 return;
             }

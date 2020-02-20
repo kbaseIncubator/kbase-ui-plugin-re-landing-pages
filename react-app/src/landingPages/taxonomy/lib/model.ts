@@ -50,10 +50,12 @@ export interface GetLinkedObjectsResult {
     totalCount: number;
 }
 
+const REQUEST_TIMEOUT = 30000;
+
 export class TaxonomyModel {
     taxonomyClient: TaxonAPIClient;
-    constructor({ token, url }: { token: string; url: string }) {
-        this.taxonomyClient = new TaxonAPIClient({ token, url });
+    constructor({ token, url }: { token: string; url: string; }) {
+        this.taxonomyClient = new TaxonAPIClient({ token, url, timeout: REQUEST_TIMEOUT });
     }
 
     async getLineage(taxonRef: TaxonomyReference): Promise<Array<Taxon>> {
