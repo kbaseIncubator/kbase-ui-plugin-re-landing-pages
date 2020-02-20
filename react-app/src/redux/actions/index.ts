@@ -6,6 +6,9 @@ import RelationEngineAPIClient from '../../lib/RelationEngineAPIClient';
 import { stringToRelationEngineRef, stringToNamespace } from '../../types/transform';
 import { RelationEngineCategory } from '../../types/core';
 
+const REQUEST_TIMEOUT = 30000;
+
+
 export enum AppActions {
     NAVIGATE = 'kbase-ui-plugin-landing-pages/navigate',
     NAVIGATE_START = 'kbase-ui-plugin-landing-pages/navigate/start',
@@ -77,7 +80,7 @@ export function navigate(relationEngineID: RelationEngineID) {
             url,
             token: userAuthorization.token,
             // TODO: move timeout into config
-            timeout: 10000
+            timeout: REQUEST_TIMEOUT
         });
 
         // TODO: for now we use the relation engine id string ns/id or ns/id/ts, but
