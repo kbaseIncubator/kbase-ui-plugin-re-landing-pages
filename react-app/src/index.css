@@ -73,6 +73,7 @@ code {
     flex: 1 1 0px;
     display: flex;
     flex-direction: column;
+    min-width: 0;
     /* border: 1px solid blue; */
 }
 
@@ -127,6 +128,8 @@ code {
 .InfoTable-dataCol {
     flex: 1 1 0px;
     text-align: left;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Tweak antd tab styles to allow for full flex height of content */

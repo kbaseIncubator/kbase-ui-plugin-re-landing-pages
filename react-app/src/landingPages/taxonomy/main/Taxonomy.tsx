@@ -7,11 +7,13 @@ import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { Row, Col } from 'antd';
 import TaxonInfo from '../taxonInfo/TaxonInfo';
 import './Taxonomy.css';
+import { DataSourceInfo } from '../../../lib/RelationEngineModel';
 
 export interface TaxonomyProps {
     // lineage: Array<Taxon>;
     selectedTaxon: Taxon;
     targetTaxon: Taxon;
+    dataSource: DataSourceInfo;
     selectTaxonRef: (taxonRef: TaxonomyReference) => void;
     navigateToTaxonREf: (taxonRef: TaxonomyReference) => void;
     setTitle: (title: string) => void;
@@ -41,7 +43,7 @@ export default class Taxonomy extends React.Component<TaxonomyProps, TaxonomySta
                             <TaxonSummary taxon={this.props.targetTaxon} />
                         </Col>
                         <Col span={12}>
-                            <SourceInfo />
+                            <SourceInfo dataSource={this.props.dataSource} />
                         </Col>
                     </Row>
                 </div>

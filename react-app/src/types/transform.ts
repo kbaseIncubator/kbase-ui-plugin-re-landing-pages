@@ -1,5 +1,6 @@
 
 import * as core from './core';
+import { DataSourceCategory } from '../lib/RelationEngineAPIClient';
 
 export function relationEngineNamespaceToDataSource(s: core.RelationEngineNamespace): core.RelationEngineDataSource {
     switch (s) {
@@ -9,7 +10,8 @@ export function relationEngineNamespaceToDataSource(s: core.RelationEngineNamesp
             return core.RelationEngineDataSource.ENVO;
         case 'ncbi_taxonomy':
             return core.RelationEngineDataSource.NCBI;
-        case 'gtdb_taxonomy':
+        case 'gtdb':
+            // gtdb supplies just a taxonomy, so the name is not qualified.
             return core.RelationEngineDataSource.GTDB;
         case 'rdp_taxonomy':
             return core.RelationEngineDataSource.RDP;
@@ -57,7 +59,7 @@ export function stringToNamespace(s: string): core.RelationEngineNamespace {
     const namespaces = [
         'go_ontology',
         'envo_ontology',
-        'gtdb_taxonomy',
+        'gtdb',
         'ncbi_taxonomy',
         'rdp_taxonomy'
     ];
@@ -69,10 +71,11 @@ export function stringToNamespace(s: string): core.RelationEngineNamespace {
     throw new Error('Not a valid namespace: ' + s);
 }
 
-export function stringToRelationEngineRef(relationEngineID: core.RelationEngineID, categoryString: string): core.RelationEngineReference {
+export function stringToRelationEngineRef(relationEngineID: core.RelationEngineID, category: core.RelationEngineCategory): core.RelationEngineReference {
     const [namespaceString, id, timestampString] = relationEngineID.split('/');
+    console.log('string to ...', relationEngineID, id);
     const dataSource = relationEngineNamespaceToDataSource(stringToNamespace(namespaceString));
-    const category = stringToRelationEngineCategory(categoryString);
+    // const category = stringToRelationEngineCategory(categoryString);
 
     let timestamp: number;
     if (typeof timestampString === 'undefined') {
@@ -85,20 +88,20 @@ export function stringToRelationEngineRef(relationEngineID: core.RelationEngineI
         case core.RelationEngineCategory.ONTOLOGY:
             switch (dataSource) {
                 case core.RelationEngineDataSource.GO:
-                    return {category, dataSource, id, timestamp}
+                    return { category, dataSource, id, timestamp };
                 case core.RelationEngineDataSource.ENVO:
-                    return {category, dataSource, id, timestamp}
+                    return { category, dataSource, id, timestamp };
                 default:
                     throw new Error('Invalid data source for ontology');
             }
         case core.RelationEngineCategory.TAXONOMY:
             switch (dataSource) {
                 case core.RelationEngineDataSource.NCBI:
-                    return {category, dataSource, id, timestamp}
+                    return { category, dataSource, id, timestamp };
                 case core.RelationEngineDataSource.GTDB:
-                    return {category, dataSource, id, timestamp}
+                    return { category, dataSource, id, timestamp };
                 case core.RelationEngineDataSource.RDP:
-                    return {category, dataSource, id, timestamp}
+                    return { category, dataSource, id, timestamp };
                 default:
                     throw new Error('Invalid data source for taxonomy');
             }
@@ -120,9 +123,26 @@ export function relationEngineReferenceToNamespace(ref: core.RelationEngineRefer
                 case core.RelationEngineDataSource.NCBI:
                     return 'ncbi_taxonomy';
                 case core.RelationEngineDataSource.GTDB:
-                    return 'gtdb_taxonomy';
+                    return 'gtdb';
                 case core.RelationEngineDataSource.RDP:
                     return 'rdp_taxonomy';
             }
+    }
+}
+
+
+
+export function namespaceToDataSourceId(dataSource: core.RelationEngineNamespace): core.RelationEngineDataSourceId {
+    switch (dataSource) {
+        case 'ncbi_taxonomy':
+            return 'ncbi_taxonomy';
+        case 'gtdb':
+            return 'gtdb';
+        case 'rdp_taxonomy':
+            return 'rdp_taxonomy';
+        case 'go_ontology':
+            return 'go_ontology';
+        case 'envo_ontology':
+            return 'envo_ontology';
     }
 }

@@ -8,7 +8,7 @@ import { ViewType, TopLevelView, AsyncViewStatus, AsyncViewError, AsyncViewLoade
 import Taxonomy from '../../landingPages/taxonomy';
 import OntologyView from '../../landingPages/ontology';
 import { Spin, Alert } from 'antd';
-import { UIError } from '../../types/error'; 
+import { UIError } from '../../types/error';
 
 export interface DispatcherProps {
     token: string | null;
@@ -47,7 +47,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         // landing page.
         switch (navigation.type) {
             case ViewType.TAXONOMY:
-                return <Taxonomy taxonRef={navigation.ref} />;
+                return <Taxonomy taxonRef={navigation.ref} dataSource={navigation.dataSource} />;
             case ViewType.ONTOLOGY:
                 return <OntologyView termRef={navigation.ref} />;
             default:
@@ -74,7 +74,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
     renderLoadingState() {
         return (
             <Spin />
-        )
+        );
     }
 
     renderViewState(view: AsyncViewLoaded<TopLevelViewState>) {
@@ -87,13 +87,13 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
                     {view.state.ref.id}
                 </p>
             </div>
-        )
+        );
     }
 
     renderErrorState(view: AsyncViewError<UIError>) {
         return (
             <Alert type="error" message={view.error.message} />
-        )
+        );
     }
 
     renderView() {
@@ -111,7 +111,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         }
     }
 
-    parseHash(hash: string): { path: Array<string>; params: { relationEngineID: string } } {
+    parseHash(hash: string): { path: Array<string>; params: { relationEngineID: string; }; } {
         const hashRe = /^#(.*?)\/(.*)$/;
         const m = hashRe.exec(hash);
 

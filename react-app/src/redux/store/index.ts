@@ -9,6 +9,7 @@ import { OntologyReference } from '../../types/ontology';
 import { AsyncViewStatus, TopLevelView, ViewType, ViewBase } from './view';
 import { TaxonomyView } from './taxonomy';
 import { OntologyView } from './ontology';
+import { DataSourceInfo } from '../../lib/RelationEngineModel';
 
 
 export type RelationEngineID = string;
@@ -71,12 +72,14 @@ export interface NavigationNone {
 
 export interface NavigationTaxonomy {
     type: ViewType.TAXONOMY;
-    ref: TaxonomyReference
+    ref: TaxonomyReference;
+    dataSource: DataSourceInfo;
 }
 
 export interface NavigationOntology {
     type: ViewType.ONTOLOGY;
-    ref: OntologyReference
+    ref: OntologyReference;
+    dataSource: DataSourceInfo;
 }
 
 export type NavigationSome = NavigationTaxonomy | NavigationOntology;
