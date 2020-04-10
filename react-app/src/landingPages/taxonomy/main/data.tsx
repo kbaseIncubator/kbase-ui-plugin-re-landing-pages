@@ -6,11 +6,13 @@ import Taxonomy from './Taxonomy';
 import { TaxonomyReference } from '../../../types/taxonomy';
 import { Icon } from 'antd';
 import ErrorView from '../../../components/ErrorView';
+import { DataSourceInfo } from '../../../lib/RelationEngineModel';
 
 export interface Props {
     token: string;
     config: AppConfig;
     taxonRef: TaxonomyReference;
+    dataSource: DataSourceInfo;
     // taxonID: TaxonID;
     navigate: (taxonRef: TaxonomyReference) => void;
     setTitle: (title: string) => void;
@@ -66,6 +68,7 @@ export default class Data extends React.Component<Props, State> {
                 selectedTaxon={db.selectedTaxon}
                 selectTaxonRef={this.selectTaxon.bind(this)}
                 navigateToTaxonREf={this.navigateToTaxon.bind(this)}
+                dataSource={this.props.dataSource}
                 setTitle={this.props.setTitle}
             />
         );

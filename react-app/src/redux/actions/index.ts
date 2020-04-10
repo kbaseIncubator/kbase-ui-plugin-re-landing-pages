@@ -3,8 +3,9 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StoreState, RelationEngineID, NavigationSome, View } from '../store';
 import { ViewType } from '../store/view';
 import RelationEngineAPIClient from '../../lib/RelationEngineAPIClient';
-import { stringToRelationEngineRef, stringToNamespace } from '../../types/transform';
+import { stringToRelationEngineRef, stringToNamespace, namespaceToDataSourceId } from '../../types/transform';
 import { RelationEngineCategory } from '../../types/core';
+import { RelationEngineModel, DataSourceInfo } from '../../lib/RelationEngineModel';
 
 const REQUEST_TIMEOUT = 30000;
 
@@ -76,7 +77,7 @@ export function navigate(relationEngineID: RelationEngineID) {
             return;
         }
 
-        const reClient = new RelationEngineAPIClient({
+        const reClient = new RelationEngineModel({
             url,
             token: userAuthorization.token,
             // TODO: move timeout into config
@@ -92,14 +93,17 @@ export function navigate(relationEngineID: RelationEngineID) {
 
             const [ns, ,] = relationEngineID.split('/');
             const namespace = stringToNamespace(ns);
+            const dataSourceId = namespaceToDataSourceId(namespace);
 
-            const dataSourceInfo = await reClient.dataSourceInfo(namespace);
-            console.log('datasource info?', dataSourceInfo);
-            const categoryString = dataSourceInfo.data_source.category;
-            const relationEngineRef = stringToRelationEngineRef(relationEngineID, categoryString);
+            const idInfo = await reClient.getIdInfo(relationEngineID);
+
+            // const dataSourceInfo = await reClient.getDataSource(dataSourceId);
+            // console.log('datasource info?', dataSourceInfo);
+            // const categoryString = dataSourceInfo.data_source.category;
+            // const relationEngineRef = stringToRelationEngineRef(relationEngineID, categoryString);
 
             // const [nodeInfo] = await reClient.getNodeInfo(relationEngineID);
-            switch (relationEngineRef.category) {
+            switch (idInfo.ref.category) {
                 case RelationEngineCategory.TAXONOMY:
                     // TODO: add source info here, or let the taxonomy landing page do
                     // it by itself? I think it is better to do it after the first dispatch
@@ -107,7 +111,8 @@ export function navigate(relationEngineID: RelationEngineID) {
                     // rather than requiring the top level to do that. E.g. source->enum.
                     dispatch(navigateSuccess({
                         type: ViewType.TAXONOMY,
-                        ref: relationEngineRef
+                        ref: idInfo.ref,
+                        dataSource: idInfo.dataSourceInfo
                     }));
                     // const x = {
                     //     type: ViewType.TAXONOMY,
@@ -122,7 +127,8 @@ export function navigate(relationEngineID: RelationEngineID) {
                 case RelationEngineCategory.ONTOLOGY:
                     dispatch(navigateSuccess({
                         type: ViewType.ONTOLOGY,
-                        ref: relationEngineRef
+                        ref: idInfo.ref,
+                        dataSource: idInfo.dataSourceInfo
                     }));
                     break;
             }

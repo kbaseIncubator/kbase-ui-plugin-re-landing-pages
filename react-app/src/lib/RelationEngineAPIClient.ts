@@ -1,11 +1,20 @@
 import axios from 'axios';
-import { RelationEngineDataSource, RelationEngineNamespace } from '../types/core';
+
+export type DataSource =
+    'ncbi_taxonomy' |
+    'gtdb' |
+    'go_ontology' |
+    'envo_ontology' |
+    'rdp_taxonomy';
+
+
+export type DataSourceCategory = 'taxonomy' | 'ontology';
 
 // A collection is a top level division of the re data model
-export type Collection = 'taxonomy' | 'ontology';
+// export type Collection = 'taxonomy' | 'ontology';
 
 export interface GetNodeInfoResultBase {
-    collection: Collection;
+    collection: DataSourceCategory;
     // source: string;
     created: number;
     expired: number;
@@ -35,21 +44,20 @@ export type GetNodeInfoResult = GetNodeInfoResultTaxon | GetNodeInfoResultOntolo
 //     version: string;
 // }
 
-export type DataSourceCategory = 'taxonomy' | 'ontology';
 
 export interface DataSourcesResult {
-    data_sources: Array<RelationEngineDataSource>
+    data_sources: Array<DataSource>;
 }
 
 export interface DataSourceInfoResult {
     data_source: {
         category: DataSourceCategory;
-        name: RelationEngineDataSource;
+        name: DataSource;
         data_url: string;
         home_url: string;
         logo_url: string;
         title: string;
-    }
+    };
 }
 
 export interface RestClientParams {
@@ -70,7 +78,7 @@ export class RestClient {
             headers: {
                 Accept: 'application/json'
             }
-        })
+        });
         // TODO: handle errors!
 
 
@@ -83,18 +91,22 @@ export class RestClient {
 // }
 
 export default class RelationEngineAPIClient extends RestClient {
-    async dataSources(): Promise<DataSourcesResult> {
-        return this.get<DataSourcesResult>(['data_sources']);
+    async data_sources(): Promise<DataSourcesResult> {
+        const path = [
+            'api',
+            'v1',
+            'data_sources'
+        ];
+        return this.get<DataSourcesResult>(path);
     }
 
-    async dataSourceInfo(dataSource: RelationEngineNamespace): Promise<DataSourceInfoResult> {
+    async data_source(dataSource: DataSource): Promise<DataSourceInfoResult> {
         const path = [
             'api',
             'v1',
             'data_sources',
             dataSource
         ];
-        console.log('PATH', path);
         return this.get<DataSourceInfoResult>(path);
     }
 

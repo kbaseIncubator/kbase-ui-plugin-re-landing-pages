@@ -24,7 +24,7 @@ export interface RelationEngineReferenceG<CategoryType extends RelationEngineCat
     category: CategoryType;
     dataSource: DataSourceType;
     id: string;
-    timestamp: number
+    timestamp: number;
 }
 
 // export type OntologyReference =
@@ -49,3 +49,9 @@ export type RelationEngineNamespace = OntologyNamespace | TaxonomyNamespace;
 //     RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.GTDB> |
 //     RelationEngineReferenceG<RelationEngineCategory.TAXONOMY, RelationEngineDataSource.RDP>
 
+export type RelationEngineDataSourceId =
+    'ncbi_taxonomy' |
+    'gtdb' |
+    'rdp_taxonomy' |
+    'go_ontology' |
+    'envo_ontology';

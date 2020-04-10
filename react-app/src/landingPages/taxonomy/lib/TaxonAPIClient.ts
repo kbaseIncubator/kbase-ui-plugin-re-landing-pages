@@ -47,7 +47,7 @@ interface TaxonResult {
 export interface GetTaxonParams {
     ns: string;
     id: TaxonID;
-    ts: number
+    ts: number;
 }
 
 interface GetTaxonResult {
@@ -131,7 +131,7 @@ export interface GetAssociatedWorkspaceObjectsResultResult {
         workspace: {
             narr_name: string | null;
             refdata_source: string | null;
-        }
+        };
     };
 }
 
@@ -158,8 +158,8 @@ export interface GetChildrenParams {
 }
 
 export interface GetAssociatedWorkspaceObjectsParams {
-    taxon_ns: string;
-    taxon_id: TaxonID;
+    ns: string;
+    id: TaxonID;
     ts: number;
     limit: number;
     offset: number;
@@ -168,7 +168,7 @@ export interface GetAssociatedWorkspaceObjectsParams {
 export default class TaxonomyAPIClient extends DynamicServiceClient {
     static module: string = 'taxonomy_re_api';
 
-    async getLineage({ ns, id, ts }: { ns: string, id: TaxonID, ts: number }): Promise<GetLineageResult> {
+    async getLineage({ ns, id, ts }: { ns: string, id: TaxonID, ts: number; }): Promise<GetLineageResult> {
         const params: GetLineageParams = {
             ns, id, ts
         };
@@ -191,7 +191,7 @@ export default class TaxonomyAPIClient extends DynamicServiceClient {
         ts: number,
         offset: number,
         limit: number,
-        searchTerm: string
+        searchTerm: string;
     }): Promise<GetChildrenResult> {
         const [result] = await this.callFunc<[GetChildrenParams], [GetChildrenResult]>('get_children', [
             {
@@ -204,10 +204,10 @@ export default class TaxonomyAPIClient extends DynamicServiceClient {
         return result;
     }
 
-    async getTaxon({ ns, id, ts }: { ns: string, id: TaxonID, ts: number }): Promise<GetTaxonResult> {
+    async getTaxon({ ns, id, ts }: { ns: string, id: TaxonID, ts: number; }): Promise<GetTaxonResult> {
         const params: GetTaxonParams = {
             ns, id, ts
-        }
+        };
         const [result] = await this.callFunc<[GetTaxonParams], [GetTaxonResult]>('get_taxon', [
             params
         ]);
@@ -215,21 +215,21 @@ export default class TaxonomyAPIClient extends DynamicServiceClient {
     }
 
     async getAssociatedWorkspaceObjects({
-        taxon_ns,
-        taxon_id,
+        ns,
+        id,
         ts,
         offset,
         limit
     }: {
-        taxon_ns: string,
-        taxon_id: TaxonID,
+        ns: string,
+        id: TaxonID,
         ts: number,
         offset: number,
-        limit: number
+        limit: number;
     }): Promise<GetAssociatedWorkspaceObjectsResult> {
         const params: GetAssociatedWorkspaceObjectsParams = {
-            taxon_ns, taxon_id, ts, limit, offset
-        }
+            ns, id, ts, limit, offset
+        };
         const [result] = await this.callFunc<[GetAssociatedWorkspaceObjectsParams], [GetAssociatedWorkspaceObjectsResult]>('get_associated_ws_objects', [
             params
         ]);

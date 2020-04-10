@@ -55,7 +55,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         // landing page.
         switch (navigation.type) {
             case ViewType.TAXONOMY:
-                return <Taxonomy taxonRef={navigation.ref} />;
+                return <Taxonomy taxonRef={navigation.ref} dataSource={navigation.dataSource} />;
             case ViewType.ONTOLOGY:
                 return <OntologyView termRef={navigation.ref} />;
             default:

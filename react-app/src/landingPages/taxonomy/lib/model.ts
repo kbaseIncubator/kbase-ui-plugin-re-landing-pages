@@ -1,4 +1,4 @@
-import { TaxonomyReference, Taxon, NCBITaxon } from '../../../types/taxonomy';
+import { TaxonomyReference, Taxon, NCBITaxon, GTDBTaxon } from '../../../types/taxonomy';
 import TaxonAPIClient from './TaxonAPIClient';
 import { relationEngineReferenceToNamespace } from '../../../types/transform';
 import { RelationEngineCategory, RelationEngineDataSource, } from '../../../types/core';
@@ -68,34 +68,71 @@ export class TaxonomyModel {
             ts: timestamp
         });
         // TODO: should be conditional based on the source of the taxonomy??
-        const taxons: Array<NCBITaxon> = result.results.map((taxonResult) => {
-            let isBiological: boolean;
-            if (taxonResult.scientific_name === 'root' || taxonResult.scientific_name === 'cellular organisms') {
-                isBiological = false;
-            } else {
-                isBiological = true;
-            }
-            return {
-                ref: {
-                    category: RelationEngineCategory.TAXONOMY,
-                    dataSource: RelationEngineDataSource.NCBI,
-                    id: taxonResult.id,
-                    timestamp: result.ts
-                },
-                name: taxonResult.scientific_name,
-                rank: taxonResult.rank,
-                ncbiID: taxonResult.NCBI_taxon_id,
-                geneticCode: parseInt(taxonResult.gencode),
-                aliases: taxonResult.aliases.map(({ name, category }) => {
+
+        switch (taxonRef.dataSource) {
+            case RelationEngineDataSource.NCBI:
+                const ncbiTaxons: Array<NCBITaxon> = result.results.map((taxonResult) => {
+                    let isBiological: boolean;
+                    if (taxonResult.scientific_name === 'root' || taxonResult.scientific_name === 'cellular organisms') {
+                        isBiological = false;
+                    } else {
+                        isBiological = true;
+                    }
                     return {
-                        name,
-                        category
+                        ref: {
+                            category: RelationEngineCategory.TAXONOMY,
+                            dataSource: RelationEngineDataSource.NCBI,
+                            id: taxonResult.id,
+                            timestamp: result.ts
+                        },
+                        name: taxonResult.scientific_name,
+                        rank: taxonResult.rank,
+                        ncbiID: taxonResult.NCBI_taxon_id,
+                        geneticCode: parseInt(taxonResult.gencode),
+                        aliases: taxonResult.aliases.map(({ name, category }) => {
+                            return {
+                                name,
+                                category
+                            };
+                        }),
+                        isBiological
                     };
-                }),
-                isBiological
-            };
-        });
-        return taxons;
+                });
+                return ncbiTaxons;
+            case RelationEngineDataSource.GTDB:
+                const gtdbTaxons: Array<GTDBTaxon> = result.results.map((taxonResult) => {
+                    let isBiological: boolean;
+
+                    // TODO: remove when name -> scientific_name for gtdb taxonomy
+                    const x = (taxonResult as unknown) as any;
+                    const name = x['name'] as string;
+
+                    // console.log('gtdb taxon is', name, taxonResult);
+
+                    // if (taxonResult.scientific_name === 'root' || taxonResult.scientific_name === 'cellular organisms') {
+                    //     isBiological = false;
+                    // } else {
+                    //     isBiological = true;
+                    // }
+                    isBiological = true;
+                    return {
+                        ref: {
+                            category: RelationEngineCategory.TAXONOMY,
+                            dataSource: RelationEngineDataSource.GTDB,
+                            id: taxonResult.id,
+                            timestamp: result.ts
+                        },
+                        name,
+                        // name: taxonResult.scientific_name,
+                        rank: taxonResult.rank,
+
+                        isBiological
+                    };
+                });
+                return gtdbTaxons;
+            default:
+                throw new Error('Not a supported taxonomy data source');
+        }
     }
 
     async getChildren(taxonRef: TaxonomyReference, options: GetChildrenOptions): Promise<[Array<Taxon>, number]> {
@@ -112,34 +149,66 @@ export class TaxonomyModel {
             searchTerm: options.searchTerm
         });
 
-        const taxa: Array<NCBITaxon> = result.results.map((taxonResult) => {
-            let isBiological: boolean;
-            if (taxonResult.scientific_name === 'root' || taxonResult.scientific_name === 'cellular organisms') {
-                isBiological = false;
-            } else {
-                isBiological = true;
-            }
-            return {
-                ref: {
-                    category: RelationEngineCategory.TAXONOMY,
-                    dataSource: RelationEngineDataSource.NCBI,
-                    id: taxonResult.id,
-                    timestamp: result.ts
-                },
-                name: taxonResult.scientific_name,
-                rank: taxonResult.rank,
-                ncbiID: taxonResult.NCBI_taxon_id,
-                geneticCode: parseInt(taxonResult.gencode),
-                aliases: taxonResult.aliases.map(({ name, category }) => {
+        switch (taxonRef.dataSource) {
+            case RelationEngineDataSource.NCBI:
+                const ncbiTaxa: Array<NCBITaxon> = result.results.map((taxonResult) => {
+                    let isBiological: boolean;
+                    if (taxonResult.scientific_name === 'root' || taxonResult.scientific_name === 'cellular organisms') {
+                        isBiological = false;
+                    } else {
+                        isBiological = true;
+                    }
                     return {
-                        name,
-                        category
+                        ref: {
+                            category: RelationEngineCategory.TAXONOMY,
+                            dataSource: RelationEngineDataSource.NCBI,
+                            id: taxonResult.id,
+                            timestamp: result.ts
+                        },
+                        name: taxonResult.scientific_name,
+                        rank: taxonResult.rank,
+                        ncbiID: taxonResult.NCBI_taxon_id,
+                        geneticCode: parseInt(taxonResult.gencode),
+                        aliases: taxonResult.aliases.map(({ name, category }) => {
+                            return {
+                                name,
+                                category
+                            };
+                        }),
+                        isBiological
                     };
-                }),
-                isBiological
-            };
-        });
-        return [taxa, result.total_count];
+                });
+                return [ncbiTaxa, result.total_count];
+            case RelationEngineDataSource.GTDB:
+                const gtdbTaxa: Array<GTDBTaxon> = result.results.map((taxonResult) => {
+                    let isBiological: boolean = true;
+                    // TODO: remove when name -> scientific_name for gtdb taxonomy
+                    const x = (taxonResult as unknown) as any;
+                    const name = x['name'] as string;
+                    // if (taxonResult.scientific_name === 'root' || taxonResult.scientific_name === 'cellular organisms') {
+                    //     isBiological = false;
+                    // } else {
+                    //     isBiological = true;
+                    // }
+                    return {
+                        ref: {
+                            category: RelationEngineCategory.TAXONOMY,
+                            dataSource: RelationEngineDataSource.GTDB,
+                            id: taxonResult.id,
+                            timestamp: result.ts
+                        },
+                        name,
+                        // name: taxonResult.scientific_name,
+                        rank: taxonResult.rank,
+                        isBiological
+                    };
+                });
+                return [gtdbTaxa, result.total_count];
+            default:
+                throw new Error('Not a supported taxonomy data source');
+        }
+
+
     }
 
     // async getChildrenx(taxonID: TaxonID, options: GetChildrenOptions): Promise<[Array<Taxon>, number, number]> {
@@ -247,41 +316,71 @@ export class TaxonomyModel {
         //     throw new Error(`Taxon not found`);
         // }
         const taxonResult = result.results[0];
-        let isBiological: boolean;
-        if (taxonResult.scientific_name === 'root' || taxonResult.scientific_name === 'cellular organisms') {
-            isBiological = false;
-        } else {
-            isBiological = true;
-        }
+
 
         // TODO: here and above, we need to determine the namespace enum value by 
         // comparing the string coming in...
-        const taxon: Taxon = {
-            ref: {
-                category: RelationEngineCategory.TAXONOMY,
-                dataSource: RelationEngineDataSource.NCBI,
-                id: taxonResult.id,
-                timestamp: result.ts
-            },
-            name: taxonResult.scientific_name,
-            rank: taxonResult.rank,
-            ncbiID: taxonResult.NCBI_taxon_id,
-            geneticCode: parseInt(taxonResult.gencode),
-            aliases: taxonResult.aliases.map(({ name, category }) => {
-                return {
-                    name,
-                    category
-                };
-            }),
-            isBiological
-        };
-        return taxon;
+        switch (taxonRef.dataSource) {
+            case RelationEngineDataSource.NCBI:
+                return (() => {
+                    let isBiological: boolean;
+                    if (taxonResult.scientific_name === 'root' || taxonResult.scientific_name === 'cellular organisms') {
+                        isBiological = false;
+                    } else {
+                        isBiological = true;
+                    }
+                    const ncbiTaxon: NCBITaxon = {
+                        ref: {
+                            category: RelationEngineCategory.TAXONOMY,
+                            dataSource: RelationEngineDataSource.NCBI,
+                            id: taxonResult.id,
+                            timestamp: result.ts
+                        },
+                        name: taxonResult.scientific_name,
+                        rank: taxonResult.rank,
+                        ncbiID: taxonResult.NCBI_taxon_id,
+                        geneticCode: parseInt(taxonResult.gencode),
+                        aliases: taxonResult.aliases.map(({ name, category }) => {
+                            return {
+                                name,
+                                category
+                            };
+                        }),
+                        isBiological
+                    };
+                    return ncbiTaxon;
+                })();
+            case RelationEngineDataSource.GTDB:
+                return (() => {
+                    const isBiological = true;
+                    // TODO: remove when name -> scientific_name for gtdb taxonomy
+                    const x = (taxonResult as unknown) as any;
+                    const name = x['name'] as string;
+                    const gtdbTaxon: GTDBTaxon = {
+                        ref: {
+                            category: RelationEngineCategory.TAXONOMY,
+                            dataSource: RelationEngineDataSource.GTDB,
+                            id: taxonResult.id,
+                            timestamp: result.ts
+                        },
+                        name,
+                        // name: taxonResult.scientific_name,
+                        rank: taxonResult.rank,
+                        isBiological
+                    };
+                    return gtdbTaxon;
+                })();
+
+            default:
+                throw new Error('Unsupported taxonomy data source');
+        }
+
     }
 
     async getLinkedObjects(taxonRef: TaxonomyReference, options: GetLinkedObjectsOptions): Promise<GetLinkedObjectsResult> {
         const params = {
-            taxon_ns: relationEngineReferenceToNamespace(taxonRef),
-            taxon_id: taxonRef.id,
+            ns: relationEngineReferenceToNamespace(taxonRef),
+            id: taxonRef.id,
             ts: taxonRef.timestamp,
             offset: options.offset,
             limit: options.limit

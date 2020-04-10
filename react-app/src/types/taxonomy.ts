@@ -12,7 +12,7 @@ import { RelationEngineReference, RelationEngineDataSource, RelationEngineCatego
 //         case TaxonomyNamespace.NCBI:
 //             return 'ncbi_taxonomy';
 //         case TaxonomyNamespace.GTDB:
-//             return 'gtdb_taxonomy';
+//             return 'gtdb';
 //     }
 // }
 
@@ -47,7 +47,7 @@ import { RelationEngineReference, RelationEngineDataSource, RelationEngineCatego
 // export type TaxonomyReference = TaxonomyReferenceNCBI | TaxonomyReferenceGTDB | TaxonomyReferenceRDP;
 
 export type TaxonomyNamespace =
-    'gtdb_taxonomy' |
+    'gtdb' |
     'ncbi_taxonomy' |
     'rdp_taxonomy';
 
