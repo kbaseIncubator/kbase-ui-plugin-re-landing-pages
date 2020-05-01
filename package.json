@@ -10,7 +10,7 @@
         "tar": "6.0.1"
     },
     "scripts": {
-        "build-plugin": "bash scripts/build-plugin.bash",
+        "build": "bash scripts/build-plugin.bash",
         "install-plugin": "node scripts/install-plugin.js"
     },
     "repository": {
