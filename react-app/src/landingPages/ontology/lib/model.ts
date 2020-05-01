@@ -1,5 +1,5 @@
-import OntologyAPIClient, { TermNode, RelatedTerm, EdgeType } from './OntologyAPIClient';
-import { OntologyReference, OntologyNamespace, OntologyTerm, OntologySource, GOOntologyTerm, OntologyRelatedTerm, OntologyRelation, stringToOntologyNamespace } from '../../../types/ontology';
+import OntologyAPIClient, { TermNode, RelatedTerm, EdgeType, Namespace } from './OntologyAPIClient';
+import { OntologyReference, OntologyNamespace, OntologyTerm, OntologySource, GOOntologyTerm, OntologyRelatedTerm, OntologyRelation, stringToOntologyNamespace, ENVOOntologyTerm } from '../../../types/ontology';
 import { RelationEngineCategory, RelationEngineDataSource } from '../../../types/core';
 
 const REQUEST_TIMEOUT = 30000;
@@ -90,11 +90,12 @@ export interface GetAncestorGraphResult {
     termsGraph: TermsGraph;
 }
 
-export function termNodeToTerm(term: TermNode, ts: number): OntologyTerm {
-    const namespace = stringToOntologyNamespace('go_ontology');
+export function termNodeToTerm(term: TermNode, ns: string, ts: number): OntologyTerm {
+    const namespace = stringToOntologyNamespace(ns || 'envo_ontology');
+
     switch (namespace) {
         case 'go_ontology':
-            const temp: GOOntologyTerm = {
+            const goTerm: GOOntologyTerm = {
                 type: OntologySource.GO,
                 ref: {
                     category: RelationEngineCategory.ONTOLOGY,
@@ -102,7 +103,7 @@ export function termNodeToTerm(term: TermNode, ts: number): OntologyTerm {
                     id: term.id,
                     timestamp: ts
                 },
-                namespace: term.namespace,
+                namespace: ns,
                 comments: term.comments,
                 definition: term.def.val,
                 goID: term.id,
@@ -131,7 +132,46 @@ export function termNodeToTerm(term: TermNode, ts: number): OntologyTerm {
                     }),
                 }, // TODO:
             };
-            return temp;
+            return goTerm;
+        case 'envo_ontology':
+            const envoTerm: ENVOOntologyTerm = {
+                type: OntologySource.ENVO,
+                ref: {
+                    category: RelationEngineCategory.ONTOLOGY,
+                    dataSource: RelationEngineDataSource.ENVO, // TODO: stringToOntologyNamespace(term.ns),
+                    id: term.id,
+                    timestamp: ts
+                },
+                namespace: 'envo_ontology',
+                comments: term.comments,
+                definition: term.def.val,
+                envoID: term.id,
+                isObsolete: false, // ignored for now, 
+                name: term.name
+                // synonyms: {
+                //     exact: term.synonyms.filter((synonym) => {
+                //         return synonym.pred === 'hasExactSynonym';
+                //     }).map((synonym) => {
+                //         return synonym.val;
+                //     }),
+                //     narrow: term.synonyms.filter((synonym) => {
+                //         return synonym.pred === 'hasNarrowSynonym';
+                //     }).map((synonym) => {
+                //         return synonym.val;
+                //     }),
+                //     broad: term.synonyms.filter((synonym) => {
+                //         return synonym.pred === 'hasBroadSynonym';
+                //     }).map((synonym) => {
+                //         return synonym.val;
+                //     }),
+                //     related: term.synonyms.filter((synonym) => {
+                //         return synonym.pred === 'hasRelatedSynonym';
+                //     }).map((synonym) => {
+                //         return synonym.val;
+                //     }),
+                // }, // TODO:
+            };
+            return envoTerm;
         default:
             throw new Error('Ontology namespace not yet supported: ' + namespace);
     }
@@ -169,6 +209,8 @@ export function stringToTermRelation(relationString: EdgeType): OntologyRelation
             return OntologyRelation.ENDS_DURING;
         case 'happens_during':
             return OntologyRelation.HAPPENS_DURING;
+        case 'derives_from':
+            return OntologyRelation.DERIVES_FROM;
         default:
             throw new Error('Unknown relation: ' + relationString);
     }
@@ -194,11 +236,13 @@ export function relationToString(relation: OntologyRelation): EdgeType {
             return 'ends_during';
         case OntologyRelation.HAPPENS_DURING:
             return 'happens_during';
+        case OntologyRelation.DERIVES_FROM:
+            return 'derives_from';
     }
 }
 
-export function relatedTermToTerm(relatedTerm: RelatedTerm, ts: number): OntologyRelatedTerm {
-    const term = termNodeToTerm(relatedTerm.term, ts);
+export function relatedTermToTerm(relatedTerm: RelatedTerm, namespace: Namespace, ts: number): OntologyRelatedTerm {
+    const term = termNodeToTerm(relatedTerm.term, namespace, ts);
     const relation = stringToTermRelation(relatedTerm.edge.type);
     return {
         term, relation
@@ -259,14 +303,16 @@ export default class OntologyModel {
             timeout: REQUEST_TIMEOUT
         });
 
+        const namespace = ontologyReferenceToNamespace(ref);
+
         const result = await client.getTerms({
-            ns: ontologyReferenceToNamespace(ref),
+            ns: namespace,
             ids: [ref.id],
             ts: ref.timestamp || Date.now()
         });
 
         return {
-            term: termNodeToTerm(result.results[0], result.ts)
+            term: termNodeToTerm(result.results[0], namespace, result.ts)
         };
     }
 
@@ -277,15 +323,17 @@ export default class OntologyModel {
             timeout: REQUEST_TIMEOUT
         });
 
+        const namespace = ontologyReferenceToNamespace(ref);
+
         const result = await client.getParents({
-            ns: ontologyReferenceToNamespace(ref),
+            ns: namespace,
             id: ref.id,
             ts: ref.timestamp || Date.now()
         });
 
         return {
             terms: result.results.map((item) => {
-                return relatedTermToTerm(item, result.ts);
+                return relatedTermToTerm(item, namespace, result.ts);
             })
         };
     }
@@ -297,15 +345,17 @@ export default class OntologyModel {
             timeout: REQUEST_TIMEOUT
         });
 
+        const namespace = ontologyReferenceToNamespace(ref);
+
         const result = await client.getChildren({
-            ns: ontologyReferenceToNamespace(ref),
+            ns: namespace,
             id: ref.id,
             ts: ref.timestamp || Date.now()
         });
 
         return {
             terms: result.results.map((item) => {
-                return relatedTermToTerm(item, result.ts);
+                return relatedTermToTerm(item, namespace, result.ts);
             })
         };
     }
@@ -382,12 +432,6 @@ export default class OntologyModel {
         const relations: Array<TermsGraphRelation> = [];
         result.results.forEach((item) => {
             const relation = stringToTermRelation(item.edge.type);
-            // if (item.edge.from === 'GO:0008150' || item.edge.to === 'GO:0008150') {
-            //     console.log('R', item.edge.from === item.edge.to, item.edge.from, item.edge.to);
-            // }
-            // if (item.term.id === 'GO:0008150') {
-            //     console.log('T', item);
-            // }
             if (relations.some((r) => {
                 return r.from === item.edge.from &&
                     r.to === item.edge.to &&
@@ -414,7 +458,7 @@ export default class OntologyModel {
         const terms = new Map<string, TermsGraphNode>();
         result.results.forEach((item) => {
             if (!terms.has(item.term.id)) {
-                const term = termNodeToTerm(item.term, result.ts);
+                const term = termNodeToTerm(item.term, ontologyReferenceToNamespace(ref), result.ts);
                 let isRoot = false;
                 const nodes = relationsMap.get(term.ref.id);
                 if (!nodes) {

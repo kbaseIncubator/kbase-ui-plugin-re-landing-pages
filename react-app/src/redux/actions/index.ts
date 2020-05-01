@@ -2,10 +2,8 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StoreState, RelationEngineID, NavigationSome, View } from '../store';
 import { ViewType } from '../store/view';
-import RelationEngineAPIClient from '../../lib/RelationEngineAPIClient';
-import { stringToRelationEngineRef, stringToNamespace, namespaceToDataSourceId } from '../../types/transform';
 import { RelationEngineCategory } from '../../types/core';
-import { RelationEngineModel, DataSourceInfo } from '../../lib/RelationEngineModel';
+import { RelationEngineModel } from '../../lib/RelationEngineModel';
 
 const REQUEST_TIMEOUT = 30000;
 
@@ -91,14 +89,9 @@ export function navigate(relationEngineID: RelationEngineID) {
             // TODO: combine getting the re ref with getting the namespace info,
             // since the re ref needs the category.
 
-            const [ns, ,] = relationEngineID.split('/');
-            const namespace = stringToNamespace(ns);
-            const dataSourceId = namespaceToDataSourceId(namespace);
-
             const idInfo = await reClient.getIdInfo(relationEngineID);
 
             // const dataSourceInfo = await reClient.getDataSource(dataSourceId);
-            // console.log('datasource info?', dataSourceInfo);
             // const categoryString = dataSourceInfo.data_source.category;
             // const relationEngineRef = stringToRelationEngineRef(relationEngineID, categoryString);
 

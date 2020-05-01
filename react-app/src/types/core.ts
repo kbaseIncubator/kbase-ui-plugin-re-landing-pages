@@ -13,11 +13,11 @@ export enum RelationEngineCategory {
 }
 
 export enum RelationEngineDataSource {
-    ENVO,
-    GO,
-    GTDB,
-    NCBI,
-    RDP
+    ENVO = 'ENVO',
+    GO = 'GO',
+    GTDB = 'GTDB',
+    NCBI = 'NCBI',
+    RDP = 'RDP'
 }
 
 export interface RelationEngineReferenceG<CategoryType extends RelationEngineCategory, DataSourceType extends RelationEngineDataSource> {

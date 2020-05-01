@@ -31,7 +31,7 @@ export interface GetChildrenResult {
 export interface Synonym {
     pred: string;
     val: string;
-    xrefs: Array<XRef>
+    xrefs: Array<XRef>;
 }
 
 export interface XRef {
@@ -99,7 +99,7 @@ export interface TermNode {
             return OntologyRelation.HAPPENS_DURING;
 */
 export type EdgeType = 'is_a' | 'part_of' | 'has_part' | 'regulates' | 'positively_regulates' |
-    'negatively_regulates' | 'occurs_in' | 'ends_during' | 'happens_during';
+    'negatively_regulates' | 'occurs_in' | 'ends_during' | 'happens_during' | 'derives_from';
 
 export interface TermEdge {
     id: string;
@@ -172,7 +172,7 @@ export interface GetAssociatedWSObjectsParams {
     ns: Namespace,
     ts: number,
     offset: number,
-    limit: number
+    limit: number;
 }
 
 export interface RelatedWSObject {
@@ -185,7 +185,7 @@ export interface RelatedWSObject {
         workspace_id: number;
         object_id: number;
         version: number;
-    }
+    };
 }
 
 export interface GetAssociatedWSObjectsResults {
@@ -214,13 +214,6 @@ export default class OntologyAPIClient extends DynamicServiceClient {
 
     async getChildren(params: GetChildrenParams): Promise<GetChildrenResult> {
         const [result] = await this.callFunc<[GetChildrenParams], [GetChildrenResult]>('get_children', [
-            params
-        ]);
-        return result;
-    }
-
-    async getRelatedObjects(params: GetRelatedObjectsParams): Promise<GetRelatedObjectsResult> {
-        const [result] = await this.callFunc<[GetRelatedObjectsParams], [GetRelatedObjectsResult]>('get_children', [
             params
         ]);
         return result;

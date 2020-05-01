@@ -57,7 +57,7 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
             case ViewType.TAXONOMY:
                 return <Taxonomy taxonRef={navigation.ref} dataSource={navigation.dataSource} />;
             case ViewType.ONTOLOGY:
-                return <OntologyView termRef={navigation.ref} />;
+                return <OntologyView termRef={navigation.ref} dataSource={navigation.dataSource} />;
             default:
                 // TODO: make real error display.
                 console.error('Unhandled navigation', navigation);
@@ -91,8 +91,6 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
         // TODO: for real
 
         const [, path, relationEngineID] = m;
-
-        console.log('parse hash', path, relationEngineID);
 
         return {
             path: [path],

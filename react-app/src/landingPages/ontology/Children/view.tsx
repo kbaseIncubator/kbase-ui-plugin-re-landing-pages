@@ -1,5 +1,5 @@
 import React from 'react';
-import { OntologyRelatedTerm, OntologyRelation } from '../../../types/ontology';
+import { OntologyRelatedTerm, OntologyRelation, OntologySource } from '../../../types/ontology';
 import './style.css';
 import { Empty, Table, Tooltip } from 'antd';
 import Column from 'antd/lib/table/Column';
@@ -30,14 +30,22 @@ export default class OntologyList extends React.Component<Props, State> {
             <Column dataIndex='term.name' title="Name" width="60%" />
             <Column dataIndex="term.goID" title="ID" width="20%"
                 render={(id: string, term: OntologyRelatedTerm) => {
+                    let ownId: string;
+                    switch (term.term.type) {
+                        case OntologySource.GO:
+                            ownId = term.term.goID;
+                            break;
+                        case OntologySource.ENVO:
+                            ownId = term.term.envoID;
+                    }
                     const tooltip = (
                         <div>
                             {term.term.name}<br />
-                            {term.term.goID}
+                            {ownId}
                             <hr />
                             {term.term.definition}
                         </div>
-                    )
+                    );
                     // TODO: fix the hard coded url below!
                     return (
                         <Tooltip title={tooltip} placement="left">
@@ -45,13 +53,13 @@ export default class OntologyList extends React.Component<Props, State> {
                                 {id}
                             </a>
                         </Tooltip>
-                    )
+                    );
                 }} />
             <Column dataIndex="relation" title="Relation" width="20%"
                 render={(relation: OntologyRelation) => {
                     return this.renderRelation(relation);
                 }} />
-        </Table>
+        </Table>;
     }
     renderNoItems() {
         return <Empty description="No Children" image={Empty.PRESENTED_IMAGE_SIMPLE} />;

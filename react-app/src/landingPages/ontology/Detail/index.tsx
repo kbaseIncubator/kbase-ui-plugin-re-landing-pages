@@ -1,14 +1,14 @@
 import React from 'react';
 import { FlexTabs } from '@kbase/ui-components';
 import './style.css';
-import { OntologyTerm, Synonym } from '../../../types/ontology';
+import { OntologyTerm, Synonym, OntologySource } from '../../../types/ontology';
 import TermLink from '../TermLink';
 import LinkedObjects from './LinkedObjects';
 import Children from '../Children';
 import AncestorGraph from '../AncestorGraph';
 
 export interface DetailProps {
-    term: OntologyTerm
+    term: OntologyTerm;
 }
 
 interface DetailState {
@@ -24,7 +24,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                 <div key={String(index)}>
                     {s}
                 </div>
-            )
+            );
         });
     }
 
@@ -36,7 +36,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
         return this.props.term.comments.map((comment, index) => {
             const comments = comment.split('\n');
             return comments.map((comment, index2) => {
-                return <p key={String(index) + '-' + String(index2)}>{comment}</p>
+                return <p key={String(index) + '-' + String(index2)}>{comment}</p>;
             });
         });
     }
@@ -85,9 +85,13 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
     renderAllSynonyms() {
+        const term = this.props.term;
+        if (term.type === OntologySource.ENVO) {
+            return <i>Synonyms not available for ENVO Ontology</i>;
+        }
         return (
             <div className="InfoTable DetailTable">
                 <div className="InfoTable-row">
@@ -95,7 +99,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                         exact
                         </div>
                     <div className="InfoTable-dataCol">
-                        {this.renderSynonyms(this.props.term.synonyms.exact)}
+                        {this.renderSynonyms(term.synonyms.exact)}
                     </div>
                 </div>
                 <div className="InfoTable-row">
@@ -103,7 +107,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                         narrow
                                 </div>
                     <div className="InfoTable-dataCol">
-                        {this.renderSynonyms(this.props.term.synonyms.narrow)}
+                        {this.renderSynonyms(term.synonyms.narrow)}
                     </div>
                 </div>
                 <div className="InfoTable-row">
@@ -111,7 +115,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                         broad
                                 </div>
                     <div className="InfoTable-dataCol">
-                        {this.renderSynonyms(this.props.term.synonyms.broad)}
+                        {this.renderSynonyms(term.synonyms.broad)}
                     </div>
                 </div>
                 <div className="InfoTable-row">
@@ -119,34 +123,34 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                         related
                                 </div>
                     <div className="InfoTable-dataCol">
-                        {this.renderSynonyms(this.props.term.synonyms.broad)}
+                        {this.renderSynonyms(term.synonyms.related)}
                     </div>
                 </div>
             </div>
-        )
+        );
     }
     renderGraph() {
         return (
             <AncestorGraph termRef={this.props.term.ref} />
-        )
+        );
     }
     renderLinkedObjects() {
 
         return (
             <LinkedObjects termRef={this.props.term.ref} />
-        )
+        );
     }
     renderMetadata() {
         return (
             <div>
                 render metadata here...
             </div>
-        )
+        );
     }
     renderChildren() {
         return <Children
             termRef={this.props.term.ref}
-        />
+        />;
     }
 
     render() {
@@ -181,9 +185,9 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
             //     title: 'Metadata',
             //     component: this.renderMetadata()
             // }
-        ]
+        ];
         return (
             <FlexTabs tabs={tabs} />
-        )
+        );
     }
 }

@@ -111,8 +111,7 @@ export class RelationEngineModel {
     }
 
     async getIdInfo(relationEngineId: RelationEngineID): Promise<RelationEngineIDInfo> {
-        console.log('what?', relationEngineId);
-        const [namespaceString, id, timestampString] = relationEngineId.split('/');
+        const [namespaceString, ,] = relationEngineId.split('/');
 
         const dataSource = namespaceToDataSource(namespaceString);
 
@@ -126,7 +125,6 @@ export class RelationEngineModel {
         // }
 
         const ref = stringToRelationEngineRef(relationEngineId, dataSourceInfo.category);
-        console.log('ref is ', ref);
 
         // const category = dataSourceInfo.category;
         // switch (category) {

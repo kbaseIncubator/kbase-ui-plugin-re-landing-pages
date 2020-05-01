@@ -8,7 +8,6 @@ import { navigate } from '../../../redux/actions';
 import { OntologyReference } from '../../../types/ontology';
 import { ontologyReferenceToNamespace } from '../lib/model';
 
-
 export interface OwnProps { }
 
 export interface StateProps {
