@@ -22,7 +22,7 @@ export function ontologyNamespaceToString(namespace: OntologyNamespace): string 
         case 'go_ontology':
             return 'go_ontology';
         case 'envo_ontology':
-                return 'envo_ontology';
+            return 'envo_ontology';
     }
 }
 
@@ -53,7 +53,8 @@ export type OntologyReference =
 // export type OntologyID = string;
 
 export enum OntologySource {
-    GO
+    GO,
+    ENVO
 }
 export enum OntologyRelation {
     IS_A = 'OntologyRelation$is_a',
@@ -64,7 +65,8 @@ export enum OntologyRelation {
     NEGATIVELY_REGULATES = 'OntologyRelation$negativelyRegulates',
     OCCURS_IN = 'OntologyRelation$occursIn',
     ENDS_DURING = 'OntologyRelation$endsDuring',
-    HAPPENS_DURING = 'OntologyRelation$happensDuring'
+    HAPPENS_DURING = 'OntologyRelation$happensDuring',
+    DERIVES_FROM = 'OntologyRelation$DerivesFrom'
 }
 
 // Brief term - for list displays
@@ -75,7 +77,7 @@ export interface OntologyTermBriefBase {
 }
 
 export interface GOOntologyTermBrief extends OntologyTermBriefBase {
-    ref: RelationEngineReferenceG<RelationEngineCategory.ONTOLOGY, RelationEngineDataSource.GO>
+    ref: RelationEngineReferenceG<RelationEngineCategory.ONTOLOGY, RelationEngineDataSource.GO>;
     goID: string;
 }
 
@@ -83,11 +85,11 @@ export type OntologyTermBrief = GOOntologyTermBrief;
 
 export type OntologyRelatedTermBrief = {
     relation: OntologyRelation,
-    term: OntologyTermBrief
-}
+    term: OntologyTermBrief;
+};
 
 export interface OntologyTermRelatedBrief extends OntologyTermBrief {
-    relation: OntologyRelation
+    relation: OntologyRelation;
 }
 
 // Term - the full term info for detail
@@ -95,7 +97,7 @@ export interface OntologyTermRelatedBrief extends OntologyTermBrief {
 export interface OntologyTermBase {
     ref: OntologyReference;
     name: string;
-    comments: Array<string>
+    comments: Array<string>;
     definition: string;
     isObsolete: boolean;
 }
@@ -123,20 +125,27 @@ export interface GOOntologyTerm extends OntologyTermBase {
     namespace: string;
 }
 
-export type OntologyTerm = GOOntologyTerm;
-
-export interface OntologyTermRelated extends OntologyTerm {
-    related: OntologyRelation
+export interface ENVOOntologyTerm extends OntologyTermBase {
+    type: OntologySource.ENVO;
+    // synonyms: EnvoSynonyms;
+    envoID: string;
+    namespace: string;
 }
+
+export type OntologyTerm = GOOntologyTerm | ENVOOntologyTerm;
+
+// export interface OntologyTermRelated extends OntologyTerm {
+//     related: OntologyRelation;
+// }
 
 export interface OntologyRelatedTerm {
     relation: OntologyRelation,
-    term: OntologyTerm
+    term: OntologyTerm;
 }
 
 export interface OntologyRelatedTerms {
     term: OntologyTerm,
-    terms: Array<OntologyRelatedTerm>
+    terms: Array<OntologyRelatedTerm>;
 }
 
 /* Linked Objects */

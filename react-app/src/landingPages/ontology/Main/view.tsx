@@ -1,15 +1,17 @@
 import React from 'react';
-import { OntologyReference, OntologyTerm } from '../../../types/ontology';
+import { OntologyReference, OntologyTerm, OntologySource } from '../../../types/ontology';
 import './style.css';
 import Detail from '../Detail';
 import { Row, Col } from 'antd';
 import SourceInfo from './SourceInfo';
 import TermSummary from './TermSummary';
+import { DataSourceInfo } from '../../../lib/RelationEngineModel';
 
 export interface Props {
     // termRef: OntologyReference;
     targetTerm: OntologyTerm;
     selectedTerm: OntologyTerm;
+    dataSource: DataSourceInfo;
     selectTerm: (termRef: OntologyReference) => void;
     navigate: (termRef: OntologyReference) => void;
     setTitle: (title: string) => void;
@@ -18,8 +20,16 @@ export interface Props {
 interface State { }
 
 export default class OntologyView extends React.Component<Props, State> {
+    renderOwnId() {
+        switch (this.props.targetTerm.type) {
+            case OntologySource.GO:
+                return this.props.targetTerm.goID;
+            case OntologySource.ENVO:
+                return this.props.targetTerm.envoID;
+        }
+    }
     componentDidMount() {
-        this.props.setTitle(`Ontology Landing Page for "${this.props.targetTerm.name}" (${this.props.targetTerm.goID})`);
+        this.props.setTitle(`Ontology Landing Page for "${this.props.targetTerm.name}" (${this.renderOwnId()})`);
     }
 
     renderLayout() {
@@ -31,7 +41,7 @@ export default class OntologyView extends React.Component<Props, State> {
                             <TermSummary term={this.props.targetTerm} />
                         </Col>
                         <Col span={12}>
-                            <SourceInfo />
+                            <SourceInfo dataSource={this.props.dataSource} />
                         </Col>
                     </Row>
                 </div>
@@ -42,7 +52,7 @@ export default class OntologyView extends React.Component<Props, State> {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 
     render() {

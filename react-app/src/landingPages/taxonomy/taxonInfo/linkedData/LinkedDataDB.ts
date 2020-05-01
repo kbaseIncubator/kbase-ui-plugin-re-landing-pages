@@ -62,7 +62,7 @@ export interface SortSpec {
 }
 
 export interface LinkedObjectsDBState {
-    linkedObjectsCollection: LinkedObjectsCollection
+    linkedObjectsCollection: LinkedObjectsCollection;
 }
 
 export interface LinkedDataDBProps extends DBProps<LinkedObjectsDBState> {
@@ -118,7 +118,7 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
         this.currentTask = null;
     }
 
-    async fetchLinkedObjects({ taxonRef, page, pageSize }: { taxonRef: TaxonomyReference; page: number; pageSize: number }) {
+    async fetchLinkedObjects({ taxonRef, page, pageSize }: { taxonRef: TaxonomyReference; page: number; pageSize: number; }) {
         if (this.currentTask) {
             this.currentTask.cancel();
         }
@@ -135,7 +135,6 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
                 offset,
                 limit
             });
-            console.log('linked', result);
             return result;
         };
 
@@ -210,7 +209,7 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
         }
     }
 
-    async queryLinkedObjects({ taxonRef, page, pageSize, sort }: { taxonRef: TaxonomyReference; page: number; pageSize: number, sort: SortSpec | null }) {
+    async queryLinkedObjects({ taxonRef, page, pageSize, sort }: { taxonRef: TaxonomyReference; page: number; pageSize: number, sort: SortSpec | null; }) {
         if (this.currentTask) {
             this.currentTask.cancel();
         }

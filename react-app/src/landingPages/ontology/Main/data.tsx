@@ -6,11 +6,14 @@ import View from './view';
 import { Icon } from 'antd';
 import ErrorView from '../../../components/ErrorView';
 import { OntologyReference } from '../../../types/ontology';
+import { DataSourceInfo } from '../../../lib/RelationEngineModel';
 
 export interface Props {
     token: string;
     config: AppConfig;
     termRef: OntologyReference;
+
+    dataSource: DataSourceInfo;
     // taxonID: TaxonID;
     navigate: (termRef: OntologyReference) => void;
     setTitle: (title: string) => void;
@@ -66,6 +69,7 @@ export default class Data extends React.Component<Props, State> {
                 selectedTerm={db.selectedTerm}
                 selectTerm={this.selectTerm.bind(this)}
                 navigate={this.navigateToTerm.bind(this)}
+                dataSource={this.props.dataSource}
                 setTitle={this.props.setTitle}
             />
         );

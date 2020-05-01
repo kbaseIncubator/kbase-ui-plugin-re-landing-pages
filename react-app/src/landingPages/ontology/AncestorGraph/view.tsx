@@ -7,7 +7,7 @@ import { Table } from 'antd';
 
 export interface AncestorGraphProps {
     term: OntologyTerm;
-    graph: TermsGraph
+    graph: TermsGraph;
 }
 
 interface AncestorGraphState {
@@ -24,7 +24,7 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
     selectGraphNode(termNode: TermsGraphNode) {
         this.setState({
             selectedNodeID: termNode.term.ref.id
-        })
+        });
     }
     renderTable() {
         return <Table
@@ -37,6 +37,7 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                 // onSelect: (termNode: TermsGraphNode) => {
                 //     this.selectGraphNode(termNode)
                 // }
+
                 type: 'radio',
                 fixed: false,
                 hideDefaultSelections: true,
@@ -58,10 +59,10 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                     return <span
                         style={{ cursor: 'pointer' }}
                         onClick={() => {
-                            this.selectGraphNode(termNode)
+                            this.selectGraphNode(termNode);
                         }}>
                         {term.name}
-                    </span>
+                    </span>;
                 }}
             />
 
@@ -80,10 +81,10 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                     ].join('/');
                     return (
                         <a href={url} target="_parent">{term.ref.id}</a>
-                    )
+                    );
                 }} />
 
-        </Table>
+        </Table>;
     }
     selectNodeID(nodeID: string) {
         this.setState({
@@ -99,7 +100,7 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                 isTerm: isTerm,
                 isRoot: termNode.isRoot,
                 isSelected: termNode.term.ref.id === this.state.selectedNodeID
-            }
+            };
         });
         // Here we add the term of focus to the graph.
         // TODO: this should be done in the data layer.
@@ -115,12 +116,12 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                 from: relation.from,
                 to: relation.to,
                 label: relationToString(relation.relation)
-            }
-        })
+            };
+        });
         const data: NetworkData = {
             nodes,
             edges
-        }
+        };
         return (
             <div className="AncestorGraph">
                 <div className="AncestorGraph-graph">
@@ -134,7 +135,7 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
                     {this.renderTable()}
                 </div>
             </div>
-        )
+        );
     }
 
 }

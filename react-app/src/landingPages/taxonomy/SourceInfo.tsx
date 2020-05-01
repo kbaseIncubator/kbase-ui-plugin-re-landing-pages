@@ -1,7 +1,6 @@
 import React from 'react';
 import './SourceInfo.css';
 import { DataSourceInfo } from '../../lib/RelationEngineModel';
-import { timingSafeEqual } from 'crypto';
 import { Tooltip } from 'antd';
 
 export interface SourceInfoProps {

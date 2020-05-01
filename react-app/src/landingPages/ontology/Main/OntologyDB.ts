@@ -39,7 +39,6 @@ export default class OntologyDB extends DB<OntologyDBState> {
         });
 
         try {
-
             const { term } = await client.getTerm({
                 ref: termRef
             });
@@ -50,7 +49,7 @@ export default class OntologyDB extends DB<OntologyDBState> {
                     status: DBStatus.LOADED,
                     targetTerm: term,
                     selectedTerm: term
-                }
+                };
             });
         } catch (ex) {
             console.error('ERROR', ex);
@@ -76,7 +75,7 @@ export default class OntologyDB extends DB<OntologyDBState> {
             url: this.props.config.services.ServiceWizard.url
         });
 
-        const { term } = await client.getTerm({ ref: termRef })
+        const { term } = await client.getTerm({ ref: termRef });
 
         this.set((state: OntologyDBState) => {
             return {

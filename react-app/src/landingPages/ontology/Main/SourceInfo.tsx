@@ -1,19 +1,20 @@
 import React from 'react';
+import './SourceInfo.css';
+import { Tooltip } from 'antd';
+import { DataSourceInfo } from '../../../lib/RelationEngineModel';
 
-export interface Props {
-
+export interface SourceInfoProps {
+    dataSource: DataSourceInfo;
 }
 
-interface State {
+interface SourceInfoState { }
 
-}
-
-export default class SourceInfo extends React.Component<Props, State> {
-    render() {
+export default class SourceInfo extends React.Component<SourceInfoProps, SourceInfoState> {
+    renderSourceInfo() {
         return (
             <div className="Row">
-                <div className="Col-auto" style={{ justifyContent: 'center' }}>
-                    <img src="images/go-logo.png" style={{ height: '50px' }} alt="Gene Ontology Logo" />
+                <div className="Col-auto">
+                    <img src={this.props.dataSource.logo_url} style={{ height: '64px' }} alt={this.props.dataSource.title + ' logo'} />
                 </div>
                 <div className="Col">
                     <div className="InfoTable">
@@ -23,24 +24,38 @@ export default class SourceInfo extends React.Component<Props, State> {
                             </div>
                             <div className="InfoTable-dataCol">
                                 <a
-                                    href="http://geneontology.org/"
+                                    href={this.props.dataSource.home_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    Gene Ontology (GO)
+                                    {this.props.dataSource.title}
                                 </a>
                             </div>
                         </div>
                         <div className="InfoTable-row">
                             <div className="InfoTable-labelCol" style={{ width: '5em' }}>
-                                Version
+                                Data
                             </div>
-                            <div className="InfoTable-dataCol">SOME VERSION</div>
+                            <div className="InfoTable-dataCol">
+                                <Tooltip title={this.props.dataSource.data_url}>
+                                    <a
+                                        href={this.props.dataSource.data_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {this.props.dataSource.data_url}
+                                    </a>
+                                </Tooltip>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         );
+
     }
 
+    render() {
+        return this.renderSourceInfo();
+    }
 }

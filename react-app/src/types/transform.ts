@@ -1,6 +1,5 @@
 
 import * as core from './core';
-import { DataSourceCategory } from '../lib/RelationEngineAPIClient';
 
 export function relationEngineNamespaceToDataSource(s: core.RelationEngineNamespace): core.RelationEngineDataSource {
     switch (s) {
@@ -73,7 +72,6 @@ export function stringToNamespace(s: string): core.RelationEngineNamespace {
 
 export function stringToRelationEngineRef(relationEngineID: core.RelationEngineID, category: core.RelationEngineCategory): core.RelationEngineReference {
     const [namespaceString, id, timestampString] = relationEngineID.split('/');
-    console.log('string to ...', relationEngineID, id);
     const dataSource = relationEngineNamespaceToDataSource(stringToNamespace(namespaceString));
     // const category = stringToRelationEngineCategory(categoryString);
 

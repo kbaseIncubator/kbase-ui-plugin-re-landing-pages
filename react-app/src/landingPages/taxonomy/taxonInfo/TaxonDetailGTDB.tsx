@@ -1,6 +1,5 @@
 import React from 'react';
 import { GTDBTaxon } from '../../../types/taxonomy';
-import { Table } from 'antd';
 
 export interface TaxonDetailProps {
     taxon: GTDBTaxon;
