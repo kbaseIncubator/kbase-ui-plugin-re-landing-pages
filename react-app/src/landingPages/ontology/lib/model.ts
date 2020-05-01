@@ -105,7 +105,7 @@ export function termNodeToTerm(term: TermNode, ns: string, ts: number): Ontology
                 },
                 namespace: ns,
                 comments: term.comments,
-                definition: term.def.val,
+                definition: term.def ? term.def.val : 'n/a',
                 goID: term.id,
                 isObsolete: false, // ignored for now, 
                 name: term.name,
@@ -144,7 +144,7 @@ export function termNodeToTerm(term: TermNode, ns: string, ts: number): Ontology
                 },
                 namespace: 'envo_ontology',
                 comments: term.comments,
-                definition: term.def.val,
+                definition: term.def ? term.def.val : 'n/a',
                 envoID: term.id,
                 isObsolete: false, // ignored for now, 
                 name: term.name
@@ -211,6 +211,15 @@ export function stringToTermRelation(relationString: EdgeType): OntologyRelation
             return OntologyRelation.HAPPENS_DURING;
         case 'derives_from':
             return OntologyRelation.DERIVES_FROM;
+        case 'has_output':
+            return OntologyRelation.HAS_OUTPUT;
+        case 'has_input':
+            return OntologyRelation.HAS_INPUT;
+        case 'input_of':
+            return OntologyRelation.INPUT_OF;
+        case 'output_of':
+            return OntologyRelation.OUTPUT_OF;
+
         default:
             throw new Error('Unknown relation: ' + relationString);
     }
@@ -238,6 +247,14 @@ export function relationToString(relation: OntologyRelation): EdgeType {
             return 'happens_during';
         case OntologyRelation.DERIVES_FROM:
             return 'derives_from';
+        case OntologyRelation.HAS_OUTPUT:
+            return 'has_output';
+        case OntologyRelation.HAS_INPUT:
+            return 'has_input';
+        case OntologyRelation.OUTPUT_OF:
+            return 'output_of';
+        case OntologyRelation.INPUT_OF:
+            return 'input_of';
     }
 }
 

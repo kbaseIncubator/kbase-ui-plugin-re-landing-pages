@@ -63,7 +63,7 @@ export interface TermNode {
     def: {
         val: string;
         xrefs: Array<XRef>;
-    };
+    } | null;
     created: number;
     expired: number;
     subsets: Array<string>;
@@ -99,7 +99,8 @@ export interface TermNode {
             return OntologyRelation.HAPPENS_DURING;
 */
 export type EdgeType = 'is_a' | 'part_of' | 'has_part' | 'regulates' | 'positively_regulates' |
-    'negatively_regulates' | 'occurs_in' | 'ends_during' | 'happens_during' | 'derives_from';
+    'negatively_regulates' | 'occurs_in' | 'ends_during' | 'happens_during' | 'derives_from' |
+    'has_output' | 'has_input' | 'output_of' | 'input_of';
 
 export interface TermEdge {
     id: string;

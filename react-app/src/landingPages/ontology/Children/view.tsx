@@ -31,12 +31,15 @@ export default class OntologyList extends React.Component<Props, State> {
             <Column dataIndex="term.goID" title="ID" width="20%"
                 render={(id: string, term: OntologyRelatedTerm) => {
                     let ownId: string;
+                    let namespace: string;
                     switch (term.term.type) {
                         case OntologySource.GO:
                             ownId = term.term.goID;
+                            namespace = 'go_ontology';
                             break;
                         case OntologySource.ENVO:
                             ownId = term.term.envoID;
+                            namespace = 'envo_ontology';
                     }
                     const tooltip = (
                         <div>
@@ -49,8 +52,8 @@ export default class OntologyList extends React.Component<Props, State> {
                     // TODO: fix the hard coded url below!
                     return (
                         <Tooltip title={tooltip} placement="left">
-                            <a href={`/#review/go_ontology/${id}/${term.term.ref.timestamp}`} target="_parent">
-                                {id}
+                            <a href={`/#review/${namespace}/${ownId}/${term.term.ref.timestamp}`} target="_parent">
+                                {ownId}
                             </a>
                         </Tooltip>
                     );

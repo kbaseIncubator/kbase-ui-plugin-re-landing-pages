@@ -66,7 +66,11 @@ export enum OntologyRelation {
     OCCURS_IN = 'OntologyRelation$occursIn',
     ENDS_DURING = 'OntologyRelation$endsDuring',
     HAPPENS_DURING = 'OntologyRelation$happensDuring',
-    DERIVES_FROM = 'OntologyRelation$DerivesFrom'
+    DERIVES_FROM = 'OntologyRelation$DerivesFrom',
+    HAS_OUTPUT = 'OntologyRelation$HasOutput',
+    HAS_INPUT = 'OngolotyRelation$HasInput',
+    OUTPUT_OF = 'OntologyRelation$OutputOf',
+    INPUT_OF = 'OntologyRelation$InputOf'
 }
 
 // Brief term - for list displays
