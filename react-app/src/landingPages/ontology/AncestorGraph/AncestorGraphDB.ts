@@ -42,7 +42,7 @@ export default class AncestorGraphDB extends DB<AncestorGraphDBState> {
 
             const { term } = await client.getTerm({
                 ref: termRef
-            })
+            });
 
             const { termsGraph } = await client.getAncestorGraph({
                 ref: termRef
@@ -51,8 +51,9 @@ export default class AncestorGraphDB extends DB<AncestorGraphDBState> {
             const node: TermsGraphNode = {
                 id: term.ref.id,
                 isRoot: false,
-                term: term
+                term
             };
+
             termsGraph.terms.push(node);
 
             this.set((state: AncestorGraphDBState) => {
@@ -61,7 +62,7 @@ export default class AncestorGraphDB extends DB<AncestorGraphDBState> {
                     status: DBStatus.LOADED,
                     graph: termsGraph,
                     term
-                }
+                };
             });
         } catch (ex) {
             console.error('ERROR', ex);
