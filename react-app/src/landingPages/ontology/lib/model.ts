@@ -219,6 +219,12 @@ export function stringToTermRelation(relationString: EdgeType): OntologyRelation
             return OntologyRelation.INPUT_OF;
         case 'output_of':
             return OntologyRelation.OUTPUT_OF;
+        case 'determines':
+            return OntologyRelation.DETERMINES;
+        case 'surrounded_by':
+            return OntologyRelation.SURROUNDED_BY;
+        case 'has_quality':
+            return OntologyRelation.HAS_QUALITY;
 
         default:
             throw new Error('Unknown relation: ' + relationString);
@@ -255,6 +261,12 @@ export function relationToString(relation: OntologyRelation): EdgeType {
             return 'output_of';
         case OntologyRelation.INPUT_OF:
             return 'input_of';
+        case OntologyRelation.DETERMINES:
+            return 'determines';
+        case OntologyRelation.SURROUNDED_BY:
+            return 'surrounded_by';
+        case OntologyRelation.HAS_QUALITY:
+            return 'has_quality';
     }
 }
 
@@ -327,6 +339,8 @@ export default class OntologyModel {
             ids: [ref.id],
             ts: ref.timestamp || Date.now()
         });
+
+        console.log('RESULT', result);
 
         return {
             term: termNodeToTerm(result.results[0], namespace, result.ts)

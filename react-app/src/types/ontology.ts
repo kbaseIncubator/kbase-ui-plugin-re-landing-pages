@@ -70,7 +70,10 @@ export enum OntologyRelation {
     HAS_OUTPUT = 'OntologyRelation$HasOutput',
     HAS_INPUT = 'OngolotyRelation$HasInput',
     OUTPUT_OF = 'OntologyRelation$OutputOf',
-    INPUT_OF = 'OntologyRelation$InputOf'
+    INPUT_OF = 'OntologyRelation$InputOf',
+    DETERMINES = 'OntologyRelation$Determines',
+    SURROUNDED_BY = 'OntologyRelation$SurroundedBy',
+    HAS_QUALITY = 'OntologyRelation$HasQuality'
 }
 
 // Brief term - for list displays

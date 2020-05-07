@@ -100,7 +100,8 @@ export interface TermNode {
 */
 export type EdgeType = 'is_a' | 'part_of' | 'has_part' | 'regulates' | 'positively_regulates' |
     'negatively_regulates' | 'occurs_in' | 'ends_during' | 'happens_during' | 'derives_from' |
-    'has_output' | 'has_input' | 'output_of' | 'input_of';
+    'has_output' | 'has_input' | 'output_of' | 'input_of' | 'determines' | 'surrounded_by' |
+    'has_quality';
 
 export interface TermEdge {
     id: string;
