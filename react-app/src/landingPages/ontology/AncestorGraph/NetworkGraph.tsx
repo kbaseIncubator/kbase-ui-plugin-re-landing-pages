@@ -1,5 +1,6 @@
 import React from 'react';
-import { Network, Node, DataSet, Edge, Options } from 'vis-network';
+import { Network, Node, Edge, Options } from 'vis-network';
+import { DataSet } from 'vis-data/peer';
 import './NetworkGraph.css';
 
 export interface NetworkNode {
@@ -64,7 +65,7 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
                 shape: term.isRoot || term.isTerm ? 'ellipse' : 'box',
                 // fixed: term.isTerm || term.isRoot,
                 // y: term.isTerm ? 800 : (term.isRoot ? 0 : undefined)
-            }
+            };
         }));
         const edges = new DataSet<Edge, 'id'>({});
         edges.add(this.props.data.edges.map((e) => {
@@ -106,15 +107,16 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
                     left: 10
                 }
             }
-        }
+        };
 
 
         this.network = new Network(this.graphNode.current, { nodes, edges }, options);
+        this.network.fit();
         this.network.on('selectNode', ({ nodes: [nodeID] }) => {
             this.props.selectNodeID(nodeID);
         });
         if (this.props.selectedNodeID) {
-            this.network.selectNodes([this.props.selectedNodeID])
+            this.network.selectNodes([this.props.selectedNodeID]);
         }
     }
 
@@ -142,7 +144,7 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
 
     componentDidUpdate() {
         if (this.props.selectedNodeID && this.network) {
-            this.network.selectNodes([this.props.selectedNodeID])
+            this.network.selectNodes([this.props.selectedNodeID]);
         }
     }
 
@@ -151,6 +153,6 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
             <div ref={this.graphNode} className="NetworkGraph-graphWrapper">
 
             </div>
-        </div>
+        </div>;
     }
 }

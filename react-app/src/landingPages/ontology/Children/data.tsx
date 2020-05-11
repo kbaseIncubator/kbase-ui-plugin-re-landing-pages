@@ -3,9 +3,9 @@ import ParentsDB, { ParentsDBStateLoaded } from './ChildrenDB';
 import { DBStatus, DBStateError } from '../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
 import View from './view';
-import { Icon } from 'antd';
 import ErrorView from '../../../components/ErrorView';
 import { OntologyReference } from '../../../types/ontology';
+import { Spin } from 'antd';
 
 export interface Props {
     token: string;
@@ -43,7 +43,7 @@ export default class Data extends React.Component<Props, State> {
     // }
 
     renderLoading() {
-        return <Icon type="loading" />;
+        return <Spin />;
     }
 
     renderError(db: DBStateError) {

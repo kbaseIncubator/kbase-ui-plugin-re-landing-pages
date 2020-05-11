@@ -5,8 +5,8 @@ import { DBStatus, DBStateError } from '../../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
 import View from './view';
 import { OntologyReference } from '../../../../types/ontology';
-import { Icon } from 'antd';
 import ErrorView from '../../../../components/ErrorView';
+import { Spin } from 'antd';
 
 export interface Props {
     token: string;
@@ -41,11 +41,11 @@ export default class Data extends React.Component<Props, State> {
     }
 
     renderLoading() {
-        return <Icon type="loading" />;
+        return <Spin />;
     }
 
     renderError(db: DBStateError) {
-        return <ErrorView error={db.error} />
+        return <ErrorView error={db.error} />;
     }
 
     renderLoaded(db: LinkedObjectsDBStateLoaded) {

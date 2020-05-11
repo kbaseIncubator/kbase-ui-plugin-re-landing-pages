@@ -11,16 +11,3 @@ Let's use the official antd docs now, which have evolved since we first started 
 this addresses the bug here:
 
 https://github.com/arackaf/customize-cra/issues/241
-
-3. another fix in package.json
-
-add:
-
- "resolutions": {
-        "moment": "2.24.0"
-    },
-
-    
-this addresses:
-
-https://github.com/moment/moment/issues/4216

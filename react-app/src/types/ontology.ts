@@ -73,7 +73,10 @@ export enum OntologyRelation {
     INPUT_OF = 'OntologyRelation$InputOf',
     DETERMINES = 'OntologyRelation$Determines',
     SURROUNDED_BY = 'OntologyRelation$SurroundedBy',
-    HAS_QUALITY = 'OntologyRelation$HasQuality'
+    HAS_QUALITY = 'OntologyRelation$HasQuality',
+    ADJACENT_TO = 'OntologyRelation$AdjacentTo',
+    OVERLAPS = 'OntologyRelation$Overlaps',
+    COMPOSED_PRIMARILY_OF = 'OntologyRelation$ComposedPrimarilyOf'
 }
 
 // Brief term - for list displays

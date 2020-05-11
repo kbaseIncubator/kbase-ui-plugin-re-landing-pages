@@ -1,8 +1,9 @@
 import React from 'react';
 import { OntologyReference, OntologyTermBrief, ontologyNamespaceToString } from '../../types/ontology';
-import { Tooltip, Icon } from 'antd';
 import './OntologyTerm.css';
 import { ontologyReferenceToNamespace } from './lib/model';
+import { ArrowRightOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 
 export interface Props {
     term: OntologyTermBrief;
@@ -67,7 +68,7 @@ export default class OntologyTerm extends React.Component<Props, State> {
             <React.Fragment>
                 {this.renderTerm()}
                 <div className="OntologyTerm-inspector" onClick={this.clickTerm.bind(this)}>
-                    <Icon type="arrow-right" />
+                    <ArrowRightOutlined />
                 </div>
             </React.Fragment>
         );
@@ -78,7 +79,7 @@ export default class OntologyTerm extends React.Component<Props, State> {
             <React.Fragment>
                 {this.renderTerm()}
                 <div className="OntologyTerm-inspector">
-                    <Icon type="arrow-right" />
+                    <ArrowRightOutlined />
                 </div>
             </React.Fragment>
         );

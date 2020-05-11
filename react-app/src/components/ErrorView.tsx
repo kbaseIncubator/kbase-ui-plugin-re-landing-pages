@@ -1,9 +1,10 @@
 import React from 'react';
 import { UIError } from "../types/error";
-import { Alert, Icon } from 'antd';
+import { Alert } from 'antd';
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 export interface ErrorViewProps {
-    error: UIError
+    error: UIError;
 }
 
 interface ErrorViewState {
@@ -13,17 +14,16 @@ interface ErrorViewState {
 export default class ErrorView extends React.Component<ErrorViewProps, ErrorViewState> {
     renderMessage() {
         return (
-            // <Icon type="exclamation-circle" />
             <span>
-                <Icon type="exclamation-circle" style={{ color: 'red' }} />
+                <ExclamationCircleOutlined style={{ color: 'red' }} />
                 {' '}
                 {this.props.error.message}
             </span>
-        )
+        );
     }
     render() {
         return (
             <Alert type="error" message={this.renderMessage()}></Alert>
-        )
+        );
     }
 }

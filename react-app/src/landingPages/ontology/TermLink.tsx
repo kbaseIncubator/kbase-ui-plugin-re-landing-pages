@@ -1,6 +1,7 @@
 import React from 'react';
 import { OntologySource, GOOntologyTerm, OntologyTerm, ENVOOntologyTerm } from '../../types/ontology';
-import { Icon, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
+import { LinkOutlined } from '@ant-design/icons';
 
 export interface Props {
     term: OntologyTerm;
@@ -23,7 +24,7 @@ export default class TermLink extends React.Component<Props, State> {
         return (
             <Tooltip title={tooltip}>
                 <a href={href} target={target}>
-                    {term.ref.id} <Icon type="link" />
+                    {term.ref.id} <LinkOutlined />
                 </a>
             </Tooltip>
         );
@@ -44,7 +45,7 @@ export default class TermLink extends React.Component<Props, State> {
         return (
             <Tooltip title={tooltip}>
                 <a href={href} target={target}>
-                    {term.ref.id} <Icon type="link" />
+                    {term.ref.id} <LinkOutlined />
                 </a>
             </Tooltip>
         );

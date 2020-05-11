@@ -108,6 +108,13 @@ code {
     min-width: 0;
 }
 
+.scrolling-flex-column {
+    flex: 1 1 0px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
 .InfoTable {
     display: flex;
     flex-direction: column;
@@ -222,14 +229,7 @@ code {
     min-height: 0;
 }
 
-.ScrollingFlexTable.ant-table-wrapper>.ant-spin-nested-loading>.ant-spin-container>.ant-table>.ant-table-content {
-    flex: 1 1 0px;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-
-.ScrollingFlexTable.ant-table-wrapper>.ant-spin-nested-loading>.ant-spin-container>.ant-table>.ant-table-content>.ant-table-scroll {
+.ScrollingFlexTable.ant-table-wrapper>.ant-spin-nested-loading>.ant-spin-container>.ant-table>.ant-table-container {
     flex: 1 1 0px;
     display: flex;
     flex-direction: column;
@@ -237,8 +237,13 @@ code {
 }
 
 
-.ScrollingFlexTable.ant-table-wrapper>.ant-spin-nested-loading>.ant-spin-container>.ant-table>.ant-table-content>.ant-table-scroll>.ant-table-header {
+.ScrollingFlexTable.ant-table-wrapper>.ant-spin-nested-loading>.ant-spin-container>.ant-table>.ant-table-container>.ant-table-header {
     flex: 0 0 auto;
+}
+
+.ScrollingFlexTable.ant-table-wrapper>.ant-spin-nested-loading>.ant-spin-container>.ant-table>.ant-table-container>.ant-table-body {
+    flex: 1 1 0px;
+    overflow-y: auto;
 }
 
 /* */
