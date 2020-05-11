@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pagination, Icon, Input, Spin } from 'antd';
+import { Pagination, Input, Spin } from 'antd';
 import TaxonList from '../TaxonList';
 import { TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonDBState, TaxonDBStateError, TaxonDBStateLoaded, TaxonDBStateReLoading } from './TaxonChildrenDB';
@@ -39,7 +39,7 @@ export default class TaxonChildren extends React.Component<Props, State> {
         return <div>None</div>;
     }
     renderTaxaLoading() {
-        return <Icon type="loading" />;
+        return <Spin />;
     }
 
     renderTitleLoaded(db: TaxonDBStateLoaded | TaxonDBStateReLoading) {
@@ -71,7 +71,7 @@ export default class TaxonChildren extends React.Component<Props, State> {
             case DBStatus.LOADING:
                 return <div>Loading...</div>;
             case DBStatus.ERROR:
-                return <ErrorView error={db.error} />
+                return <ErrorView error={db.error} />;
             case DBStatus.LOADED:
                 return this.renderTitleLoaded(db);
             case DBStatus.RELOADING:
@@ -110,7 +110,7 @@ export default class TaxonChildren extends React.Component<Props, State> {
         return <Spin tip="Loading">{this.renderTaxaLoaded(db)}</Spin>;
     }
     renderTaxaError(db: TaxonDBStateError) {
-        return <ErrorView error={db.error} />
+        return <ErrorView error={db.error} />;
     }
     renderTaxa() {
         switch (this.props.db.status) {

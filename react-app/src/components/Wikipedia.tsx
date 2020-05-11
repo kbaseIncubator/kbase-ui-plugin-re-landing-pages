@@ -2,9 +2,10 @@ import React from 'react';
 
 import WikipediaClient, { WikipediaInfo } from '../landingPages/taxonomy/lib/Wikipedia';
 import marked from 'marked';
-import { Icon, Alert, Tooltip } from 'antd';
+import { Alert, Tooltip } from 'antd';
 import Loading from './Loading';
 import './Wikipedia.css';
+import { CheckOutlined, WarningOutlined } from '@ant-design/icons';
 
 export interface WikipediaProps {
     term: string;
@@ -80,7 +81,7 @@ export default class Wikipedia extends React.Component<WikipediaProps, Wikipedia
         if (wikipediaInfo.exactMatch) {
             const message = (
                 <React.Fragment>
-                    <Icon type="check" style={{ color: 'green' }} /> Exact match on "
+                    <CheckOutlined style={{ color: 'green' }} /> Exact match on "
                     {wikipediaInfo.matchingTerms.join(' ')}"
                 </React.Fragment>
             );
@@ -88,7 +89,7 @@ export default class Wikipedia extends React.Component<WikipediaProps, Wikipedia
         } else {
             const message = (
                 <React.Fragment>
-                    <Icon type="warning" style={{ color: 'orange' }} /> Inexact match on: "
+                    <WarningOutlined style={{ color: 'orange' }} /> Inexact match on: "
                     {wikipediaInfo.matchingTerms.join(' ')}"
                 </React.Fragment>
             );

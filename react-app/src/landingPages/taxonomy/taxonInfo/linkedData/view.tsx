@@ -5,8 +5,9 @@ import Column from 'antd/lib/table/Column';
 import { LinkedObjectsCollection, LinkedObjectsData } from './LinkedDataDB';
 import { DBCollectionStatus } from '../../../../lib/DB2';
 import { UIError } from '../../../../types/error';
-import { SorterResult, PaginationConfig } from 'antd/lib/table';
 import { SortSpec, stringToSortDirection } from './LinkedDataDB';
+import { PaginationConfig } from 'antd/lib/pagination';
+import { SorterResult } from 'antd/lib/table/interface';
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -23,9 +24,24 @@ export default class LinkedData extends React.Component<Props, State> {
         this.props.setPage(page, pageSize || DEFAULT_PAGE_SIZE);
     }
 
-    onChangeTable(pagination: PaginationConfig, filters: Partial<Record<keyof LinkedObject, string[]>>, sorter: SorterResult<LinkedObject>) {
+    onChangeTable(
+        pagination: PaginationConfig,
+        filters: Partial<Record<keyof LinkedObject, string[]>>,
+        sorters: SorterResult<LinkedObject> | Array<SorterResult<LinkedObject>>
+    ) {
         let sort: SortSpec | null;
-        if (sorter.column && sorter.column.dataIndex) {
+        // TODO: work with the array of sorters!
+        let sorter;
+        if (Array.isArray(sorters)) {
+            if (sorters.length > 0) {
+                sorter = sorters[0];
+            } else {
+                sort = null;
+            }
+        } else {
+            sorter = sorters;
+        }
+        if (sorter && sorter.column && sorter.column.dataIndex && typeof sorter.column.dataIndex === 'string') {
             const sortColumn = sorter.column.dataIndex;
             const sortDirection = stringToSortDirection(sorter.order === 'descend' ? 'descending' : 'ascending');
             sort = {
@@ -64,7 +80,7 @@ export default class LinkedData extends React.Component<Props, State> {
                 return [linkedObject.workspaceID, linkedObject.objectID, linkedObject.version].join('/');
             }}
             pagination={{
-                position: 'top',
+                position: ['topLeft'],
                 // onChange: this.onChangePage.bind(this),
                 defaultPageSize: DEFAULT_PAGE_SIZE,
                 total: data.totalCount

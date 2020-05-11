@@ -1,8 +1,9 @@
 import React from 'react';
 import { Taxon, TaxonomyReference } from '../../types/taxonomy';
-import { Tooltip, Icon } from 'antd';
+import { Tooltip } from 'antd';
 import './TaxonItem.css';
 import { relationEngineReferenceToNamespace } from '../../types/transform';
+import { ArrowRightOutlined } from '@ant-design/icons';
 
 export interface Props {
     taxon: Taxon;
@@ -59,7 +60,7 @@ export default class TaxonItem extends React.Component<Props, State> {
                     {this.props.taxon.name}
                 </div>
                 <div className="TaxonItem-inspector" onClick={this.clickTaxon.bind(this)}>
-                    <Icon type="arrow-right" />
+                    <ArrowRightOutlined />
                 </div>
             </React.Fragment>
         );
@@ -72,7 +73,7 @@ export default class TaxonItem extends React.Component<Props, State> {
                     {this.props.taxon.name}
                 </div>
                 <div className="TaxonItem-inspector">
-                    <Icon type="arrow-right" />
+                    <ArrowRightOutlined />
                 </div>
             </React.Fragment>
         );

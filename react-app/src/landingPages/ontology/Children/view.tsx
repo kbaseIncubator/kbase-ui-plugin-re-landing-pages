@@ -14,8 +14,8 @@ interface State { }
 export default class OntologyList extends React.Component<Props, State> {
     renderRelation(relation: OntologyRelation) {
         return relationToString(relation);
-
     }
+
     renderItemsTable() {
         return <Table<OntologyRelatedTerm>
             dataSource={this.props.terms}
@@ -27,8 +27,14 @@ export default class OntologyList extends React.Component<Props, State> {
             }}
             scroll={{ y: '100%' }}
         >
-            <Column dataIndex='term.name' title="Name" width="60%" />
-            <Column dataIndex="term.goID" title="ID" width="20%"
+            <Column
+                dataIndex={['term', 'name']}
+                title="Name"
+                width="60%"
+                render={(name: string, term: OntologyRelatedTerm) => {
+                    return name;
+                }} />
+            <Column dataIndex={['term', 'goID']} title="ID" width="20%"
                 render={(id: string, term: OntologyRelatedTerm) => {
                     let ownId: string;
                     let namespace: string;

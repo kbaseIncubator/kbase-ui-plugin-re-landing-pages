@@ -4,9 +4,9 @@ import { DBStatus, DBStateError } from '../../../lib/DB';
 import { AppConfig } from '@kbase/ui-components';
 import Taxonomy from './Taxonomy';
 import { TaxonomyReference } from '../../../types/taxonomy';
-import { Icon } from 'antd';
 import ErrorView from '../../../components/ErrorView';
 import { DataSourceInfo } from '../../../lib/RelationEngineModel';
+import { Spin } from 'antd';
 
 export interface Props {
     token: string;
@@ -47,7 +47,7 @@ export default class Data extends React.Component<Props, State> {
     }
 
     renderLoading() {
-        return <Icon type="loading" />;
+        return <Spin />;
     }
 
     renderError(db: DBStateError) {
