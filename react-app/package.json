@@ -12,7 +12,7 @@
         "@types/react": "*",
         "@types/react-dom": "*",
         "@types/react-redux": "*",
-        "antd": "4.2.0",
+        "antd": "4.2.2",
         "antd-dayjs-webpack-plugin": "1.0.0",
         "axios": "0.19.2",
         "babel-plugin-import": "1.13.0",
