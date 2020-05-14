@@ -1,5 +1,5 @@
 import React from 'react';
-import { OntologyReference, OntologyTermBrief, ontologyNamespaceToString } from '../../types/ontology';
+import { OntologyReference, OntologyTermBrief } from '../../types/ontology';
 import './OntologyTerm.css';
 import { ontologyReferenceToNamespace } from './lib/model';
 import { ArrowRightOutlined } from '@ant-design/icons';

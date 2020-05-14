@@ -6,7 +6,7 @@
 }
 
 .AncestorGraph-graph {
-    border: 1px silver solid;
+    /* border: 1px silver solid; */
     flex: 1 1 0px;
     display: flex;
     flex-direction: column;

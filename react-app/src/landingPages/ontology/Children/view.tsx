@@ -19,7 +19,7 @@ export default class OntologyList extends React.Component<Props, State> {
     renderItemsTable() {
         return <Table<OntologyRelatedTerm>
             dataSource={this.props.terms}
-            className="KBaseAntdOverride-remove-table-border ScrollingFlexTable"
+            className="ScrollingFlexTable"
             size="small"
             pagination={false}
             rowKey={(row: OntologyRelatedTerm) => {
