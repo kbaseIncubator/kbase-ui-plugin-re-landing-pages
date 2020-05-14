@@ -13,8 +13,10 @@ export default class SourceInfo extends React.Component<SourceInfoProps, SourceI
     renderSourceInfo() {
         return (
             <div className="Row">
-                <div className="Col-auto">
-                    <img src={this.props.dataSource.logo_url} style={{ height: '64px' }} alt={this.props.dataSource.title + ' logo'} />
+                <div className="Col-auto" style={{ marginRight: '10px' }}>
+                    <img src={this.props.dataSource.logo_url}
+                        style={{ height: '64px' }}
+                        alt={this.props.dataSource.title + ' logo'} />
                 </div>
                 <div className="Col">
                     <div className="InfoTable">

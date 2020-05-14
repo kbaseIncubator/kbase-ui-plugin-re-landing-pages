@@ -14,7 +14,7 @@ interface TaxonInfoState { }
 export default class TaxonInfo extends React.Component<TaxonInfoProps, TaxonInfoState> {
     render() {
         return (
-            <Tabs defaultActiveKey="detail" animated={true} className="FullHeight-tabs" type="card">
+            <Tabs defaultActiveKey="detail" animated={false} className="FullHeight-tabs" type="card">
                 <Tabs.TabPane tab="Detail" key="detail" forceRender={false}>
                     <div className="Col" style={{ overflowY: 'auto' }}>
                         <TaxonDetail taxon={this.props.taxon} />

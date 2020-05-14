@@ -145,7 +145,7 @@ code {
 
 .Nav-box {
     border: 1px solid rgba(200, 200, 200, 0.5);
-    margin: 10px 0;
+    /* margin: 10px 0; */
 }
 
 .Nav-box-title {

@@ -6,7 +6,7 @@ export interface Props {
     message: string;
 }
 
-interface State {}
+interface State { }
 
 export default class Loading extends React.Component<Props, State> {
     render() {

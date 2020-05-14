@@ -48,7 +48,13 @@ export default class Data extends React.Component<Props, State> {
     }
 
     renderLoading() {
-        return <Spin />;
+        return (
+            <div className="Loading-box">
+                <Spin size="large" />
+                <br />
+                Loading ontology viewer...
+            </div>
+        );
     }
 
     renderError(db: DBStateError) {

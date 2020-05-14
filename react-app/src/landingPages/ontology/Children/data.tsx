@@ -5,7 +5,7 @@ import { AppConfig } from '@kbase/ui-components';
 import View from './view';
 import ErrorView from '../../../components/ErrorView';
 import { OntologyReference } from '../../../types/ontology';
-import { Spin } from 'antd';
+import Loading from '../../../components/Loading';
 
 export interface Props {
     token: string;
@@ -43,7 +43,7 @@ export default class Data extends React.Component<Props, State> {
     // }
 
     renderLoading() {
-        return <Spin />;
+        return <Loading message="Loading children..." />;
     }
 
     renderError(db: DBStateError) {

@@ -34,7 +34,7 @@ export default class OntologyView extends React.Component<Props, State> {
 
     renderLayout() {
         return (
-            <div className="Col scrollable Taxonomy">
+            <div className="Col scrollable Ontology">
                 <div className="Col-auto Ontology-summary-section">
                     <Row>
                         <Col span={12}>
@@ -46,7 +46,6 @@ export default class OntologyView extends React.Component<Props, State> {
                     </Row>
                 </div>
                 <div className="Row scrollable">
-
                     <div className="Col scrollable" >
                         <Detail term={this.props.selectedTerm} />
                     </div>
