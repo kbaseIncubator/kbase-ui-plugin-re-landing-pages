@@ -32,14 +32,14 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
             size="small"
             pagination={false}
             scroll={{ y: '100%' }}
-            className="KBaseAntdOverride-remove-table-border ScrollingFlexTable"
+            className="ScrollingFlexTable"
             rowSelection={{
-                // onSelect: (termNode: TermsGraphNode) => {
-                //     this.selectGraphNode(termNode)
-                // }
+                onSelect: (termNode: TermsGraphNode) => {
+                    this.selectGraphNode(termNode);
+                },
 
                 type: 'radio',
-                fixed: false,
+                // fixed: false,
                 hideDefaultSelections: true,
                 selectedRowKeys: this.state.selectedNodeID ? [this.state.selectedNodeID] : []
             }}

@@ -6,6 +6,7 @@ import TermLink from '../TermLink';
 import LinkedObjects from './LinkedObjects';
 import Children from '../Children';
 import AncestorGraph from '../AncestorGraph';
+import { Tabs } from 'antd';
 
 export interface DetailProps {
     term: OntologyTerm;
@@ -155,7 +156,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
         />;
     }
 
-    render() {
+    renderx() {
         const tabs = [
             {
                 tab: 'detail',
@@ -193,5 +194,26 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
         return (
             <FlexTabs tabs={tabs} />
         );
+    }
+
+    render() {
+        return <Tabs className="FullHeight-tabs" type="card">
+            <Tabs.TabPane tab="Detail" key="detail" forceRender={false}>
+                <div className="Col" style={{ overflowY: 'auto' }}>
+                    {this.renderDetail()}
+                </div>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Graph" key="graph" forceRender={false}>
+                {this.renderGraph()}
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Children" key="children" forceRender={false}>
+                {this.renderChildren()}
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Linked Data" key="linkedData" forceRender={false}>
+                <div className="Col" style={{ overflowY: 'auto' }}>
+                    {this.renderLinkedObjects()}
+                </div>
+            </Tabs.TabPane>
+        </Tabs>;
     }
 }
