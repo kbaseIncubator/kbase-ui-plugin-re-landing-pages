@@ -1,6 +1,7 @@
 import React from 'react';
 import { Network, Node, Edge, Options } from 'vis-network';
 import { DataSet } from 'vis-data/peer';
+import 'vis-network/dist/dist/vis-network.css';
 import './NetworkGraph.css';
 
 export interface NetworkNode {
@@ -106,6 +107,10 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
                     bottom: 10,
                     left: 10
                 }
+            },
+            interaction: {
+                navigationButtons: true,
+                dragView: true
             }
         };
 
@@ -132,7 +137,7 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
     onResize() {
         let graphHeight: string;
         if (this.networkGraphNode.current) {
-            graphHeight = this.networkGraphNode.current.clientHeight + 'px';
+            graphHeight = (this.networkGraphNode.current.clientHeight) + 'px';
         } else {
             graphHeight = '400px';
         }
