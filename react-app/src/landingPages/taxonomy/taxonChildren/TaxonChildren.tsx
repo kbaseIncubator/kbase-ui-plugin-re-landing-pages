@@ -185,7 +185,7 @@ export default class TaxonChildren extends React.Component<Props, State> {
     }
     renderChildren() {
         return (
-            <div>
+            <div className="TaxonChildren">
                 {this.renderTitle()}
                 {this.renderSearch()}
                 {this.renderPagination()}

@@ -8,7 +8,6 @@ import {
 import { ViewType } from '../../redux/store/view';
 import Taxonomy from '../../landingPages/taxonomy';
 import OntologyView from '../../landingPages/ontology';
-import { Alert } from 'antd';
 
 export interface DispatcherProps {
     token: string | null;
@@ -39,15 +38,16 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
     }
 
     renderNavigationNone() {
-        const message = <div>
-            <p>
-                This navigation not supported
-            </p>
-            <p>
-                {this.props.navigation.type}
-            </p>
-        </div>;
-        return <Alert type="error" message={message} />;
+        // const message = <div>
+        //     <p>
+        //         This navigation not supported
+        //     </p>
+        //     <p>
+        //         {this.props.navigation.type}
+        //     </p>
+        // </div>;
+        // return <Alert type="error" message={message} />;
+        return null;
     }
 
     renderNavigationSome(navigation: NavigationSome) {

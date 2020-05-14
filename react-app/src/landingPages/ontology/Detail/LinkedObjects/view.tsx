@@ -1,6 +1,6 @@
 import React from 'react';
 import './style.css';
-import { Table } from 'antd';
+import { Table, Alert } from 'antd';
 import { RelatedFeature } from '../../lib/model';
 
 export interface Props {
@@ -45,7 +45,7 @@ export default class LinkedObjects extends React.Component<Props, State> {
                         <a href={url.toString()} target="_blank" rel="noopener noreferrer">
                             {objectName}
                         </a>
-                    )
+                    );
                 }}
             />
             <Table.Column
@@ -69,7 +69,7 @@ export default class LinkedObjects extends React.Component<Props, State> {
                         <a href={url.toString()} target="_blank" rel="noopener noreferrer">
                             {featureID}
                         </a>
-                    )
+                    );
                 }}
             />
             <Table.Column
@@ -80,14 +80,24 @@ export default class LinkedObjects extends React.Component<Props, State> {
                     return Intl.DateTimeFormat('en-US').format(relatedAt);
                 }}
             />
-        </Table>
+        </Table>;
     }
     renderNone() {
         return (
-            <p style={{ fontStyle: 'italic' }}>
-                No objects use this term.
-            </p>
-        )
+            <Alert type="info"
+                message="No Linked Data"
+                description={
+                    <p>
+                        No data objects have yet been associated with this term
+                    </p>
+                }
+                showIcon
+                style={{
+                    margin: '0 auto',
+                    marginTop: '20px'
+                }}
+            />
+        );
     }
     render() {
         if (this.props.linkedObjects.length === 0) {

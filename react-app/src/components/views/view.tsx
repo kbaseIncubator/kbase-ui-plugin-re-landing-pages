@@ -73,7 +73,11 @@ export class Dispatcher extends React.Component<DispatcherProps, DispatcherState
 
     renderLoadingState() {
         return (
-            <Spin />
+            <div className="Loading-box">
+                <Spin size="large" />
+                <br />
+                Loading view...
+            </div>
         );
     }
 

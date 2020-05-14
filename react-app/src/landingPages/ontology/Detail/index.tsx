@@ -138,7 +138,6 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
         );
     }
     renderLinkedObjects() {
-
         return (
             <LinkedObjects termRef={this.props.term.ref} />
         );
@@ -199,7 +198,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
     render() {
         return <Tabs className="FullHeight-tabs" type="card">
             <Tabs.TabPane tab="Detail" key="detail" forceRender={false}>
-                <div className="Col" style={{ overflowY: 'auto' }}>
+                <div className="Col" style={{ overflowY: 'auto', paddingTop: '10px' }}>
                     {this.renderDetail()}
                 </div>
             </Tabs.TabPane>
@@ -210,7 +209,7 @@ export default class Detail extends React.Component<DetailProps, DetailState> {
                 {this.renderChildren()}
             </Tabs.TabPane>
             <Tabs.TabPane tab="Linked Data" key="linkedData" forceRender={false}>
-                <div className="Col" style={{ overflowY: 'auto' }}>
+                <div className="Col" style={{ overflowY: 'auto', paddingTop: '10px' }}>
                     {this.renderLinkedObjects()}
                 </div>
             </Tabs.TabPane>
