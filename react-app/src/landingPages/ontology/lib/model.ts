@@ -313,9 +313,11 @@ export default class OntologyModel {
     ontologyClient: OntologyAPIClient;
     token: string;
     url: string;
+    ontologyAPIConfig: DynamicServiceConfig;
     constructor({ token, url, ontologyAPIConfig }: OntologyModelParams) {
         this.token = token;
         this.url = url;
+        this.ontologyAPIConfig = ontologyAPIConfig;
         this.ontologyClient = new OntologyAPIClient({
             token,
             url,
@@ -353,7 +355,8 @@ export default class OntologyModel {
         const client = new OntologyAPIClient({
             token: this.token,
             url: this.url,
-            timeout: REQUEST_TIMEOUT
+            timeout: REQUEST_TIMEOUT,
+            version: this.ontologyAPIConfig.version
         });
 
         const namespace = ontologyReferenceToNamespace(ref);
@@ -373,7 +376,8 @@ export default class OntologyModel {
         const client = new OntologyAPIClient({
             token: this.token,
             url: this.url,
-            timeout: REQUEST_TIMEOUT
+            timeout: REQUEST_TIMEOUT,
+            version: this.ontologyAPIConfig.version
         });
 
         const namespace = ontologyReferenceToNamespace(ref);
@@ -395,7 +399,8 @@ export default class OntologyModel {
         const client = new OntologyAPIClient({
             token: this.token,
             url: this.url,
-            timeout: REQUEST_TIMEOUT
+            timeout: REQUEST_TIMEOUT,
+            version: this.ontologyAPIConfig.version
         });
 
         const namespace = ontologyReferenceToNamespace(ref);
@@ -417,7 +422,8 @@ export default class OntologyModel {
         const client = new OntologyAPIClient({
             token: this.token,
             url: this.url,
-            timeout: REQUEST_TIMEOUT
+            timeout: REQUEST_TIMEOUT,
+            version: this.ontologyAPIConfig.version
         });
 
         const result = await client.getAssociatedWSObjects({
@@ -469,7 +475,8 @@ export default class OntologyModel {
         const client = new OntologyAPIClient({
             token: this.token,
             url: this.url,
-            timeout: REQUEST_TIMEOUT
+            timeout: REQUEST_TIMEOUT,
+            version: this.ontologyAPIConfig.version
         });
 
         const result = await client.getHierarchicalAncestors({
