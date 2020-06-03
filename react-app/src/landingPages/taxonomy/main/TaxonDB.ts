@@ -37,7 +37,8 @@ export default class TaxonDB extends DB<TaxonDBState> {
 
             const client = new TaxonomyModel({
                 token: this.props.token,
-                url: this.props.config.services.ServiceWizard.url
+                url: this.props.config.services.ServiceWizard.url,
+                taxonomyAPIConfig: this.props.config.dynamicServices.TaxonomyAPI
             });
 
             const taxon = await client.getTaxon(taxonRef);
@@ -75,7 +76,8 @@ export default class TaxonDB extends DB<TaxonDBState> {
 
             const client = new TaxonomyModel({
                 token: this.props.token,
-                url: this.props.config.services.ServiceWizard.url
+                url: this.props.config.services.ServiceWizard.url,
+                taxonomyAPIConfig: this.props.config.dynamicServices.TaxonomyAPI
             });
 
             const taxon = await client.getTaxon(taxonRef);

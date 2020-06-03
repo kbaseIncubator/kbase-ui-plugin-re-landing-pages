@@ -1,6 +1,7 @@
 import OntologyAPIClient, { TermNode, RelatedTerm, EdgeType, Namespace } from './OntologyAPIClient';
 import { OntologyReference, OntologyNamespace, OntologyTerm, OntologySource, GOOntologyTerm, OntologyRelatedTerm, OntologyRelation, stringToOntologyNamespace, ENVOOntologyTerm } from '../../../types/ontology';
 import { RelationEngineCategory, RelationEngineDataSource } from '../../../types/core';
+import { DynamicServiceConfig } from '@kbase/ui-components/lib/redux/integration/store';
 
 const REQUEST_TIMEOUT = 30000;
 
@@ -302,14 +303,25 @@ export function ontologyReferenceToNamespace(ref: OntologyReference): OntologyNa
     }
 }
 
+export interface OntologyModelParams {
+    token: string;
+    url: string;
+    ontologyAPIConfig: DynamicServiceConfig;
+}
+
 export default class OntologyModel {
     ontologyClient: OntologyAPIClient;
     token: string;
     url: string;
-    constructor({ token, url }: { token: string; url: string; }) {
+    constructor({ token, url, ontologyAPIConfig }: OntologyModelParams) {
         this.token = token;
         this.url = url;
-        this.ontologyClient = new OntologyAPIClient({ token, url, timeout: REQUEST_TIMEOUT });
+        this.ontologyClient = new OntologyAPIClient({
+            token,
+            url,
+            timeout: REQUEST_TIMEOUT,
+            version: ontologyAPIConfig.version
+        });
     }
 
     // async getTerms({ refs }: GetTermsParams): Promise<GetTermsResult> {

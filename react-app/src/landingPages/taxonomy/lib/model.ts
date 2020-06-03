@@ -1,7 +1,8 @@
 import { TaxonomyReference, Taxon, NCBITaxon, GTDBTaxon } from '../../../types/taxonomy';
-import TaxonAPIClient from './TaxonAPIClient';
+import TaxonomyAPIClient from './TaxonomyAPIClient';
 import { relationEngineReferenceToNamespace } from '../../../types/transform';
 import { RelationEngineCategory, RelationEngineDataSource, } from '../../../types/core';
+import { DynamicServiceConfig } from '@kbase/ui-components/lib/redux/integration/store';
 
 // const INITIAL_BATCH_SIZE = 100;
 // const BATCH_SIZE = 1000;
@@ -52,10 +53,21 @@ export interface GetLinkedObjectsResult {
 
 const REQUEST_TIMEOUT = 30000;
 
+export interface TaxonomyModelParams {
+    token: string;
+    url: string;
+    taxonomyAPIConfig: DynamicServiceConfig;
+}
+
 export class TaxonomyModel {
-    taxonomyClient: TaxonAPIClient;
-    constructor({ token, url }: { token: string; url: string; }) {
-        this.taxonomyClient = new TaxonAPIClient({ token, url, timeout: REQUEST_TIMEOUT });
+    taxonomyClient: TaxonomyAPIClient;
+    constructor({ token, url, taxonomyAPIConfig }: TaxonomyModelParams) {
+        this.taxonomyClient = new TaxonomyAPIClient({
+            token,
+            url,
+            timeout: REQUEST_TIMEOUT,
+            version: taxonomyAPIConfig.version
+        });
     }
 
     async getLineage(taxonRef: TaxonomyReference): Promise<Array<Taxon>> {

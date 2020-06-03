@@ -8,7 +8,7 @@ export type LinkedObjectsDBStateLoading = DBStateLoading;
 export type LinkedObjectsDBStateError = DBStateError;
 
 export interface LinkedObjectsDBStateLoaded extends DBStateLoaded {
-    linkedObjects: Array<RelatedFeature>
+    linkedObjects: Array<RelatedFeature>;
 }
 
 export type LinkedObjectsDBState = LinkedObjectsDBStateNone | LinkedObjectsDBStateLoading | LinkedObjectsDBStateError | LinkedObjectsDBStateLoaded;
@@ -28,14 +28,15 @@ export default class LinkedObjectsDB extends DB<LinkedObjectsDBState> {
     async getLinkedObjects(termRef: OntologyReference) {
         const client = new OntologyModel({
             url: this.props.config.services.ServiceWizard.url,
-            token: this.props.token
+            token: this.props.token,
+            ontologyAPIConfig: this.props.config.dynamicServices.OntologyAPI
         });
         try {
             this.set((state: LinkedObjectsDBState) => {
                 return {
                     ...state,
                     status: DBStatus.LOADING
-                }
+                };
             });
 
             const linkedObjects = await client.getRelatedFeatures({
@@ -43,7 +44,7 @@ export default class LinkedObjectsDB extends DB<LinkedObjectsDBState> {
                 // TODO: provided by table ui
                 offset: 0,
                 limit: 1000
-            })
+            });
 
             // do the call here when it is available
 
@@ -107,7 +108,7 @@ export default class LinkedObjectsDB extends DB<LinkedObjectsDBState> {
                     ...state,
                     status: DBStatus.LOADED,
                     linkedObjects: linkedObjects.features
-                }
+                };
             });
         } catch (ex) {
             this.set((state: LinkedObjectsDBState) => {
@@ -118,7 +119,7 @@ export default class LinkedObjectsDB extends DB<LinkedObjectsDBState> {
                         source: 'LinkedObjectsDB.getLinkedObjects',
                         message: ex.message
                     }
-                }
+                };
             });
         }
     }

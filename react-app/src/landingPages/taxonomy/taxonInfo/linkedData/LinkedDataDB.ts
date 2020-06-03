@@ -3,6 +3,7 @@ import { AppConfig } from '@kbase/ui-components';
 import { TaxonomyModel, LinkedObject, GetLinkedObjectsResult } from '../../lib/model';
 import { TaxonomyReference } from '../../../../types/taxonomy';
 import { UIError } from '../../../../types/error';
+import { DynamicServiceConfig } from '@kbase/ui-components/lib/redux/integration/store';
 
 export interface LinkedObjectsData {
     linkedObjects: Array<LinkedObject>;
@@ -111,11 +112,13 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
     token: string;
     serviceWizardURL: string;
     currentTask: AsyncTask<GetLinkedObjectsResult> | null;
+    taxonomyAPIConfig: DynamicServiceConfig;
     constructor(props: LinkedDataDBProps) {
         super(props);
         this.token = props.token;
         this.serviceWizardURL = props.config.services.ServiceWizard.url;
         this.currentTask = null;
+        this.taxonomyAPIConfig = props.config.dynamicServices.TaxonomyAPI;
     }
 
     async fetchLinkedObjects({ taxonRef, page, pageSize }: { taxonRef: TaxonomyReference; page: number; pageSize: number; }) {
@@ -125,7 +128,8 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
         const task = async (): Promise<GetLinkedObjectsResult> => {
             const client = new TaxonomyModel({
                 token: this.token,
-                url: this.serviceWizardURL
+                url: this.serviceWizardURL,
+                taxonomyAPIConfig: this.taxonomyAPIConfig
             });
 
             const offset = (page - 1) * pageSize;
@@ -216,7 +220,8 @@ export default class LinkedDataDB extends DB<LinkedObjectsDBState> {
         const task = async (): Promise<GetLinkedObjectsResult> => {
             const client = new TaxonomyModel({
                 token: this.token,
-                url: this.serviceWizardURL
+                url: this.serviceWizardURL,
+                taxonomyAPIConfig: this.taxonomyAPIConfig
             });
 
             const offset = (page - 1) * pageSize;

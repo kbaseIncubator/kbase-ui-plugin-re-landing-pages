@@ -1,5 +1,5 @@
 import React from 'react';
-import { Network, Node, Edge, Options } from 'vis-network';
+import { Network, Node, Edge, Options } from 'vis-network/peer';
 import { DataSet } from 'vis-data/peer';
 import 'vis-network/dist/dist/vis-network.css';
 import './NetworkGraph.css';
@@ -46,6 +46,7 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
         if (this.graphNode.current === null) {
             return;
         }
+        console.log('mountGraph');
         const nodes = new DataSet<Node, 'id'>({});
         nodes.add(this.props.data.nodes.map((term) => {
             let color: string;
@@ -114,7 +115,6 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
             }
         };
 
-
         this.network = new Network(this.graphNode.current, { nodes, edges }, options);
         this.network.fit();
         this.network.on('selectNode', ({ nodes: [nodeID] }) => {
@@ -141,6 +141,7 @@ export default class NetworkGraph extends React.Component<NetworkGraphProps, Net
         } else {
             graphHeight = '400px';
         }
+        console.log('NETWORK', this.network);
         if (this.network) {
             this.network.setSize('100%', graphHeight);
             this.network.redraw();

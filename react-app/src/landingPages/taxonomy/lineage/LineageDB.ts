@@ -36,7 +36,8 @@ export default class LineageDB extends DB<LineageDBState> {
 
             const client = new TaxonomyModel({
                 token: this.props.token,
-                url: this.props.config.services.ServiceWizard.url
+                url: this.props.config.services.ServiceWizard.url,
+                taxonomyAPIConfig: this.props.config.dynamicServices.TaxonomyAPI
             });
             const lineage = await client.getLineage(taxonRef);
             this.set((state: LineageDBState) => {

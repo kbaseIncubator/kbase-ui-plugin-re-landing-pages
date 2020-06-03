@@ -98,6 +98,9 @@ export function load(taxonRef: TaxonomyReference) {
                 config: {
                     services: {
                         ServiceWizard: { url: serviceWizardURL }
+                    },
+                    dynamicServices: {
+                        TaxonomyAPI: taxonomyAPIConfig
                     }
                 }
             }
@@ -112,7 +115,8 @@ export function load(taxonRef: TaxonomyReference) {
 
         const client = new TaxonomyModel({
             token: token,
-            url: serviceWizardURL
+            url: serviceWizardURL,
+            taxonomyAPIConfig
             // url: 'http://localhost:3001/services/service_wizard'
         });
         // const lineage = await client.getLineage(taxonID);
@@ -185,6 +189,9 @@ export function selectTaxon(taxonRef: TaxonomyReference) {
                 config: {
                     services: {
                         ServiceWizard: { url: serviceWizardURL }
+                    },
+                    dynamicServices: {
+                        TaxonomyAPI: taxonomyAPIConfig
                     }
                 }
             }
@@ -199,7 +206,8 @@ export function selectTaxon(taxonRef: TaxonomyReference) {
 
         const client = new TaxonomyModel({
             token: token,
-            url: serviceWizardURL
+            url: serviceWizardURL,
+            taxonomyAPIConfig
         });
 
         try {
