@@ -6,8 +6,7 @@ import { LinkedObjectsCollection, LinkedObjectsData } from './LinkedDataDB';
 import { DBCollectionStatus } from '../../../../lib/DB2';
 import { UIError } from '../../../../types/error';
 import { SortSpec, stringToSortDirection } from './LinkedDataDB';
-import { PaginationConfig } from 'antd/lib/pagination';
-import { SorterResult } from 'antd/lib/table/interface';
+import { SorterResult, TablePaginationConfig } from 'antd/lib/table/interface';
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -25,7 +24,7 @@ export default class LinkedData extends React.Component<Props, State> {
     }
 
     onChangeTable(
-        pagination: PaginationConfig,
+        pagination: TablePaginationConfig,
         filters: Partial<Record<keyof LinkedObject, string[]>>,
         sorters: SorterResult<LinkedObject> | Array<SorterResult<LinkedObject>>
     ) {

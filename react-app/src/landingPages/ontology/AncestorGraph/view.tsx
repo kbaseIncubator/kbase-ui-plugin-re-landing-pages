@@ -1,5 +1,7 @@
 import React from 'react';
-import { TermsGraph, relationToString, TermsGraphNode, ontologyReferenceToNamespace } from '../lib/model';
+import {
+    TermsGraph, relationToString, TermsGraphNode, ontologyReferenceToNamespace
+} from '../lib/model';
 import NetworkGraph, { NetworkData } from './NetworkGraph';
 import { OntologyTerm } from '../../../types/ontology';
 import './style.css';
@@ -40,7 +42,7 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
 
                 type: 'radio',
                 // fixed: false,
-                hideDefaultSelections: true,
+                // hideDefaultSelections: true,
                 selectedRowKeys: this.state.selectedNodeID ? [this.state.selectedNodeID] : []
             }}
             rowKey={(node: TermsGraphNode) => {
@@ -122,6 +124,7 @@ export default class AncestorGraph extends React.Component<AncestorGraphProps, A
             nodes,
             edges
         };
+        console.log('DATA', data);
         return (
             <div className="AncestorGraph">
                 <div className="AncestorGraph-graph">

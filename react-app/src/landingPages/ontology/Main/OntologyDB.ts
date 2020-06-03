@@ -35,7 +35,8 @@ export default class OntologyDB extends DB<OntologyDBState> {
 
         const client = new OntologyModel({
             token: this.props.token,
-            url: this.props.config.services.ServiceWizard.url
+            url: this.props.config.services.ServiceWizard.url,
+            ontologyAPIConfig: this.props.config.dynamicServices.OntologyAPI
         });
 
         try {
@@ -72,7 +73,8 @@ export default class OntologyDB extends DB<OntologyDBState> {
 
         const client = new OntologyModel({
             token: this.props.token,
-            url: this.props.config.services.ServiceWizard.url
+            url: this.props.config.services.ServiceWizard.url,
+            ontologyAPIConfig: this.props.config.dynamicServices.OntologyAPI
         });
 
         const { term } = await client.getTerm({ ref: termRef });

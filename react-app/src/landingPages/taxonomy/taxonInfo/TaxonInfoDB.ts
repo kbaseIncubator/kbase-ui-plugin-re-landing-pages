@@ -2,6 +2,7 @@ import DB, { DBProps, DBStatus, DBStateNone, DBStateLoading, DBStateLoaded, DBSt
 import { AppConfig } from '@kbase/ui-components';
 import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonomyModel } from '../lib/model';
+import { DynamicServiceConfig } from '@kbase/ui-components/lib/redux/integration/store';
 
 export type TaxonInfoDBStateNone = DBStateNone;
 export type TaxonInfoDBStateLoading = DBStateLoading;
@@ -25,10 +26,12 @@ export interface TaxonInfoDBProps extends DBProps<TaxonInfoDBState> {
 export default class TaxonInfoDB extends DB<TaxonInfoDBState> {
     token: string;
     serviceWizardURL: string;
+    taxonomyAPIConfig: DynamicServiceConfig;
     constructor(props: TaxonInfoDBProps) {
         super(props);
         this.token = props.token;
         this.serviceWizardURL = props.config.services.ServiceWizard.url;
+        this.taxonomyAPIConfig = props.config.dynamicServices.TaxonomyAPI;
     }
     // Remember, pages are 1 based; offset is 0 based.
     async fetchTaxon(taxonRef: TaxonomyReference) {
@@ -42,7 +45,8 @@ export default class TaxonInfoDB extends DB<TaxonInfoDBState> {
 
             const client = new TaxonomyModel({
                 token: this.token,
-                url: this.serviceWizardURL
+                url: this.serviceWizardURL,
+                taxonomyAPIConfig: this.taxonomyAPIConfig
             });
 
             const taxon = await client.getTaxon(taxonRef);

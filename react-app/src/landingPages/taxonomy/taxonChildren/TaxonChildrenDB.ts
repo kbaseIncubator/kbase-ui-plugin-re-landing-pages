@@ -10,6 +10,7 @@ import DB, {
 import { AppConfig } from '@kbase/ui-components';
 import { Taxon, TaxonomyReference } from '../../../types/taxonomy';
 import { TaxonomyModel } from '../lib/model';
+import { DynamicServiceConfig } from '@kbase/ui-components/lib/redux/integration/store';
 
 export type TaxonDBStateNone = DBStateNone;
 export type TaxonDBStateLoading = DBStateLoading;
@@ -39,15 +40,18 @@ export type TaxonDBState =
 export interface TaxonDBProps extends DBProps<TaxonDBState> {
     token: string;
     config: AppConfig;
+
 }
 
 export default class TaxonChildrenDB extends DB<TaxonDBState> {
     token: string;
     serviceWizardURL: string;
+    taxonomyAPIConfig: DynamicServiceConfig;
     constructor(props: TaxonDBProps) {
         super(props);
         this.token = props.token;
         this.serviceWizardURL = props.config.services.ServiceWizard.url;
+        this.taxonomyAPIConfig = props.config.dynamicServices.TaxonomyAPI;
     }
     // Remember, pages are 1 based; offset is 0 based.
     // async fetchTaxa(taxonID: TaxonID, page: number, pageSize: number) {
@@ -120,7 +124,8 @@ export default class TaxonChildrenDB extends DB<TaxonDBState> {
 
             const client = new TaxonomyModel({
                 token: this.token,
-                url: this.serviceWizardURL
+                url: this.serviceWizardURL,
+                taxonomyAPIConfig: this.taxonomyAPIConfig
             });
 
             const offset = (page - 1) * pageSize;

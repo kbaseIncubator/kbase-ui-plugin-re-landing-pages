@@ -34,7 +34,8 @@ export default class ParentsDB extends DB<ParentsDBState> {
 
         const client = new OntologyModel({
             token: this.props.token,
-            url: this.props.config.services.ServiceWizard.url
+            url: this.props.config.services.ServiceWizard.url,
+            ontologyAPIConfig: this.props.config.dynamicServices.OntologyAPI
         });
 
         try {
@@ -52,7 +53,7 @@ export default class ParentsDB extends DB<ParentsDBState> {
                     ...state,
                     status: DBStatus.LOADED,
                     terms: terms
-                }
+                };
             });
         } catch (ex) {
             console.error('ERROR', ex);
