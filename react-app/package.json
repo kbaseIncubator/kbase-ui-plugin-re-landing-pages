@@ -19,7 +19,7 @@
         "customize-cra": "1.0.0",
         "less": "3.11.2",
         "less-loader": "6.1.0",
-        "marked": "1.1.0",
+        "marked": "4.0.10",
         "morgan": "1.10.0",
         "react": "16.13.1",
         "react-app-rewired": "2.1.6",
